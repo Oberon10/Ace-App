@@ -163,7 +163,7 @@ export default function HomeView({ setView, onSearchTracking }) {
                 flexWrap: 'wrap',
                 gap: '12px',
                 marginBottom: '28px'
-              }}>
+              }} className="hero-action-buttons">
                 <button
                   onClick={() => setView('track')}
                   className="ace-btn ace-btn-action ace-btn-lg"
@@ -312,7 +312,7 @@ export default function HomeView({ setView, onSearchTracking }) {
                 </p>
               </div>
 
-              <form onSubmit={handleTrackSubmit} style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+              <form onSubmit={handleTrackSubmit} style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }} className="hero-track-form">
                 <div style={{ flex: '1 1 280px', position: 'relative' }}>
                   <div className="ace-input-icon">
                     <Search size={18} color="var(--color-primary-blue)" />
@@ -673,6 +673,11 @@ export default function HomeView({ setView, onSearchTracking }) {
             grid-column: span 1 !important;
           }
         }
+        @media (max-width: 860px) {
+          .hero-grid {
+            grid-template-columns: 1fr !important;
+          }
+        }
         @media (max-width: 640px) {
           .services-multi-grid {
             grid-template-columns: 1fr !important;
@@ -680,10 +685,20 @@ export default function HomeView({ setView, onSearchTracking }) {
           .services-card-top, .services-card-bottom {
             grid-column: span 1 !important;
           }
-        }
-        @media (max-width: 860px) {
-          .hero-grid {
-            grid-template-columns: 1fr !important;
+          .hero-action-buttons {
+            flex-direction: column !important;
+          }
+          .hero-action-buttons button {
+            width: 100% !important;
+            justifyContent: center !important;
+          }
+          .hero-track-form {
+            flex-direction: column !important;
+          }
+          .hero-track-form input,
+          .hero-track-form button {
+            width: 100% !important;
+            justifyContent: center !important;
           }
         }
       `}</style>

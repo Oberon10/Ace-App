@@ -460,11 +460,14 @@ export default function ShipmentCreationView({
                     {isCompleted ? <Check size={16} strokeWidth={3} /> : step.number}
                   </div>
 
-                  <span style={{
-                    fontSize: '12.5px',
-                    fontWeight: isActive ? 700 : 500,
-                    color: isActive ? 'var(--color-primary-blue)' : isCompleted ? 'var(--text-primary)' : 'var(--text-muted)'
-                  }}>
+                  <span 
+                    className="ace-wizard-stepper-label"
+                    style={{
+                      fontSize: '12.5px',
+                      fontWeight: isActive ? 700 : 500,
+                      color: isActive ? 'var(--color-primary-blue)' : isCompleted ? 'var(--text-primary)' : 'var(--text-muted)'
+                    }}
+                  >
                     {step.label}
                   </span>
                 </div>
@@ -476,7 +479,7 @@ export default function ShipmentCreationView({
         {/* ===================================================
             MULTI-STEP FORM CARDS
             =================================================== */}
-        <div className="ace-card" style={{ padding: '32px' }}>
+        <div className="ace-card ace-wizard-card" style={{ padding: '32px' }}>
           {/* STEP 1: SENDER */}
           {currentStep === 1 && (
             <div>

@@ -55,7 +55,7 @@ export default function StaffDashboardView({
   };
 
   return (
-    <div style={{ display: 'flex', minHeight: 'calc(100vh - 72px)', backgroundColor: 'var(--color-very-light-blue)' }}>
+    <div className="ace-dashboard-layout">
       {/* Sidebar */}
       <Sidebar 
         role={activeRole === 'admin' ? 'admin' : 'staff'} 
@@ -65,7 +65,7 @@ export default function StaffDashboardView({
       />
 
       {/* Main Staff Console */}
-      <main style={{ flex: 1, padding: '32px 36px', overflowY: 'auto' }}>
+      <main className="ace-dashboard-main">
         {/* Top Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', marginBottom: '28px' }}>
           <div>

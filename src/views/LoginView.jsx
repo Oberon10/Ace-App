@@ -135,7 +135,7 @@ export default function LoginView({
         {/* ===================================================
             LEFT SIDE: LOGISTICS BRANDING & SECURITY NOTICE
             =================================================== */}
-        <div style={{
+        <div className="auth-info-pane" style={{
           position: 'relative',
           backgroundImage: 'url(/images/truck-freight.jpg)',
           backgroundSize: 'cover',
@@ -217,7 +217,7 @@ export default function LoginView({
         {/* ===================================================
             RIGHT SIDE: AUTH CARD (PORTAL SELECTOR + FORM)
             =================================================== */}
-        <div style={{ padding: '36px 32px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+        <div className="auth-card-body" style={{ padding: '36px 32px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
           
           {/* Top 3-Way Portal Selector: Customer, Staff, Admin */}
           <div style={{ marginBottom: '20px' }}>
@@ -754,6 +754,20 @@ export default function LoginView({
         @media (max-width: 860px) {
           .auth-split {
             grid-template-columns: 1fr !important;
+          }
+          .auth-info-pane {
+            padding: 28px 20px !important;
+          }
+          .auth-card-body {
+            padding: 24px 18px !important;
+          }
+        }
+        @media (max-width: 480px) {
+          .auth-info-pane {
+            padding: 20px 14px !important;
+          }
+          .auth-card-body {
+            padding: 20px 14px !important;
           }
         }
       `}</style>

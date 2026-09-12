@@ -67,7 +67,7 @@ export default function CustomerDashboardView({
   });
 
   return (
-    <div style={{ display: 'flex', minHeight: 'calc(100vh - 72px)', backgroundColor: 'var(--color-very-light-blue)' }}>
+    <div className="ace-dashboard-layout">
       {/* Sidebar Navigation */}
       <Sidebar 
         role={activeRole || 'customer'} 
@@ -77,7 +77,7 @@ export default function CustomerDashboardView({
       />
 
       {/* Main Content Area */}
-      <main style={{ flex: 1, padding: '32px 36px', overflowY: 'auto' }}>
+      <main className="ace-dashboard-main">
         {/* Top Header Greeting */}
         <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '16px', marginBottom: '24px' }}>
           <div>

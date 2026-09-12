@@ -820,4 +820,179 @@ body.dark-mode .ace-skeleton {
   animation: aceBulbPulse 2.5s infinite ease-in-out;
 }
 
+/* ===================================================
+   COMPREHENSIVE MOBILE RESPONSIVENESS SYSTEM
+   =================================================== */
+
+/* Prevent horizontal page overflow across all mobile screens */
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+/* Dashboard Layout Responsiveness */
+.ace-dashboard-layout {
+  display: flex;
+  min-height: calc(100vh - 72px);
+  background-color: var(--color-very-light-blue);
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+.ace-dashboard-main {
+  flex: 1;
+  padding: 32px 36px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-width: 0;
+  width: 100%;
+}
+
+/* Enhanced Table Container with Smooth Mobile Scroll */
+.ace-table-container {
+  -webkit-overflow-scrolling: touch;
+  max-width: 100%;
+}
+
+/* Breakpoint: Tablets & Small Desktops (<= 860px) */
+@media (max-width: 860px) {
+  .ace-dashboard-layout {
+    flex-direction: column !important;
+  }
+
+  .ace-dashboard-main {
+    padding: 20px 16px !important;
+  }
+
+  /* Universal card adjustments */
+  .ace-card {
+    padding: 20px 18px;
+  }
+
+  /* Two column grids should stack */
+  .hero-grid, 
+  .quote-grid, 
+  .tracking-grid, 
+  .auth-split {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+  }
+}
+
+/* Breakpoint: Standard Mobile Devices (<= 640px) */
+@media (max-width: 640px) {
+  .ace-container {
+    padding: 0 16px !important;
+  }
+
+  .ace-container-fluid {
+    padding: 0 16px !important;
+  }
+
+  /* Typography Scaling for Mobile */
+  h1 {
+    font-size: 1.85rem !important;
+    line-height: 1.2 !important;
+  }
+
+  h2 {
+    font-size: 1.45rem !important;
+    line-height: 1.25 !important;
+  }
+
+  h3 {
+    font-size: 1.2rem !important;
+  }
+
+  p {
+    font-size: 13.5px !important;
+  }
+
+  /* Mobile Form Controls — 16px prevents iOS Safari auto-zoom */
+  .ace-input,
+  .ace-select,
+  .ace-textarea {
+    font-size: 16px !important;
+  }
+
+  /* Modals on Mobile */
+  .ace-modal-backdrop {
+    padding: 12px !important;
+    align-items: flex-end;
+  }
+
+  .ace-modal {
+    max-width: 100% !important;
+    width: 100% !important;
+    max-height: 92vh !important;
+    border-radius: 16px 16px 8px 8px !important;
+  }
+
+  /* Steppers & Wizards text hide on narrow view */
+  .ace-wizard-stepper-label {
+    display: none !important;
+  }
+
+  .ace-wizard-card {
+    padding: 18px 14px !important;
+  }
+
+  /* Filter buttons horizontal scroll */
+  .ace-filter-scroll {
+    display: flex !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding-bottom: 6px !important;
+    gap: 6px !important;
+    max-width: 100% !important;
+  }
+
+  .ace-filter-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Search inputs take full width on mobile */
+  .ace-search-mobile-full {
+    width: 100% !important;
+  }
+}
+
+/* Breakpoint: Compact Smartphones (<= 480px) */
+@media (max-width: 480px) {
+  .ace-container {
+    padding: 0 12px !important;
+  }
+
+  .ace-dashboard-main {
+    padding: 14px 10px !important;
+  }
+
+  .ace-card {
+    padding: 16px 12px !important;
+    border-radius: 12px !important;
+  }
+
+  .hero-track-form {
+    flex-direction: column !important;
+  }
+
+  .hero-track-form input,
+  .hero-track-form button {
+    width: 100% !important;
+  }
+}
+
+/* Breakpoint: Ultra-compact Screens (<= 360px) */
+@media (max-width: 360px) {
+  h1 {
+    font-size: 1.6rem !important;
+  }
+
+  .ace-btn {
+    padding: 8px 12px !important;
+    font-size: 12.5px !important;
+  }
+}
+
 

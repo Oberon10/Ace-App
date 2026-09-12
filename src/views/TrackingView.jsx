@@ -138,13 +138,13 @@ export default function TrackingView({
         {shipment ? (
           <div>
             {/* Action Bar */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px', marginBottom: '20px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: 'var(--text-secondary)' }}>
                 <Check size={16} color="#10B981" />
                 <span>Live Telemetry Verified • Satellite Transponder Online</span>
               </div>
 
-              <div style={{ display: 'flex', gap: '10px' }}>
+              <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                 <button
                   onClick={handleCopyLink}
                   className="ace-btn ace-btn-secondary ace-btn-sm"

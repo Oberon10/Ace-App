@@ -37,7 +37,7 @@ export default function AdminDashboardView({
   });
 
   return (
-    <div style={{ display: 'flex', minHeight: 'calc(100vh - 72px)', backgroundColor: 'var(--color-very-light-blue)' }}>
+    <div className="ace-dashboard-layout">
       {/* Sidebar */}
       <Sidebar 
         role="admin" 
@@ -47,7 +47,7 @@ export default function AdminDashboardView({
       />
 
       {/* Main Content Area */}
-      <main style={{ flex: 1, padding: '32px 36px', overflowY: 'auto' }}>
+      <main className="ace-dashboard-main">
         {/* Top Header */}
         <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '16px', marginBottom: '28px' }}>
           <div>

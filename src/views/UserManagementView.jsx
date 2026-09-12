@@ -152,14 +152,14 @@ export default function UserManagementView({
   // Security Check: Only Admin has administrative privilege to view this management console
   if (activeRole !== 'admin') {
     return (
-      <div style={{ display: 'flex', minHeight: 'calc(100vh - 72px)', backgroundColor: 'var(--color-very-light-blue)' }}>
+      <div className="ace-dashboard-layout">
         <Sidebar 
           role={activeRole} 
           currentView={currentView} 
           setView={setView} 
           setActiveRole={setActiveRole} 
         />
-        <main style={{ flex: 1, padding: '48px 36px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <main className="ace-dashboard-main" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
           <div className="ace-card" style={{ maxWidth: '520px', textAlign: 'center', padding: '40px 32px' }}>
             <div style={{ 
               width: '64px', 
@@ -204,7 +204,7 @@ export default function UserManagementView({
   }
 
   return (
-    <div style={{ display: 'flex', minHeight: 'calc(100vh - 72px)', backgroundColor: 'var(--color-very-light-blue)' }}>
+    <div className="ace-dashboard-layout">
       <Sidebar 
         role="admin" 
         currentView={currentView} 
@@ -212,7 +212,7 @@ export default function UserManagementView({
         setActiveRole={setActiveRole} 
       />
 
-      <main style={{ flex: 1, padding: '32px 36px', overflowY: 'auto' }}>
+      <main className="ace-dashboard-main">
         {/* ADMINISTRATIVE SECURITY CLEARANCE BANNER */}
         <div style={{
           backgroundColor: '#0F172A',
@@ -338,7 +338,7 @@ export default function UserManagementView({
           marginBottom: '20px'
         }}>
           {/* Category Filter Tabs */}
-          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+          <div className="ace-filter-scroll" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
             {[
               { id: 'ALL', label: `All Accounts (${users.length})` },
               { id: 'Staff', label: `Staff Personnel (${users.filter(u => u.role === 'Staff').length})` },
@@ -357,7 +357,8 @@ export default function UserManagementView({
                   border: activeFilter === tab.id ? '1px solid var(--color-primary-blue)' : '1px solid var(--color-border)',
                   backgroundColor: activeFilter === tab.id ? 'var(--color-primary-blue)' : 'var(--color-white)',
                   color: activeFilter === tab.id ? '#FFFFFF' : 'var(--text-secondary)',
-                  transition: 'all 0.15s ease'
+                  transition: 'all 0.15s ease',
+                  whiteSpace: 'nowrap'
                 }}
               >
                 {tab.label}
@@ -366,7 +367,7 @@ export default function UserManagementView({
           </div>
 
           {/* Search Input */}
-          <div style={{ position: 'relative', width: '280px' }}>
+          <div style={{ position: 'relative', minWidth: '240px', flex: '1 1 240px', maxWidth: '100%' }}>
             <Search size={15} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
             <input
               type="text"
@@ -374,7 +375,7 @@ export default function UserManagementView({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="ace-input"
-              style={{ paddingLeft: '36px', height: '38px', fontSize: '13px' }}
+              style={{ paddingLeft: '36px', height: '38px', fontSize: '13px', width: '100%' }}
             />
             {searchQuery && (
               <button 

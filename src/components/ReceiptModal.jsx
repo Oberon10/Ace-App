@@ -96,7 +96,7 @@ export default function ReceiptModal({ shipment, isOpen, onClose }) {
           </div>
 
           {/* Shipper & Consignee 2-column box */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px', marginBottom: '20px' }}>
             <div style={{ backgroundColor: 'var(--color-very-light-blue)', padding: '14px', borderRadius: '8px', border: '1px solid var(--color-border)' }}>
               <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--color-primary-blue)', textTransform: 'uppercase', marginBottom: '6px' }}>
                 Shipper (Consignor)
@@ -131,15 +131,16 @@ export default function ReceiptModal({ shipment, isOpen, onClose }) {
             <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '8px', textTransform: 'uppercase' }}>
               Cargo Description & Specifications
             </div>
-            <table style={{ width: '100%', fontSize: '12.5px', borderCollapse: 'collapse', border: '1px solid var(--color-border)' }}>
-              <thead>
-                <tr style={{ backgroundColor: 'var(--color-light-blue)', color: 'var(--color-primary-blue)' }}>
-                  <th style={{ padding: '8px 12px', textAlign: 'left', borderBottom: '1px solid var(--color-border)' }}>Item Description</th>
-                  <th style={{ padding: '8px 12px', textAlign: 'center', borderBottom: '1px solid var(--color-border)' }}>Weight</th>
-                  <th style={{ padding: '8px 12px', textAlign: 'center', borderBottom: '1px solid var(--color-border)' }}>Dimensions</th>
-                  <th style={{ padding: '8px 12px', textAlign: 'center', borderBottom: '1px solid var(--color-border)' }}>Declared Value</th>
-                </tr>
-              </thead>
+            <div style={{ width: '100%', overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+              <table style={{ width: '100%', minWidth: '460px', fontSize: '12.5px', borderCollapse: 'collapse', border: '1px solid var(--color-border)' }}>
+                <thead>
+                  <tr style={{ backgroundColor: 'var(--color-light-blue)', color: 'var(--color-primary-blue)' }}>
+                    <th style={{ padding: '8px 12px', textAlign: 'left', borderBottom: '1px solid var(--color-border)' }}>Item Description</th>
+                    <th style={{ padding: '8px 12px', textAlign: 'center', borderBottom: '1px solid var(--color-border)' }}>Weight</th>
+                    <th style={{ padding: '8px 12px', textAlign: 'center', borderBottom: '1px solid var(--color-border)' }}>Dimensions</th>
+                    <th style={{ padding: '8px 12px', textAlign: 'center', borderBottom: '1px solid var(--color-border)' }}>Declared Value</th>
+                  </tr>
+                </thead>
               <tbody>
                 <tr>
                   <td style={{ padding: '10px 12px', borderBottom: '1px solid var(--color-border)' }}>
@@ -159,11 +160,12 @@ export default function ReceiptModal({ shipment, isOpen, onClose }) {
                   </td>
                 </tr>
               </tbody>
-            </table>
+              </table>
+            </div>
           </div>
 
           {/* Itemized Charges & Barcode */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '20px', alignItems: 'center', marginBottom: '20px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '20px', alignItems: 'center', marginBottom: '20px' }}>
             {/* Barcode simulation */}
             <div style={{ textAlign: 'center', padding: '14px', border: '1px dashed var(--color-border)', borderRadius: '8px' }}>
               <div style={{

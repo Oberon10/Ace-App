@@ -16,7 +16,7 @@ import {
 
 export default function AnalyticsView({ setView, activeRole, setActiveRole }) {
   return (
-    <div style={{ display: 'flex', minHeight: 'calc(100vh - 72px)', backgroundColor: 'var(--color-very-light-blue)' }}>
+    <div className="ace-dashboard-layout">
       <Sidebar 
         role={activeRole === 'customer' ? 'customer' : 'admin'} 
         currentView="analytics" 
@@ -24,7 +24,7 @@ export default function AnalyticsView({ setView, activeRole, setActiveRole }) {
         setActiveRole={setActiveRole} 
       />
 
-      <main style={{ flex: 1, padding: '32px 36px', overflowY: 'auto' }}>
+      <main className="ace-dashboard-main">
         {/* Top Header */}
         <div style={{ marginBottom: '28px' }}>
           <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--color-bright-action)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>

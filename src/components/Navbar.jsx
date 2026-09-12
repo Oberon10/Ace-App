@@ -100,10 +100,15 @@ export default function Navbar({
         padding: '6px 0',
         borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
       }}>
-        <div className="ace-container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ display: 'inline-block', width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#10B981' }} />
-            <span>ACE Global Freight Network Operational • Real-time IATA / IMO Tracking Live</span>
+        <div className="ace-container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0, overflow: 'hidden' }}>
+            <span style={{ display: 'inline-block', width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#10B981', flexShrink: 0 }} />
+            <span className="desktop-nav" style={{ whiteSpace: 'nowrap' }}>
+              ACE Global Freight Network Operational • Real-time IATA / IMO Tracking Live
+            </span>
+            <span className="mobile-only" style={{ fontSize: '11px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+              ACE Freight Live
+            </span>
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
@@ -611,13 +616,40 @@ export default function Navbar({
                 </button>
               </div>
             ) : (
-              <button
-                onClick={handleLogout}
-                className="ace-btn ace-btn-ghost"
-                style={{ width: '100%', color: 'var(--status-cancelled-color)' }}
-              >
-                <span>Sign Out</span>
-              </button>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', borderTop: '1px solid var(--color-border)', paddingTop: '12px', marginTop: '6px' }}>
+                <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+                  {activeRole} Workspaces & Consoles
+                </div>
+                {authorizedWorkspaces.map(w => (
+                  <button
+                    key={w.id}
+                    onClick={() => handleNavClick(w.id)}
+                    className="ace-btn ace-btn-ghost"
+                    style={{
+                      width: '100%',
+                      justifyContent: 'flex-start',
+                      border: currentView === w.id ? '1px solid var(--color-bright-action)' : '1px solid var(--color-border)',
+                      backgroundColor: currentView === w.id ? 'var(--color-light-blue)' : 'transparent',
+                      color: currentView === w.id ? 'var(--color-primary-blue)' : 'var(--text-primary)',
+                      padding: '8px 12px',
+                      textAlign: 'left'
+                    }}
+                  >
+                    <div>
+                      <div style={{ fontWeight: 600, fontSize: '12.5px' }}>{w.label}</div>
+                      <div style={{ fontSize: '10.5px', color: 'var(--text-secondary)' }}>{w.desc}</div>
+                    </div>
+                  </button>
+                ))}
+                <button
+                  onClick={handleLogout}
+                  className="ace-btn ace-btn-ghost"
+                  style={{ width: '100%', color: 'var(--status-cancelled-color)', justifyContent: 'center', marginTop: '6px' }}
+                >
+                  <LogOut size={14} />
+                  <span>Sign Out</span>
+                </button>
+              </div>
             )}
           </div>
         </div>
