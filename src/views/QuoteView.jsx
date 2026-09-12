@@ -10,18 +10,85 @@ import {
   ShieldCheck, 
   DollarSign, 
   Package,
-  Calendar
+  Calendar,
+  MapPin,
+  Navigation
 } from 'lucide-react';
+import { COUNTRY_LIST, getCitiesForCountry } from '../data/locations';
 
 export default function QuoteView({ onProceedToShipment }) {
-  const [origin, setOrigin] = useState('Accra, Ghana');
-  const [destination, setDestination] = useState('London Heathrow, UK');
+  // Origin Country & City State
+  const [originCountry, setOriginCountry] = useState('Ghana');
+  const [originCity, setOriginCity] = useState('Accra');
+  const [isCustomOriginCity, setIsCustomOriginCity] = useState(false);
+
+  // Destination Country & City State
+  const [destinationCountry, setDestinationCountry] = useState('United Kingdom');
+  const [destinationCity, setDestinationCity] = useState('London');
+  const [isCustomDestinationCity, setIsCustomDestinationCity] = useState(false);
+
+  // Package specs
   const [weight, setWeight] = useState('45');
   const [length, setLength] = useState('60');
   const [width, setWidth] = useState('40');
   const [height, setHeight] = useState('40');
   const [method, setMethod] = useState('Air Freight Priority');
   const [isCalculating, setIsCalculating] = useState(false);
+
+  // Dynamic city lists
+  const originCities = getCitiesForCountry(originCountry);
+  const originCityList = originCities.includes(originCity) || !originCity
+    ? originCities
+    : [originCity, ...originCities];
+
+  const destinationCities = getCitiesForCountry(destinationCountry);
+  const destinationCityList = destinationCities.includes(destinationCity) || !destinationCity
+    ? destinationCities
+    : [destinationCity, ...destinationCities];
+
+  // Derived full location strings for routing & shipment prefill
+  const origin = originCity ? `${originCity}, ${originCountry}` : originCountry;
+  const destination = destinationCity ? `${destinationCity}, ${destinationCountry}` : destinationCountry;
+
+  // Handlers for Origin
+  const handleOriginCountryChange = (e) => {
+    const newCountry = e.target.value;
+    setOriginCountry(newCountry);
+    setIsCustomOriginCity(false);
+    const cities = getCitiesForCountry(newCountry);
+    setOriginCity(cities.length > 0 ? cities[0] : '');
+  };
+
+  const handleOriginCityChange = (e) => {
+    const val = e.target.value;
+    if (val === '__custom__') {
+      setIsCustomOriginCity(true);
+      setOriginCity('');
+    } else {
+      setIsCustomOriginCity(false);
+      setOriginCity(val);
+    }
+  };
+
+  // Handlers for Destination
+  const handleDestinationCountryChange = (e) => {
+    const newCountry = e.target.value;
+    setDestinationCountry(newCountry);
+    setIsCustomDestinationCity(false);
+    const cities = getCitiesForCountry(newCountry);
+    setDestinationCity(cities.length > 0 ? cities[0] : '');
+  };
+
+  const handleDestinationCityChange = (e) => {
+    const val = e.target.value;
+    if (val === '__custom__') {
+      setIsCustomDestinationCity(true);
+      setDestinationCity('');
+    } else {
+      setIsCustomDestinationCity(false);
+      setDestinationCity(val);
+    }
+  };
 
   // Result state
   const [quoteResult, setQuoteResult] = useState({
@@ -91,7 +158,7 @@ export default function QuoteView({ onProceedToShipment }) {
         </div>
 
         {/* ===================================================
-            SECTION 18: TWO-COLUMN QUOTE LAYOUT
+            SECTION: TWO-COLUMN QUOTE LAYOUT
             =================================================== */}
         <div style={{
           display: 'grid',
@@ -109,30 +176,160 @@ export default function QuoteView({ onProceedToShipment }) {
             </div>
 
             <form onSubmit={handleCalculate}>
-              {/* Origin & Destination */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px', marginBottom: '16px' }}>
-                <div className="ace-form-group">
-                  <label className="ace-label ace-label-required">Origin (City, Country)</label>
-                  <input
-                    type="text"
-                    className="ace-input"
-                    value={origin}
-                    onChange={(e) => setOrigin(e.target.value)}
-                    placeholder="e.g. Accra, Ghana"
-                    required
-                  />
+              {/* Origin & Destination Geography Selectors */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '18px', marginBottom: '20px' }}>
+                {/* Origin Hub Card */}
+                <div style={{
+                  backgroundColor: 'var(--color-surface)',
+                  border: '1px solid var(--color-border)',
+                  borderRadius: '10px',
+                  padding: '16px'
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+                    <div style={{ width: '26px', height: '26px', borderRadius: '6px', backgroundColor: 'var(--color-light-blue)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-bright-action)' }}>
+                      <MapPin size={14} />
+                    </div>
+                    <div>
+                      <div style={{ fontSize: '12.5px', fontWeight: 700, color: 'var(--color-primary-blue)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                        Origin Location
+                      </div>
+                      <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Collection Country & City</div>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    <div className="ace-form-group" style={{ marginBottom: 0 }}>
+                      <label className="ace-label ace-label-required">Origin Country</label>
+                      <select
+                        className="ace-select"
+                        value={originCountry}
+                        onChange={handleOriginCountryChange}
+                        required
+                      >
+                        {COUNTRY_LIST.map(c => (
+                          <option key={`orig-country-${c}`} value={c}>{c}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="ace-form-group" style={{ marginBottom: 0 }}>
+                      <label className="ace-label ace-label-required">Origin City</label>
+                      {!isCustomOriginCity ? (
+                        <select
+                          className="ace-select"
+                          value={originCity}
+                          onChange={handleOriginCityChange}
+                          required
+                        >
+                          {originCityList.map(city => (
+                            <option key={`orig-city-${city}`} value={city}>{city}</option>
+                          ))}
+                          <option value="__custom__">+ Other / Unlisted City...</option>
+                        </select>
+                      ) : (
+                        <div style={{ display: 'flex', gap: '6px' }}>
+                          <input
+                            type="text"
+                            className="ace-input"
+                            value={originCity}
+                            onChange={(e) => setOriginCity(e.target.value)}
+                            placeholder="Type origin city..."
+                            required
+                            autoFocus
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setIsCustomOriginCity(false);
+                              const cities = getCitiesForCountry(originCountry);
+                              setOriginCity(cities.length > 0 ? cities[0] : '');
+                            }}
+                            className="ace-btn ace-btn-ghost ace-btn-sm"
+                            style={{ fontSize: '11px', whiteSpace: 'nowrap' }}
+                          >
+                            List
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
 
-                <div className="ace-form-group">
-                  <label className="ace-label ace-label-required">Destination (City, Country)</label>
-                  <input
-                    type="text"
-                    className="ace-input"
-                    value={destination}
-                    onChange={(e) => setDestination(e.target.value)}
-                    placeholder="e.g. London Heathrow, UK"
-                    required
-                  />
+                {/* Destination Hub Card */}
+                <div style={{
+                  backgroundColor: 'var(--color-surface)',
+                  border: '1px solid var(--color-border)',
+                  borderRadius: '10px',
+                  padding: '16px'
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+                    <div style={{ width: '26px', height: '26px', borderRadius: '6px', backgroundColor: '#ECFDF5', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#059669' }}>
+                      <Navigation size={14} />
+                    </div>
+                    <div>
+                      <div style={{ fontSize: '12.5px', fontWeight: 700, color: 'var(--color-primary-blue)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                        Destination Location
+                      </div>
+                      <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Target Country & City</div>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    <div className="ace-form-group" style={{ marginBottom: 0 }}>
+                      <label className="ace-label ace-label-required">Destination Country</label>
+                      <select
+                        className="ace-select"
+                        value={destinationCountry}
+                        onChange={handleDestinationCountryChange}
+                        required
+                      >
+                        {COUNTRY_LIST.map(c => (
+                          <option key={`dest-country-${c}`} value={c}>{c}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="ace-form-group" style={{ marginBottom: 0 }}>
+                      <label className="ace-label ace-label-required">Destination City</label>
+                      {!isCustomDestinationCity ? (
+                        <select
+                          className="ace-select"
+                          value={destinationCity}
+                          onChange={handleDestinationCityChange}
+                          required
+                        >
+                          {destinationCityList.map(city => (
+                            <option key={`dest-city-${city}`} value={city}>{city}</option>
+                          ))}
+                          <option value="__custom__">+ Other / Unlisted City...</option>
+                        </select>
+                      ) : (
+                        <div style={{ display: 'flex', gap: '6px' }}>
+                          <input
+                            type="text"
+                            className="ace-input"
+                            value={destinationCity}
+                            onChange={(e) => setDestinationCity(e.target.value)}
+                            placeholder="Type destination city..."
+                            required
+                            autoFocus
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setIsCustomDestinationCity(false);
+                              const cities = getCitiesForCountry(destinationCountry);
+                              setDestinationCity(cities.length > 0 ? cities[0] : '');
+                            }}
+                            className="ace-btn ace-btn-ghost ace-btn-sm"
+                            style={{ fontSize: '11px', whiteSpace: 'nowrap' }}
+                          >
+                            List
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
 
