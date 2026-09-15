@@ -42,7 +42,7 @@ export default function ShipmentDetailsView({
             <input
               type="text"
               className="ace-input"
-              placeholder="Try ACE-2026-8F72K9"
+              placeholder="Enter tracking number (e.g. ACE-2026-XXXXXX)"
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
             />

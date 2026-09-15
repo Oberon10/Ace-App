@@ -381,7 +381,7 @@ export default function ShipmentCreationView({
       backgroundAttachment: 'fixed',
       padding: '44px 0 84px'
     }}>
-      <div className="ace-container" style={{ maxWidth: '840px', position: 'relative', zIndex: 2 }}>
+      <div className="ace-container" style={{ maxWidth: '1040px', position: 'relative', zIndex: 2 }}>
         {/* Page Title & Intro */}
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
           <span style={{ 
