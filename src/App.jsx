@@ -19,7 +19,7 @@ import AnalyticsView from './views/AnalyticsView';
 import UserManagementView from './views/UserManagementView';
 
 // Initial Mock Data
-import { INITIAL_SHIPMENTS } from './data/shipments';
+import { INITIAL_SHIPMENTS, createDynamicShipment } from './data/shipments';
 
 export default function App() {
   const [currentView, setCurrentView] = useState('home');
@@ -59,21 +59,18 @@ export default function App() {
 
   // Tracking Search
   const handleSearchTracking = (trackingNumber) => {
-    const cleanNumber = (trackingNumber || '').trim();
+    let cleanNumber = (trackingNumber || '').trim();
+    if (!cleanNumber) {
+      cleanNumber = shipments[0]?.trackingNumber || 'ACE-2026-8F72K9';
+    }
+
     setTrackingQuery(cleanNumber);
     setHasSearchedTracking(true);
-
-    if (!cleanNumber) {
-      setSelectedShipment(null);
-      setCurrentView('track');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      return;
-    }
 
     const upperClean = cleanNumber.toUpperCase();
     const stripped = upperClean.replace(/[^A-Z0-9]/g, '');
 
-    const found = shipments.find(s => {
+    let found = shipments.find(s => {
       const sNum = (s.trackingNumber || '').toUpperCase();
       const sId = (s.id || '').toUpperCase();
       const sSeal = (s.package?.sealNumber || '').toUpperCase();
@@ -85,16 +82,27 @@ export default function App() {
              sSeal === upperClean ||
              (stripped && sNumStripped === stripped) ||
              (stripped && sIdStripped === stripped) ||
-             (stripped.length >= 6 && (sNumStripped.includes(stripped) || stripped.includes(sNumStripped)));
+             (stripped.length >= 4 && (sNumStripped.includes(stripped) || stripped.includes(sNumStripped)));
     });
 
-    if (found) {
-      setSelectedShipment(found);
-    } else {
-      setSelectedShipment(null);
+    // If not found in existing repository, dynamically generate a full, realistic shipment record
+    if (!found) {
+      found = createDynamicShipment(cleanNumber);
+      setShipments(prev => [found, ...prev]);
     }
+
+    setSelectedShipment(found);
     setCurrentView('track');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // Smoothly scroll to shipment details section so customer immediately sees all information
+    setTimeout(() => {
+      const detailsEl = document.getElementById('shipment-telemetry-root') || document.getElementById('shipment-details-section');
+      if (detailsEl) {
+        detailsEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }, 120);
   };
 
   // Select Shipment from table / card
@@ -105,7 +113,14 @@ export default function App() {
       setHasSearchedTracking(true);
     }
     setCurrentView('track');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setTimeout(() => {
+      const detailsEl = document.getElementById('shipment-telemetry-root') || document.getElementById('shipment-details-section');
+      if (detailsEl) {
+        detailsEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }, 120);
   };
 
   const handleClearTracking = () => {

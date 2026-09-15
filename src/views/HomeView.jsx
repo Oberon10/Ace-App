@@ -16,7 +16,8 @@ import {
   TrendingUp, 
   FileText, 
   Anchor, 
-  Compass 
+  Compass,
+  RefreshCw
 } from 'lucide-react';
 import TestimonialsSection from '../components/TestimonialsSection';
 
@@ -25,13 +26,13 @@ export default function HomeView({ setView, onSearchTracking }) {
   const [isSearching, setIsSearching] = useState(false);
 
   const handleTrackSubmit = (e) => {
-    e.preventDefault();
-    if (!trackingInput.trim()) return;
+    if (e && e.preventDefault) e.preventDefault();
+    const query = trackingInput.trim() || 'ACE-2026-8F72K9';
     setIsSearching(true);
     setTimeout(() => {
       setIsSearching(false);
-      onSearchTracking(trackingInput.trim());
-    }, 350);
+      onSearchTracking(query);
+    }, 300);
   };
 
   const services = [
@@ -157,7 +158,7 @@ export default function HomeView({ setView, onSearchTracking }) {
                 marginBottom: '28px'
               }} className="hero-action-buttons">
                 <button
-                  onClick={() => setView('track')}
+                  onClick={() => handleTrackSubmit()}
                   className="ace-btn ace-btn-action ace-btn-lg"
                 >
                   <Search size={16} />
@@ -323,9 +324,19 @@ export default function HomeView({ setView, onSearchTracking }) {
                   type="submit"
                   className="ace-btn ace-btn-action"
                   disabled={isSearching}
-                  style={{ height: '48px', padding: '0 28px', fontSize: '15px' }}
+                  style={{ height: '48px', padding: '0 28px', fontSize: '15px', display: 'flex', alignItems: 'center', gap: '8px' }}
                 >
-                  {isSearching ? 'Searching...' : 'Track'}
+                  {isSearching ? (
+                    <>
+                      <RefreshCw size={16} className="animate-spin" />
+                      <span>Searching...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Search size={16} />
+                      <span>Track Shipment</span>
+                    </>
+                  )}
                 </button>
               </form>
 

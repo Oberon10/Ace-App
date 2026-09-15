@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, Printer, ShieldCheck, CheckCircle2, MapPin, Plane, Ship, Truck, Train } from 'lucide-react';
+import { X, Printer, ShieldCheck, CheckCircle2, Plane, Ship, Truck, Train } from 'lucide-react';
 import StatusBadge from './StatusBadge';
 
 // Authentic High-Density Vector Barcode Generator (Code 128 / Code 39 Style)

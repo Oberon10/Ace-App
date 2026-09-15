@@ -60,16 +60,23 @@ export default function TrackingView({
     } else if (initialQuery) {
       setSearchInput(initialQuery);
     }
+
+    if (shipment) {
+      setTimeout(() => {
+        const el = document.getElementById('shipment-telemetry-root');
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 150);
+    }
   }, [shipment, initialQuery]);
 
   const handleSearchSubmit = (e) => {
-    e.preventDefault();
-    if (!searchInput.trim()) return;
+    if (e && e.preventDefault) e.preventDefault();
+    const query = searchInput.trim() || 'ACE-2026-8F72K9';
     setIsSearching(true);
     setTimeout(() => {
       setIsSearching(false);
-      onSearchTracking(searchInput.trim());
-    }, 350);
+      onSearchTracking(query);
+    }, 300);
   };
 
   const handleCopyLink = () => {
@@ -250,7 +257,7 @@ export default function TrackingView({
             STATE 1: SHIPMENT FOUND — DISPLAY ALL DETAILS
             =================================================== */}
         {shipment ? (
-          <div>
+          <div id="shipment-telemetry-root">
             {/* Action Bar & Live Telemetry Verification */}
             <div style={{ 
               display: 'flex', 

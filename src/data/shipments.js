@@ -823,3 +823,127 @@ export function isShipmentForCustomer(shipment, user) {
 
   return false;
 }
+
+// Function to dynamically generate a realistic, complete shipment record for any custom or new tracking number
+export function createDynamicShipment(trackingInput) {
+  const raw = (trackingInput || '').trim();
+  const upper = raw.toUpperCase();
+  
+  // Format cleanly to standard ACE format if needed
+  let formattedNumber = upper;
+  if (!formattedNumber.startsWith('ACE-')) {
+    const alphanumeric = upper.replace(/[^A-Z0-9]/g, '');
+    formattedNumber = alphanumeric ? `ACE-2026-${alphanumeric.slice(-6).padStart(6, '8F72K9')}` : 'ACE-2026-8F72K9';
+  }
+
+  const now = new Date();
+  const pastDate = new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000);
+  const futureDate = new Date(now.getTime() + 4 * 24 * 60 * 60 * 1000);
+
+  const dateStr = pastDate.toISOString().split('T')[0];
+  const estDeliveryStr = futureDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+
+  // Generate deterministic variations based on string characters
+  const hash = formattedNumber.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  const sealNum = `ACE-SL-${(hash * 97 % 89999 + 10000)}`;
+
+  return {
+    id: formattedNumber,
+    trackingNumber: formattedNumber,
+    status: "IN TRANSIT",
+    statusCode: "transit",
+    method: "Air Freight Priority",
+    methodType: "air",
+    origin: "Accra, Ghana (Kotoka Int. Cargo Terminal)",
+    destination: "London Heathrow, UK (Terminal 4 Freight Hub)",
+    currentLocation: "International Airspace (En Route to London LHR)",
+    estimatedDelivery: estDeliveryStr,
+    createdDate: dateStr,
+    customer: "Corporate Logistics Partner",
+    sender: {
+      name: "Kwame Mensah",
+      company: "Gold Coast Trading & Export Ltd",
+      phone: "+233 24 555 0192",
+      email: "dispatch@goldcoasttrading.com",
+      address: "Plot 14, Industrial Area, Ring Road Central",
+      city: "Accra",
+      country: "Ghana"
+    },
+    receiver: {
+      name: "Eleanor Vance",
+      company: "Vance Global Logistics UK",
+      phone: "+44 20 7946 0912",
+      email: "e.vance@vanceglobal.co.uk",
+      address: "24 Bishopsgate, Floor 18",
+      city: "London",
+      country: "United Kingdom"
+    },
+    package: {
+      type: "High-Value Industrial Telemetry & Sensor Equipment",
+      weightKg: 42.5,
+      dimensions: "60 × 45 × 40 cm",
+      pieces: 3,
+      declaredValue: "$12,450.00",
+      insurance: "Full ACE All-Risk In-Transit Cargo Policy",
+      sealNumber: sealNum
+    },
+    items: [
+      { id: 1, description: "Industrial Optical Pressure Sensors (Model OP-940)", hsCode: "HS 9026.20", qty: 2, weightKg: 25.0, dimensions: "60 × 45 × 20 cm", declaredValue: "$8,200.00" },
+      { id: 2, description: "Calibrated Digital Telemetry Modems (Model TM-20)", hsCode: "HS 8517.62", qty: 1, weightKg: 17.5, dimensions: "60 × 45 × 20 cm", declaredValue: "$4,250.00" }
+    ],
+    charges: {
+      freight: 410.00,
+      fuelSurcharge: 45.00,
+      customsHandling: 30.00,
+      total: 485.00
+    },
+    timeline: [
+      {
+        id: 1,
+        title: "Shipment Created",
+        description: "Electronic shipping documentation generated and booking confirmed by ACE Logistics hub.",
+        location: "Accra, Ghana",
+        date: pastDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+        time: "09:30 AM",
+        status: "completed"
+      },
+      {
+        id: 2,
+        title: "Security Screening & Palletizing",
+        description: "X-ray screening verified, biometric manifest validated, and tamper seal affixed.",
+        location: "Kotoka Cargo Hub, Accra",
+        date: pastDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+        time: "03:15 PM",
+        status: "completed"
+      },
+      {
+        id: 3,
+        title: "Departed Origin Hub — Flight ACE-802",
+        description: "Loaded onto Boeing 777F scheduled freight service en route to international gateway.",
+        location: "Kotoka Airspace",
+        date: now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+        time: "08:45 AM",
+        status: "active"
+      },
+      {
+        id: 4,
+        title: "Customs & Clearance Gateway",
+        description: "Advance electronic pre-clearance documents submitted to border authorities.",
+        location: "London Heathrow World Cargo Centre",
+        date: estDeliveryStr,
+        time: "Est. 07:00 AM",
+        status: "future"
+      },
+      {
+        id: 5,
+        title: "Final Delivery to Consignee",
+        description: "Dispatched with authorized courier for secure physical delivery and signature.",
+        location: "Bishopsgate, London, UK",
+        date: estDeliveryStr,
+        time: "Est. 02:30 PM",
+        status: "future"
+      }
+    ]
+  };
+}
+
