@@ -48,7 +48,9 @@ export default function App() {
 
   // Central Reactive Shipments Repository
   const [shipments, setShipments] = useState(INITIAL_SHIPMENTS);
-  const [selectedShipment, setSelectedShipment] = useState(INITIAL_SHIPMENTS[0]);
+  const [selectedShipment, setSelectedShipment] = useState(null);
+  const [trackingQuery, setTrackingQuery] = useState('');
+  const [hasSearchedTracking, setHasSearchedTracking] = useState(false);
   const [prefilledQuote, setPrefilledQuote] = useState(null);
 
   // Receipt Modal State
@@ -57,8 +59,34 @@ export default function App() {
 
   // Tracking Search
   const handleSearchTracking = (trackingNumber) => {
-    const cleanNumber = (trackingNumber || '').trim().toUpperCase();
-    const found = shipments.find(s => s.trackingNumber.toUpperCase() === cleanNumber || s.id.toUpperCase() === cleanNumber);
+    const cleanNumber = (trackingNumber || '').trim();
+    setTrackingQuery(cleanNumber);
+    setHasSearchedTracking(true);
+
+    if (!cleanNumber) {
+      setSelectedShipment(null);
+      setCurrentView('track');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    const upperClean = cleanNumber.toUpperCase();
+    const stripped = upperClean.replace(/[^A-Z0-9]/g, '');
+
+    const found = shipments.find(s => {
+      const sNum = (s.trackingNumber || '').toUpperCase();
+      const sId = (s.id || '').toUpperCase();
+      const sSeal = (s.package?.sealNumber || '').toUpperCase();
+      const sNumStripped = sNum.replace(/[^A-Z0-9]/g, '');
+      const sIdStripped = sId.replace(/[^A-Z0-9]/g, '');
+
+      return sNum === upperClean || 
+             sId === upperClean || 
+             sSeal === upperClean ||
+             (stripped && sNumStripped === stripped) ||
+             (stripped && sIdStripped === stripped) ||
+             (stripped.length >= 6 && (sNumStripped.includes(stripped) || stripped.includes(sNumStripped)));
+    });
 
     if (found) {
       setSelectedShipment(found);
@@ -72,8 +100,18 @@ export default function App() {
   // Select Shipment from table / card
   const handleSelectShipment = (shipment) => {
     setSelectedShipment(shipment);
+    if (shipment) {
+      setTrackingQuery(shipment.trackingNumber || shipment.id || '');
+      setHasSearchedTracking(true);
+    }
     setCurrentView('track');
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleClearTracking = () => {
+    setSelectedShipment(null);
+    setTrackingQuery('');
+    setHasSearchedTracking(false);
   };
 
   // Open Receipt
@@ -213,6 +251,9 @@ export default function App() {
             onSelectShipment={handleSelectShipment}
             onViewReceipt={handleOpenReceipt}
             allShipments={shipments}
+            initialQuery={trackingQuery}
+            hasSearched={hasSearchedTracking}
+            onClearTracking={handleClearTracking}
           />
         )}
 
