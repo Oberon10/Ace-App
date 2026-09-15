@@ -14,10 +14,12 @@ function TestimonialCard({ testimonial }) {
         justifyContent: 'space-between',
         padding: '32px 28px',
         borderRadius: 'var(--radius-card)',
-        backgroundColor: 'var(--color-white)',
-        border: '1px solid var(--color-border)',
-        boxShadow: 'var(--shadow-card)',
-        transition: 'transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease',
+        backgroundColor: 'rgba(255, 255, 255, 0.96)',
+        backdropFilter: 'blur(12px)',
+        WebkitBackdropFilter: 'blur(12px)',
+        border: '1px solid rgba(255, 255, 255, 0.85)',
+        boxShadow: '0 16px 36px -8px rgba(0, 0, 0, 0.38), 0 4px 12px rgba(0, 0, 0, 0.15)',
+        transition: 'transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease',
         position: 'relative'
       }}
     >
@@ -84,10 +86,10 @@ function TestimonialCard({ testimonial }) {
               height: '48px',
               borderRadius: '50%',
               objectFit: 'cover',
-              border: '2px solid var(--color-border)',
+              border: '2px solid #0284C7',
               backgroundColor: 'var(--color-light-blue)',
               flexShrink: 0,
-              transition: 'transform 0.2s ease, border-color 0.2s ease'
+              transition: 'transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease'
             }}
           />
           <div style={{ minWidth: 0 }}>
@@ -116,13 +118,13 @@ function TestimonialCard({ testimonial }) {
           display: 'inline-flex',
           alignItems: 'center',
           gap: '6px',
-          backgroundColor: 'var(--color-very-light-blue)',
-          border: '1px solid var(--color-border)',
-          padding: '5px 10px',
+          backgroundColor: '#F0F9FF',
+          border: '1px solid #BAE6FD',
+          padding: '5px 11px',
           borderRadius: '6px',
           fontSize: '11.5px',
           fontWeight: 600,
-          color: 'var(--color-primary-blue)',
+          color: '#0369A1',
           alignSelf: 'flex-start'
         }}>
           {isRoute ? (
@@ -143,26 +145,37 @@ export default function TestimonialsSection() {
   return (
     <section 
       aria-labelledby="testimonials-heading"
+      className="ace-testimonials-section"
       style={{ 
-        backgroundColor: 'var(--color-white)', 
-        paddingTop: '64px', 
-        paddingBottom: '80px',
-        borderTop: '1px solid var(--color-border-subtle)',
-        borderBottom: '1px solid var(--color-border)'
+        position: 'relative',
+        backgroundImage: "linear-gradient(180deg, rgba(8, 23, 44, 0.88) 0%, rgba(10, 31, 58, 0.84) 50%, rgba(7, 21, 40, 0.92) 100%), url('/images/testimonials-bg.jpg')",
+        backgroundSize: 'cover',
+        backgroundPosition: 'center 38%',
+        backgroundRepeat: 'no-repeat',
+        paddingTop: '80px', 
+        paddingBottom: '96px',
+        borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+        borderBottom: '1px solid rgba(0, 0, 0, 0.3)',
+        overflow: 'hidden'
       }}
     >
-      <div className="ace-container">
+      <div className="ace-container" style={{ position: 'relative', zIndex: 2 }}>
         {/* Section Header */}
-        <div style={{ textAlign: 'center', maxWidth: '680px', margin: '0 auto 48px' }}>
+        <div style={{ textAlign: 'center', maxWidth: '720px', margin: '0 auto 52px' }}>
           <span 
             style={{ 
-              fontSize: '12px', 
+              fontSize: '11.5px', 
               fontWeight: 700, 
-              color: 'var(--color-bright-action)', 
+              color: '#38BDF8', 
+              backgroundColor: 'rgba(14, 165, 233, 0.16)',
+              border: '1px solid rgba(56, 189, 248, 0.35)',
+              padding: '5px 14px',
+              borderRadius: '999px',
               textTransform: 'uppercase', 
-              letterSpacing: '0.08em',
+              letterSpacing: '0.1em',
               display: 'inline-block',
-              marginBottom: '6px'
+              marginBottom: '14px',
+              backdropFilter: 'blur(8px)'
             }}
           >
             CUSTOMER STORIES
@@ -170,17 +183,26 @@ export default function TestimonialsSection() {
           <h2 
             id="testimonials-heading"
             style={{ 
-              fontSize: 'clamp(24px, 3.2vw, 32px)', 
-              color: 'var(--color-primary-blue)', 
+              fontSize: 'clamp(26px, 3.4vw, 36px)', 
+              color: '#FFFFFF', 
               fontWeight: 800, 
-              marginTop: '2px', 
-              marginBottom: '12px',
-              letterSpacing: '-0.02em'
+              marginTop: '4px', 
+              marginBottom: '14px',
+              letterSpacing: '-0.025em',
+              textShadow: '0 2px 12px rgba(0, 0, 0, 0.4)'
             }}
           >
             Trusted by customers who move with us
           </h2>
-          <p style={{ fontSize: '14.5px', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+          <p style={{ 
+            fontSize: '15.5px', 
+            color: '#E0F2FE', 
+            lineHeight: 1.65,
+            maxWidth: '620px',
+            margin: '0 auto',
+            opacity: 0.95,
+            textShadow: '0 1px 4px rgba(0, 0, 0, 0.3)'
+          }}>
             From personal deliveries to growing businesses, customers trust us to move their packages quickly, safely, and reliably.
           </p>
         </div>
@@ -197,23 +219,25 @@ export default function TestimonialsSection() {
         .ace-testimonials-grid {
           display: grid;
           grid-template-columns: repeat(3, minmax(0, 1fr));
-          gap: 24px;
+          gap: 28px;
         }
 
         .ace-testimonial-card:hover {
-          transform: translateY(-4px);
-          box-shadow: var(--shadow-elevated);
-          border-color: #BAE6FD;
+          transform: translateY(-6px);
+          box-shadow: 0 24px 50px -10px rgba(0, 0, 0, 0.5), 0 0 25px rgba(56, 189, 248, 0.3) !important;
+          border-color: #38BDF8 !important;
         }
 
         .ace-testimonial-card:hover .ace-testimonial-avatar {
-          border-color: var(--color-bright-action);
-          transform: scale(1.04);
+          border-color: #38BDF8 !important;
+          box-shadow: 0 0 12px rgba(56, 189, 248, 0.4) !important;
+          transform: scale(1.06);
         }
 
         @media (max-width: 960px) {
           .ace-testimonials-grid {
             grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+            gap: 20px !important;
           }
         }
 
@@ -224,6 +248,10 @@ export default function TestimonialsSection() {
           }
           .ace-testimonial-card {
             padding: 24px 20px !important;
+          }
+          .ace-testimonials-section {
+            padding-top: 56px !important;
+            padding-bottom: 64px !important;
           }
         }
 
