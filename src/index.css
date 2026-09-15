@@ -998,4 +998,40 @@ html, body {
   }
 }
 
+/* ===================================================
+   OFFICIAL RECEIPT PRINT RULES (EXACT 1-PAGE ISOLATION)
+   =================================================== */
+@page {
+  size: A4 portrait;
+  margin: 6mm 8mm;
+}
+
+@media print {
+  /* Hide standard web application shell elements */
+  .ace-navbar,
+  .ace-footer,
+  .ace-hero,
+  .ace-cta-banner,
+  .ace-testimonials-section,
+  .no-print {
+    display: none !important;
+  }
+
+  html, body {
+    background: #FFFFFF !important;
+    color: #0F172A !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  /* Force exact color and background rendering on print */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
+
+
 

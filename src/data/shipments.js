@@ -41,6 +41,10 @@ export const INITIAL_SHIPMENTS = [
       insurance: "Full ACE All-Risk Coverage",
       sealNumber: "ACE-SL-90812"
     },
+    items: [
+      { id: 1, description: "Industrial Optical Pressure Sensors (Model OP-940)", hsCode: "HS 9026.20", qty: 2, weightKg: 25.0, dimensions: "60 × 45 × 20 cm", declaredValue: "$8,200.00" },
+      { id: 2, description: "Calibrated Digital Telemetry Modems (Model TM-20)", hsCode: "HS 8517.62", qty: 1, weightKg: 17.5, dimensions: "60 × 45 × 20 cm", declaredValue: "$4,250.00" }
+    ],
     charges: {
       freight: 410.00,
       fuelSurcharge: 45.00,
@@ -148,11 +152,15 @@ export const INITIAL_SHIPMENTS = [
       type: "Precision Machinery Parts",
       weightKg: 1240.0,
       dimensions: "240 × 120 × 160 cm",
-      pieces: 1,
+      pieces: 2,
       declaredValue: "$86,000.00",
       insurance: "Marine Cargo Comprehensive",
       sealNumber: "MSKU-882190"
     },
+    items: [
+      { id: 1, description: "CNC High-Torque Rotary Spindle Assembly (Type SX-4)", hsCode: "HS 8466.93", qty: 1, weightKg: 850.0, dimensions: "160 × 100 × 120 cm", declaredValue: "$62,000.00" },
+      { id: 2, description: "Precision Hydraulic Pressure Drives & Controller Kits", hsCode: "HS 8412.21", qty: 1, weightKg: 390.0, dimensions: "120 × 80 × 90 cm", declaredValue: "$24,000.00" }
+    ],
     charges: {
       freight: 1850.00,
       fuelSurcharge: 180.00,
