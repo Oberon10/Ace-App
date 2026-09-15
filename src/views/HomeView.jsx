@@ -33,15 +33,6 @@ export default function HomeView({ setView, onSearchTracking }) {
     }, 350);
   };
 
-  const quickTrack = (number) => {
-    setTrackingInput(number);
-    setIsSearching(true);
-    setTimeout(() => {
-      setIsSearching(false);
-      onSearchTracking(number);
-    }, 250);
-  };
-
   const services = [
     {
       title: "Air Freight Priority",
@@ -295,7 +286,7 @@ export default function HomeView({ setView, onSearchTracking }) {
           {/* ===================================================
               SECTION 8: TRACKING COMPONENT (Prominent Card)
               =================================================== */}
-          <div style={{ maxWidth: '820px', margin: '0 auto' }}>
+          <div style={{ maxWidth: '960px', margin: '0 auto' }}>
             <div className="ace-card" style={{
               backgroundColor: 'var(--color-white)',
               boxShadow: 'var(--shadow-elevated)',
@@ -337,30 +328,22 @@ export default function HomeView({ setView, onSearchTracking }) {
                 </button>
               </form>
 
-              {/* Quick-fill sample tracking badges for instant testing */}
-              <div style={{ marginTop: '16px', display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '8px', fontSize: '12px' }}>
-                <span style={{ color: 'var(--text-muted)', fontWeight: 600 }}>Quick Test:</span>
-                <button
-                  type="button"
-                  onClick={() => quickTrack('ACE-2026-8F72K9')}
-                  style={{ background: 'var(--color-light-blue)', border: '1px solid #c2e0f4', color: 'var(--color-primary-blue)', padding: '3px 8px', borderRadius: '6px', cursor: 'pointer', fontWeight: 600, fontSize: '11.5px' }}
-                >
-                  ACE-2026-8F72K9 (In Transit, Ghana)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => quickTrack('ACE-2026-3M91L4')}
-                  style={{ background: 'var(--color-light-blue)', border: '1px solid #c2e0f4', color: 'var(--color-primary-blue)', padding: '3px 8px', borderRadius: '6px', cursor: 'pointer', fontWeight: 600, fontSize: '11.5px' }}
-                >
-                  ACE-2026-3M91L4 (Delivered, Rotterdam)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => quickTrack('ACE-2026-7B42W1')}
-                  style={{ background: 'var(--color-light-blue)', border: '1px solid #c2e0f4', color: 'var(--color-primary-blue)', padding: '3px 8px', borderRadius: '6px', cursor: 'pointer', fontWeight: 600, fontSize: '11.5px' }}
-                >
-                  ACE-2026-7B42W1 (Processing, NYC)
-                </button>
+              {/* Professional format guidance & real-time telemetry security indicators */}
+              <div style={{ marginTop: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px', fontSize: '12px', color: 'var(--text-muted)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <ShieldCheck size={14} color="#10B981" />
+                  <span>Standard AWB / Bill of Lading format (e.g. <strong style={{ color: 'var(--color-primary-blue)' }}>ACE-2026-XXXXXX</strong>)</span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '14px', fontSize: '11.5px' }}>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                    <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#10B981', display: 'inline-block' }} />
+                    24/7 Satellite Telemetry
+                  </span>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                    <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#0284C7', display: 'inline-block' }} />
+                    Tamper-Evident Security Seal
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -634,7 +617,7 @@ export default function HomeView({ setView, onSearchTracking }) {
         backgroundColor: 'var(--color-primary-blue)',
         color: '#FFFFFF'
       }}>
-        <div className="ace-container" style={{ textAlign: 'center', maxWidth: '680px', margin: '0 auto' }}>
+        <div className="ace-container" style={{ textAlign: 'center', maxWidth: '820px', margin: '0 auto' }}>
           <h2 style={{ fontSize: '28px', color: '#FFFFFF', fontWeight: 800, marginBottom: '12px' }}>
             Ready to Streamline Your Supply Chain?
           </h2>
