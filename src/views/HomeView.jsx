@@ -13,11 +13,12 @@ import {
   Award, 
   CheckCircle2, 
   MapPin, 
-  TrendingUp,
-  FileText,
-  Anchor,
-  Compass
+  TrendingUp, 
+  FileText, 
+  Anchor, 
+  Compass 
 } from 'lucide-react';
+import TestimonialsSection from '../components/TestimonialsSection';
 
 export default function HomeView({ setView, onSearchTracking }) {
   const [trackingInput, setTrackingInput] = useState('');
@@ -608,6 +609,11 @@ export default function HomeView({ setView, onSearchTracking }) {
           </div>
         </div>
       </section>
+
+      {/* ===================================================
+          CUSTOMER TESTIMONIALS SECTION
+          =================================================== */}
+      <TestimonialsSection />
 
       {/* ===================================================
           CALL TO ACTION BANNER
