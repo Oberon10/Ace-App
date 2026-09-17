@@ -17,7 +17,8 @@ import {
   FileText, 
   Anchor, 
   Compass,
-  RefreshCw
+  RefreshCw,
+  Radio
 } from 'lucide-react';
 import TestimonialsSection from '../components/TestimonialsSection';
 
@@ -289,20 +290,98 @@ export default function HomeView({ setView, onSearchTracking }) {
               SECTION 8: TRACKING COMPONENT (Prominent Card)
               =================================================== */}
           <div style={{ maxWidth: '960px', margin: '0 auto' }}>
-            <div className="ace-card" style={{
+            <div className="ace-card home-tracking-card" style={{
               backgroundColor: 'var(--color-white)',
               boxShadow: 'var(--shadow-elevated)',
               border: '1px solid var(--color-border)',
-              padding: '32px 28px',
+              padding: '28px 24px',
               borderRadius: '16px'
             }}>
-              <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-                <h3 style={{ fontSize: '20px', color: 'var(--color-primary-blue)', fontWeight: 700, marginBottom: '6px' }}>
+              <div style={{ textAlign: 'center', marginBottom: '18px' }}>
+                <div style={{ 
+                  display: 'inline-flex', 
+                  alignItems: 'center', 
+                  gap: '6px', 
+                  backgroundColor: 'var(--color-light-blue)', 
+                  padding: '4px 12px', 
+                  borderRadius: '20px', 
+                  fontSize: '11px', 
+                  fontWeight: 700, 
+                  color: 'var(--color-primary-blue)', 
+                  textTransform: 'uppercase', 
+                  letterSpacing: '0.06em',
+                  marginBottom: '8px'
+                }}>
+                  <Radio size={12} color="var(--color-bright-action)" className="animate-pulse" />
+                  <span>Real-Time Satellite Freight Telemetry</span>
+                </div>
+                <h3 style={{ fontSize: '22px', color: 'var(--color-primary-blue)', fontWeight: 800, marginBottom: '4px' }}>
                   Track Your Shipment
                 </h3>
                 <p style={{ fontSize: '13.5px', color: 'var(--text-secondary)' }}>
-                  Enter your tracking number to get real-time shipment updates.
+                  Enter your tracking number to get real-time GPS telemetry, waypoint logs, and estimated arrival.
                 </p>
+              </div>
+
+              {/* Lively Logistics Telemetry Showcase Visual Banner */}
+              <div className="tracking-card-visual-banner">
+                <img 
+                  src="/images/cargo-tracking-banner.jpg" 
+                  alt="Live Global Air and Sea Freight Operations" 
+                />
+                <div className="tracking-card-visual-overlay">
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+                    <span style={{
+                      backgroundColor: 'rgba(16, 185, 129, 0.92)',
+                      color: '#FFFFFF',
+                      fontSize: '10.5px',
+                      fontWeight: 700,
+                      padding: '3px 10px',
+                      borderRadius: '12px',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '5px',
+                      boxShadow: '0 2px 8px rgba(16, 185, 129, 0.4)'
+                    }}>
+                      <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#FFFFFF', display: 'inline-block' }} />
+                      LIVE TELEMETRY RADAR
+                    </span>
+                    <span style={{
+                      backgroundColor: 'rgba(7, 42, 66, 0.8)',
+                      color: '#90CDF4',
+                      fontSize: '11px',
+                      fontWeight: 600,
+                      padding: '3px 10px',
+                      borderRadius: '8px',
+                      backdropFilter: 'blur(6px)',
+                      border: '1px solid rgba(255, 255, 255, 0.2)'
+                    }}>
+                      Intermodal Corridors: Air • Ocean • Rail
+                    </span>
+                  </div>
+
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '8px' }}>
+                    <div>
+                      <div style={{ fontSize: '13.5px', fontWeight: 800, color: '#FFFFFF', letterSpacing: '0.01em' }}>
+                        Worldwide Carrier Dispatches in Motion
+                      </div>
+                      <div style={{ fontSize: '11px', color: '#E2E8F0', marginTop: '2px' }}>
+                        Live encrypted GPS monitoring across 140+ international hub terminals
+                      </div>
+                    </div>
+                    <span style={{ 
+                      fontSize: '11px', 
+                      color: '#FCD34D', 
+                      fontWeight: 700, 
+                      backgroundColor: 'rgba(7, 26, 43, 0.75)', 
+                      padding: '3px 8px', 
+                      borderRadius: '6px',
+                      border: '1px solid rgba(252, 211, 77, 0.3)' 
+                    }}>
+                      99.8% On-Time SLA
+                    </span>
+                  </div>
+                </div>
               </div>
 
               <form onSubmit={handleTrackSubmit} style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }} className="hero-track-form">
@@ -654,6 +733,33 @@ export default function HomeView({ setView, onSearchTracking }) {
       </section>
 
       <style>{`
+        .tracking-card-visual-banner {
+          position: relative;
+          border-radius: 12px;
+          overflow: hidden;
+          margin-bottom: 22px;
+          border: 1px solid rgba(14, 76, 119, 0.15);
+          box-shadow: 0 4px 18px rgba(7, 42, 66, 0.12);
+        }
+        .tracking-card-visual-banner img {
+          width: 100%;
+          height: 190px;
+          object-fit: cover;
+          display: block;
+          transition: transform 0.4s ease;
+        }
+        .tracking-card-visual-banner:hover img {
+          transform: scale(1.02);
+        }
+        .tracking-card-visual-overlay {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(to top, rgba(7, 42, 66, 0.92) 0%, rgba(7, 42, 66, 0.35) 55%, transparent 100%);
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          padding: 16px 20px;
+        }
         .services-multi-grid {
           display: grid;
           grid-template-columns: repeat(6, 1fr);
@@ -679,6 +785,18 @@ export default function HomeView({ setView, onSearchTracking }) {
           }
         }
         @media (max-width: 640px) {
+          .home-tracking-card {
+            padding: 20px 16px !important;
+          }
+          .tracking-card-visual-banner {
+            margin-bottom: 16px;
+          }
+          .tracking-card-visual-banner img {
+            height: 155px;
+          }
+          .tracking-card-visual-overlay {
+            padding: 12px 14px;
+          }
           .services-multi-grid {
             grid-template-columns: 1fr !important;
           }

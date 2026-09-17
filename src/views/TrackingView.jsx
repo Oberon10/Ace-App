@@ -186,6 +186,67 @@ export default function TrackingView({
             </p>
           </div>
 
+          {/* Lively Telemetry Visual Banner */}
+          <div className="tracking-card-visual-banner" style={{ maxWidth: '860px', margin: '0 auto 20px' }}>
+            <img 
+              src="/images/cargo-tracking-banner.jpg" 
+              alt="Active Air and Sea Telemetry Operations" 
+            />
+            <div className="tracking-card-visual-overlay">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+                <span style={{
+                  backgroundColor: 'rgba(16, 185, 129, 0.92)',
+                  color: '#FFFFFF',
+                  fontSize: '10.5px',
+                  fontWeight: 700,
+                  padding: '3px 10px',
+                  borderRadius: '12px',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '5px',
+                  boxShadow: '0 2px 8px rgba(16, 185, 129, 0.4)'
+                }}>
+                  <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#FFFFFF', display: 'inline-block' }} />
+                  SATELLITE TELEMETRY ACTIVE
+                </span>
+                <span style={{
+                  backgroundColor: 'rgba(7, 42, 66, 0.8)',
+                  color: '#90CDF4',
+                  fontSize: '11px',
+                  fontWeight: 600,
+                  padding: '3px 10px',
+                  borderRadius: '8px',
+                  backdropFilter: 'blur(6px)',
+                  border: '1px solid rgba(255, 255, 255, 0.2)'
+                }}>
+                  Worldwide Radar: 140+ Gateway Terminals
+                </span>
+              </div>
+
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '8px' }}>
+                <div>
+                  <div style={{ fontSize: '13.5px', fontWeight: 800, color: '#FFFFFF' }}>
+                    Air, Ocean & Intermodal Freight Telemetry
+                  </div>
+                  <div style={{ fontSize: '11px', color: '#E2E8F0', marginTop: '2px' }}>
+                    Continuous GPS tracking, temperature monitoring & blockchain chain of custody
+                  </div>
+                </div>
+                <span style={{ 
+                  fontSize: '11px', 
+                  color: '#FCD34D', 
+                  fontWeight: 700, 
+                  backgroundColor: 'rgba(7, 26, 43, 0.75)', 
+                  padding: '3px 8px', 
+                  borderRadius: '6px',
+                  border: '1px solid rgba(252, 211, 77, 0.3)' 
+                }}>
+                  99.8% On-Time SLA
+                </span>
+              </div>
+            </div>
+          </div>
+
           <form onSubmit={handleSearchSubmit} style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', maxWidth: '860px', margin: '0 auto' }}>
             <div style={{ flex: '1 1 320px', position: 'relative' }}>
               <div className="ace-input-icon">
@@ -974,12 +1035,48 @@ export default function TrackingView({
       </div>
 
       <style>{`
+        .tracking-card-visual-banner {
+          position: relative;
+          border-radius: 12px;
+          overflow: hidden;
+          margin-bottom: 22px;
+          border: 1px solid rgba(14, 76, 119, 0.15);
+          box-shadow: 0 4px 18px rgba(7, 42, 66, 0.12);
+        }
+        .tracking-card-visual-banner img {
+          width: 100%;
+          height: 190px;
+          object-fit: cover;
+          display: block;
+          transition: transform 0.4s ease;
+        }
+        .tracking-card-visual-banner:hover img {
+          transform: scale(1.02);
+        }
+        .tracking-card-visual-overlay {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(to top, rgba(7, 42, 66, 0.92) 0%, rgba(7, 42, 66, 0.35) 55%, transparent 100%);
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          padding: 16px 20px;
+        }
         @media (max-width: 880px) {
           .tracking-grid {
             grid-template-columns: 1fr !important;
           }
         }
         @media (max-width: 640px) {
+          .tracking-card-visual-banner {
+            margin-bottom: 16px;
+          }
+          .tracking-card-visual-banner img {
+            height: 155px;
+          }
+          .tracking-card-visual-overlay {
+            padding: 12px 14px;
+          }
           .tracking-milestones-grid {
             display: flex !important;
             overflow-x: auto !important;
