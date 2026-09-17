@@ -831,6 +831,17 @@ body.dark-mode .ace-skeleton {
 html, body {
   overflow-x: hidden;
   max-width: 100vw;
+  width: 100%;
+  position: relative;
+}
+
+#root {
+  overflow-x: hidden;
+  max-width: 100%;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Dashboard Layout Responsiveness */
@@ -856,9 +867,59 @@ html, body {
 .ace-table-container {
   -webkit-overflow-scrolling: touch;
   max-width: 100%;
+  width: 100%;
+  overflow-x: auto;
 }
 
-/* Breakpoint: Tablets & Small Desktops (<= 860px) */
+/* Desktop vs Mobile Data Table Hybrid View */
+.ace-table-desktop {
+  display: block;
+  width: 100%;
+}
+
+.ace-table-mobile-cards {
+  display: none;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.ace-mobile-card {
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 16px;
+  box-shadow: var(--shadow-subtle);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.ace-mobile-card:active {
+  transform: scale(0.99);
+}
+
+/* Fluid Tracking Code Text */
+.ace-tracking-code {
+  word-break: break-all;
+  overflow-wrap: break-word;
+  font-size: clamp(1.2rem, 4.5vw, 1.85rem) !important;
+  line-height: 1.2 !important;
+}
+
+/* Breakpoint: Large Tablets & Small Desktops (<= 1024px) */
+@media (max-width: 1024px) {
+  .ace-container {
+    padding: 0 20px;
+  }
+
+  .ace-dashboard-main {
+    padding: 24px 20px;
+  }
+}
+
+/* Breakpoint: Tablets & Vertical Screens (<= 860px) */
 @media (max-width: 860px) {
   .ace-dashboard-layout {
     flex-direction: column !important;
@@ -870,16 +931,23 @@ html, body {
 
   /* Universal card adjustments */
   .ace-card {
-    padding: 20px 18px;
+    padding: 20px 16px;
   }
 
   /* Two column grids should stack */
   .hero-grid, 
   .quote-grid, 
   .tracking-grid, 
-  .auth-split {
+  .auth-split,
+  .staff-grid,
+  .contact-grid,
+  .about-split {
     grid-template-columns: 1fr !important;
     gap: 24px !important;
+  }
+
+  .ace-grid-2col-mobile-stack {
+    grid-template-columns: 1fr !important;
   }
 }
 
@@ -893,36 +961,65 @@ html, body {
     padding: 0 16px !important;
   }
 
+  /* Switch Table to Mobile Card Feed */
+  .ace-table-desktop {
+    display: none !important;
+  }
+
+  .ace-table-mobile-cards {
+    display: flex !important;
+  }
+
+  /* Clean 2x2 Metric Grid on Mobile */
+  .ace-metrics-grid-2x2 {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+  }
+
+  .ace-metrics-grid-2x2 .ace-card {
+    padding: 14px 12px !important;
+  }
+
+  .ace-metrics-grid-2x2 .ace-card h3,
+  .ace-metrics-grid-2x2 .ace-card .metric-val {
+    font-size: 22px !important;
+  }
+
   /* Typography Scaling for Mobile */
   h1 {
-    font-size: 1.85rem !important;
+    font-size: clamp(1.6rem, 5.5vw, 2rem) !important;
     line-height: 1.2 !important;
   }
 
   h2 {
-    font-size: 1.45rem !important;
+    font-size: clamp(1.3rem, 4.5vw, 1.6rem) !important;
     line-height: 1.25 !important;
   }
 
   h3 {
-    font-size: 1.2rem !important;
+    font-size: 1.15rem !important;
   }
 
   p {
     font-size: 13.5px !important;
   }
 
-  /* Mobile Form Controls — 16px prevents iOS Safari auto-zoom */
+  /* Touch-Friendly Form Controls (16px prevents iOS Safari auto-zoom) */
   .ace-input,
   .ace-select,
   .ace-textarea {
     font-size: 16px !important;
+    min-height: 44px !important;
   }
 
-  /* Modals on Mobile */
+  .ace-btn {
+    min-height: 42px;
+  }
+
+  /* Modals on Mobile: Full-width bottom-sheet / centered safe modal */
   .ace-modal-backdrop {
-    padding: 12px !important;
-    align-items: flex-end;
+    padding: 10px !important;
+    align-items: flex-end !important;
   }
 
   .ace-modal {
@@ -930,9 +1027,35 @@ html, body {
     width: 100% !important;
     max-height: 92vh !important;
     border-radius: 16px 16px 8px 8px !important;
+    margin: 0 auto;
   }
 
-  /* Steppers & Wizards text hide on narrow view */
+  /* Receipt Modal Mobile Overrides */
+  .receipt-routing-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  .receipt-parties-grid {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  .receipt-barcode-wrap {
+    grid-template-columns: 1fr !important;
+    text-align: center !important;
+    justify-items: center !important;
+  }
+
+  .receipt-barcode-wrap > div:first-child {
+    border-right: none !important;
+    border-bottom: 1px solid #E2E8F0 !important;
+    padding-right: 0 !important;
+    padding-bottom: 10px !important;
+    width: 100%;
+  }
+
+  /* Steppers & Wizards */
   .ace-wizard-stepper-label {
     display: none !important;
   }
@@ -941,14 +1064,20 @@ html, body {
     padding: 18px 14px !important;
   }
 
+  .ace-dimensions-grid-mobile {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+
   /* Filter buttons horizontal scroll */
   .ace-filter-scroll {
     display: flex !important;
     overflow-x: auto !important;
     -webkit-overflow-scrolling: touch !important;
     padding-bottom: 6px !important;
-    gap: 6px !important;
+    gap: 8px !important;
     max-width: 100% !important;
+    width: 100% !important;
   }
 
   .ace-filter-scroll::-webkit-scrollbar {
@@ -958,6 +1087,19 @@ html, body {
   /* Search inputs take full width on mobile */
   .ace-search-mobile-full {
     width: 100% !important;
+    max-width: 100% !important;
+    flex: 1 1 100% !important;
+  }
+
+  /* Telemetry actions full width */
+  .ace-telemetry-actions {
+    width: 100% !important;
+    justify-content: space-between !important;
+  }
+
+  .ace-telemetry-actions button {
+    flex: 1 1 auto !important;
+    justify-content: center !important;
   }
 }
 
@@ -984,17 +1126,26 @@ html, body {
   .hero-track-form button {
     width: 100% !important;
   }
+
+  .ace-btn-full-mobile {
+    width: 100% !important;
+    justify-content: center !important;
+  }
 }
 
 /* Breakpoint: Ultra-compact Screens (<= 360px) */
 @media (max-width: 360px) {
   h1 {
-    font-size: 1.6rem !important;
+    font-size: 1.5rem !important;
   }
 
   .ace-btn {
     padding: 8px 12px !important;
     font-size: 12.5px !important;
+  }
+
+  .ace-metrics-grid-2x2 {
+    grid-template-columns: 1fr !important;
   }
 }
 
@@ -1032,6 +1183,7 @@ html, body {
     print-color-adjust: exact !important;
   }
 }
+
 
 
 
