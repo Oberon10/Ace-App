@@ -29,15 +29,24 @@ export default function InteractiveMap({ shipment }) {
       boxShadow: 'inset 0 1px 4px rgba(0,0,0,0.3), var(--shadow-subtle)'
     }}>
       {/* Top HUD Controls */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', position: 'relative', zIndex: 2 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#10B981', boxShadow: '0 0 8px #10B981' }} />
-          <span style={{ fontSize: '12px', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', color: '#90CDF4' }}>
-            ACE Global Satellite Telemetry • Live Carrier Feed
+      <div className="ace-map-hud" style={{ 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center', 
+        flexWrap: 'wrap',
+        gap: '8px',
+        marginBottom: '14px', 
+        position: 'relative', 
+        zIndex: 2 
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
+          <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#10B981', boxShadow: '0 0 8px #10B981', flexShrink: 0 }} />
+          <span style={{ fontSize: '11.5px', fontWeight: 600, letterSpacing: '0.04em', textTransform: 'uppercase', color: '#90CDF4', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            Satellite Telemetry • Live Feed
           </span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '11px', color: '#A0AEC0' }}>
-          <span>GPS FIX: ACCURATE (3.2m)</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '11px', color: '#A0AEC0', flexShrink: 0 }}>
+          <span>GPS FIX: ACCURATE</span>
           <Compass size={14} color="#63B3ED" />
         </div>
       </div>
@@ -125,32 +134,32 @@ export default function InteractiveMap({ shipment }) {
       </div>
 
       {/* Bottom Route Summary Bar */}
-      <div style={{
+      <div className="ace-map-summary-grid" style={{
         marginTop: '16px',
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-        gap: '12px',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))',
+        gap: '10px',
         backgroundColor: '#093655',
         borderRadius: '8px',
-        padding: '12px 16px',
+        padding: '12px 14px',
         border: '1px solid #174c72'
       }}>
         <div>
-          <div style={{ fontSize: '11px', color: '#90CDF4', textTransform: 'uppercase', fontWeight: 600 }}>Departure Origin</div>
-          <div style={{ fontSize: '13.5px', fontWeight: 600, color: '#FFFFFF', marginTop: '2px' }}>{origin}</div>
+          <div style={{ fontSize: '10.5px', color: '#90CDF4', textTransform: 'uppercase', fontWeight: 600 }}>Departure Origin</div>
+          <div style={{ fontSize: '13px', fontWeight: 600, color: '#FFFFFF', marginTop: '2px', wordBreak: 'break-word' }}>{origin}</div>
         </div>
 
         <div>
-          <div style={{ fontSize: '11px', color: '#90CDF4', textTransform: 'uppercase', fontWeight: 600 }}>Active Waypoint</div>
-          <div style={{ fontSize: '13.5px', fontWeight: 600, color: '#38BDF8', marginTop: '2px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-            <Navigation size={12} />
+          <div style={{ fontSize: '10.5px', color: '#90CDF4', textTransform: 'uppercase', fontWeight: 600 }}>Active Waypoint</div>
+          <div style={{ fontSize: '13px', fontWeight: 600, color: '#38BDF8', marginTop: '2px', display: 'flex', alignItems: 'center', gap: '4px', wordBreak: 'break-word' }}>
+            <Navigation size={12} style={{ flexShrink: 0 }} />
             <span>{current}</span>
           </div>
         </div>
 
         <div>
-          <div style={{ fontSize: '11px', color: '#90CDF4', textTransform: 'uppercase', fontWeight: 600 }}>Final Destination</div>
-          <div style={{ fontSize: '13.5px', fontWeight: 600, color: '#FFFFFF', marginTop: '2px' }}>{destination}</div>
+          <div style={{ fontSize: '10.5px', color: '#90CDF4', textTransform: 'uppercase', fontWeight: 600 }}>Final Destination</div>
+          <div style={{ fontSize: '13px', fontWeight: 600, color: '#FFFFFF', marginTop: '2px', wordBreak: 'break-word' }}>{destination}</div>
         </div>
       </div>
     </div>

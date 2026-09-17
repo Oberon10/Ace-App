@@ -297,7 +297,7 @@ export default function ReceiptModal({ shipment, isOpen, onClose }) {
           </div>
 
           {/* SECTION 2: BARCODE & ROUTING SUMMARY STRIP */}
-          <div style={{
+          <div className="receipt-barcode-wrap" style={{
             display: 'grid',
             gridTemplateColumns: 'auto 1fr',
             gap: '18px',
@@ -314,7 +314,7 @@ export default function ReceiptModal({ shipment, isOpen, onClose }) {
             </div>
 
             {/* Routing Specs Grid */}
-            <div style={{
+            <div className="receipt-routing-grid" style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(4, 1fr)',
               gap: '10px',
@@ -353,7 +353,7 @@ export default function ReceiptModal({ shipment, isOpen, onClose }) {
           </div>
 
           {/* SECTION 3: SHIPPER & CONSIGNEE DETAILS (2-COLUMN GRID) */}
-          <div style={{
+          <div className="receipt-parties-grid" style={{
             display: 'grid',
             gridTemplateColumns: '1fr 1fr',
             gap: '12px',
@@ -451,99 +451,66 @@ export default function ReceiptModal({ shipment, isOpen, onClose }) {
               </span>
             </div>
 
-            <table style={{
-              width: '100%',
-              fontSize: '11px',
-              borderCollapse: 'collapse',
-              border: '1px solid #CBD5E1'
-            }}>
-              <thead>
-                <tr style={{ backgroundColor: '#F1F5F9', color: '#0A2540' }}>
-                  <th style={{ padding: '6px 8px', textAlign: 'center', width: '32px', borderBottom: '1px solid #CBD5E1' }}>#</th>
-                  <th style={{ padding: '6px 10px', textAlign: 'left', borderBottom: '1px solid #CBD5E1' }}>Item Description / Commodity</th>
-                  <th style={{ padding: '6px 8px', textAlign: 'center', width: '85px', borderBottom: '1px solid #CBD5E1' }}>HS Code</th>
-                  <th style={{ padding: '6px 8px', textAlign: 'center', width: '65px', borderBottom: '1px solid #CBD5E1' }}>Quantity</th>
-                  <th style={{ padding: '6px 8px', textAlign: 'center', width: '75px', borderBottom: '1px solid #CBD5E1' }}>Weight</th>
-                  <th style={{ padding: '6px 8px', textAlign: 'center', width: '105px', borderBottom: '1px solid #CBD5E1' }}>Dimensions</th>
-                  <th style={{ padding: '6px 10px', textAlign: 'right', width: '95px', borderBottom: '1px solid #CBD5E1' }}>Declared Value</th>
-                </tr>
-              </thead>
-              <tbody>
-                {items.map((item, index) => (
-                  <tr key={item.id || index} style={{
-                    backgroundColor: index % 2 === 0 ? '#FFFFFF' : '#F8FAFC',
-                    borderBottom: '1px solid #E2E8F0'
-                  }}>
-                    <td style={{ padding: '7px 8px', textAlign: 'center', fontWeight: 600, color: '#64748B' }}>
-                      {index + 1}
-                    </td>
-                    <td style={{ padding: '7px 10px' }}>
-                      <strong style={{ color: '#0F172A' }}>{item.description || item.name}</strong>
-                    </td>
-                    <td style={{ padding: '7px 8px', textAlign: 'center', color: '#64748B', fontFamily: 'monospace', fontSize: '10px' }}>
-                      {item.hsCode || item.sku || 'HS 8471.60'}
-                    </td>
-                    <td style={{ padding: '7px 8px', textAlign: 'center', fontWeight: 700, color: '#0A2540' }}>
-                      {item.qty} {item.qty === 1 ? 'Pkg' : 'Pkgs'}
-                    </td>
-                    <td style={{ padding: '7px 8px', textAlign: 'center', color: '#0F172A' }}>
-                      {item.weightKg} kg
-                    </td>
-                    <td style={{ padding: '7px 8px', textAlign: 'center', color: '#475569', fontSize: '10.5px' }}>
-                      {item.dimensions}
-                    </td>
-                    <td style={{ padding: '7px 10px', textAlign: 'right', fontWeight: 700, color: '#0F172A' }}>
-                      {item.declaredValue}
-                    </td>
+            <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch', maxWidth: '100%' }}>
+              <table style={{
+                width: '100%',
+                minWidth: '540px',
+                fontSize: '11px',
+                borderCollapse: 'collapse',
+                border: '1px solid #CBD5E1'
+              }}>
+                <thead>
+                  <tr style={{ backgroundColor: '#F1F5F9', color: '#0A2540' }}>
+                    <th style={{ padding: '6px 8px', textAlign: 'center', width: '32px', borderBottom: '1px solid #CBD5E1' }}>#</th>
+                    <th style={{ padding: '6px 10px', textAlign: 'left', borderBottom: '1px solid #CBD5E1' }}>Item Description / Commodity</th>
+                    <th style={{ padding: '6px 8px', textAlign: 'center', width: '85px', borderBottom: '1px solid #CBD5E1' }}>HS Code</th>
+                    <th style={{ padding: '6px 8px', textAlign: 'center', width: '65px', borderBottom: '1px solid #CBD5E1' }}>Quantity</th>
+                    <th style={{ padding: '6px 8px', textAlign: 'center', width: '75px', borderBottom: '1px solid #CBD5E1' }}>Weight</th>
+                    <th style={{ padding: '6px 8px', textAlign: 'center', width: '105px', borderBottom: '1px solid #CBD5E1' }}>Dimensions</th>
+                    <th style={{ padding: '6px 10px', textAlign: 'right', width: '95px', borderBottom: '1px solid #CBD5E1' }}>Declared Value</th>
                   </tr>
-                ))}
-              </tbody>
-              <tfoot>
-                <tr style={{ backgroundColor: '#E2E8F0', fontWeight: 700, color: '#0A2540' }}>
-                  <td colSpan={3} style={{ padding: '6px 10px', textAlign: 'left' }}>
-                    TOTAL CONSIGNMENT MANIFEST
-                  </td>
-                  <td style={{ padding: '6px 8px', textAlign: 'center' }}>
-                    {totalPieces} Pkgs
-                  </td>
-                  <td style={{ padding: '6px 8px', textAlign: 'center' }}>
-                    {totalWeight} kg
-                  </td>
-                  <td style={{ padding: '6px 8px', textAlign: 'center', fontSize: '10px', color: '#475569' }}>
-                    Verified Tare
-                  </td>
-                  <td style={{ padding: '6px 10px', textAlign: 'right' }}>
-                    {shipment.package?.declaredValue || '$12,450.00'}
-                  </td>
-                </tr>
-              </tfoot>
-            </table>
+                </thead>
+                <tbody>
+                  {items.map((item, idx) => (
+                    <tr key={idx} style={{ borderBottom: '1px solid #E2E8F0', backgroundColor: idx % 2 === 0 ? '#FFFFFF' : '#F8FAFC' }}>
+                      <td style={{ padding: '6px 8px', textAlign: 'center', color: '#64748B' }}>{item.itemNo || idx + 1}</td>
+                      <td style={{ padding: '6px 10px', fontWeight: 600, color: '#0F172A' }}>{item.description}</td>
+                      <td style={{ padding: '6px 8px', textAlign: 'center', color: '#475569', fontFamily: 'monospace' }}>{item.hsCode || '8542.31'}</td>
+                      <td style={{ padding: '6px 8px', textAlign: 'center', color: '#0F172A' }}>{item.quantity || 1} ctn</td>
+                      <td style={{ padding: '6px 8px', textAlign: 'center', color: '#0F172A' }}>{item.weightKg || shipment.package?.weightKg || '12.5'} kg</td>
+                      <td style={{ padding: '6px 8px', textAlign: 'center', color: '#475569' }}>{item.dimensions || shipment.package?.dimensions || '50x40x35 cm'}</td>
+                      <td style={{ padding: '6px 10px', textAlign: 'right', fontWeight: 700, color: '#0A2540' }}>{item.declaredValue || shipment.package?.declaredValue || '$4,500.00'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
 
-          {/* SECTION 5: CHARGES BREAKDOWN & OFFICIAL STAMP */}
-          <div style={{
+          {/* SECTION 5: FREIGHT CHARGES BREAKDOWN & CARRIER STAMP */}
+          <div className="receipt-billing-grid" style={{
             display: 'grid',
             gridTemplateColumns: '1.4fr 1fr',
-            gap: '14px',
-            alignItems: 'center',
+            gap: '16px',
             backgroundColor: '#F8FAFC',
             border: '1px solid #CBD5E1',
             borderRadius: '6px',
-            padding: '10px 14px',
+            padding: '12px 14px',
             marginBottom: '12px'
           }}>
-            {/* Left: Financial Invoicing Summary */}
+            {/* Left: Charges Breakdown */}
             <div>
               <div style={{ fontSize: '10px', fontWeight: 800, color: '#0A2540', textTransform: 'uppercase', marginBottom: '6px' }}>
-                4. Invoiced Freight Charges & Account Clearance
+                4. Itemized Freight & Tariff Settlement
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', fontSize: '11px', marginBottom: '6px' }}>
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', fontSize: '10.5px', marginBottom: '8px' }}>
                 <div>
-                  <span style={{ color: '#64748B', display: 'block', fontSize: '9.5px' }}>Base Freight:</span>
+                  <span style={{ color: '#64748B', display: 'block', fontSize: '9.5px' }}>Linehaul Freight:</span>
                   <strong style={{ color: '#0F172A' }}>${shipment.charges?.freight?.toFixed(2) || '410.00'}</strong>
                 </div>
                 <div>
-                  <span style={{ color: '#64748B', display: 'block', fontSize: '9.5px' }}>Fuel / Peak:</span>
+                  <span style={{ color: '#64748B', display: 'block', fontSize: '9.5px' }}>Fuel / Bunker:</span>
                   <strong style={{ color: '#0F172A' }}>${shipment.charges?.fuelSurcharge?.toFixed(2) || '45.00'}</strong>
                 </div>
                 <div>
@@ -594,7 +561,7 @@ export default function ReceiptModal({ shipment, isOpen, onClose }) {
           </div>
 
           {/* SECTION 6: AUTHORIZATION SIGNATURES & LEGAL FOOTER */}
-          <div style={{
+          <div className="receipt-signatures-grid" style={{
             borderTop: '1px solid #CBD5E1',
             paddingTop: '10px',
             display: 'grid',
@@ -656,8 +623,22 @@ export default function ReceiptModal({ shipment, isOpen, onClose }) {
         </div>
       </div>
 
-      {/* COMPONENT-LEVEL PRINT ISOLATION RULES */}
+      {/* COMPONENT-LEVEL PRINT ISOLATION RULES & MOBILE SCREEN RULES */}
       <style>{`
+        @media screen and (max-width: 640px) {
+          .receipt-billing-grid {
+            grid-template-columns: 1fr !important;
+            gap: 14px !important;
+          }
+          .receipt-signatures-grid {
+            grid-template-columns: 1fr !important;
+            gap: 16px !important;
+          }
+          #printable-receipt {
+            padding: 16px 14px !important;
+          }
+        }
+
         @page {
           size: A4 portrait;
           margin: 6mm 8mm;

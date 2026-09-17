@@ -537,8 +537,11 @@ export default function Navbar({
         <div style={{
           backgroundColor: 'var(--color-white)',
           borderBottom: '2px solid var(--color-border)',
-          padding: '16px 24px 24px',
-          boxShadow: 'var(--shadow-dropdown)'
+          padding: '16px 18px 24px',
+          boxShadow: 'var(--shadow-dropdown)',
+          maxHeight: 'calc(100vh - 70px)',
+          overflowY: 'auto',
+          WebkitOverflowScrolling: 'touch'
         }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '16px' }}>
             {navLinks.map(link => (
