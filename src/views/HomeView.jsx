@@ -79,7 +79,7 @@ export default function HomeView({ setView, onSearchTracking }) {
       {/* ===================================================
           HERO SECTION — FEATURING ELBSPIRIT CONTAINER SHIP
           =================================================== */}
-      <section style={{
+      <section className="home-hero-section" style={{
         position: 'relative',
         backgroundColor: 'var(--color-dark-navy)',
         color: '#FFFFFF',
@@ -420,10 +420,10 @@ export default function HomeView({ setView, onSearchTracking }) {
               </form>
 
               {/* Professional format guidance & real-time telemetry security indicators */}
-              <div style={{ marginTop: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px', fontSize: '12px', color: 'var(--text-muted)' }}>
+              <div className="home-tracking-security-bar" style={{ marginTop: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px', fontSize: '12px', color: 'var(--text-muted)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                   <ShieldCheck size={14} color="#10B981" />
-                  <span>Standard AWB / Bill of Lading format (e.g. <strong style={{ color: 'var(--color-primary-blue)' }}>ACE-2026-XXXXXX</strong>)</span>
+                  <span>Standard AWB / Bill of Lading format (e.g. <strong className="security-awb-tag" style={{ color: 'var(--color-primary-blue)' }}>ACE-2026-XXXXXX</strong>)</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '14px', fontSize: '11.5px' }}>
                   <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
@@ -444,7 +444,7 @@ export default function HomeView({ setView, onSearchTracking }) {
       {/* ===================================================
           TRUST METRICS COUNTER
           =================================================== */}
-      <section style={{ backgroundColor: 'var(--color-white)', borderBottom: '1px solid var(--color-border)', padding: '32px 0' }}>
+      <section className="home-trust-metrics-section" style={{ backgroundColor: 'var(--color-white)', borderBottom: '1px solid var(--color-border)', padding: '32px 0' }}>
         <div className="ace-container">
           <div className="home-metrics-grid" style={{
             display: 'grid',
@@ -785,17 +785,52 @@ export default function HomeView({ setView, onSearchTracking }) {
           }
         }
         @media (max-width: 640px) {
+          .home-hero-section {
+            padding-top: 36px !important;
+            padding-bottom: 24px !important;
+          }
           .home-tracking-card {
-            padding: 20px 16px !important;
+            background: linear-gradient(155deg, #092c45 0%, #061e30 100%) !important;
+            border: 1px solid rgba(56, 189, 248, 0.35) !important;
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45) !important;
+            padding: 16px 14px 14px !important;
+          }
+          .home-tracking-card h3 {
+            color: #FFFFFF !important;
+            font-size: 20px !important;
+          }
+          .home-tracking-card p {
+            color: #CBD5E1 !important;
+            font-size: 12.5px !important;
+          }
+          .home-tracking-card .ace-input {
+            background-color: #FFFFFF !important;
+            border: 1.5px solid #38BDF8 !important;
+            color: #0F172A !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+          }
+          .home-tracking-security-bar {
+            color: #94A3B8 !important;
+            border-top: 1px solid rgba(255, 255, 255, 0.12) !important;
+            padding-top: 10px !important;
+            margin-top: 10px !important;
+            font-size: 11px !important;
+          }
+          .home-tracking-security-bar .security-awb-tag {
+            color: #38BDF8 !important;
+          }
+          .home-trust-metrics-section {
+            background-color: #F8FAFC !important;
+            padding: 24px 0 !important;
           }
           .tracking-card-visual-banner {
-            margin-bottom: 16px;
+            margin-bottom: 14px !important;
           }
           .tracking-card-visual-banner img {
-            height: 155px;
+            height: 145px !important;
           }
           .tracking-card-visual-overlay {
-            padding: 12px 14px;
+            padding: 10px 12px !important;
           }
           .services-multi-grid {
             grid-template-columns: 1fr !important;
@@ -812,6 +847,7 @@ export default function HomeView({ setView, onSearchTracking }) {
           }
           .hero-track-form {
             flex-direction: column !important;
+            gap: 10px !important;
           }
           .hero-track-form input,
           .hero-track-form button {

@@ -151,7 +151,7 @@ export default function TrackingView({
         {/* ===================================================
             PROMINENT ENTERPRISE TRACKING SEARCH CARD
             =================================================== */}
-        <div className="ace-card" style={{
+        <div className="ace-card tracking-search-card" style={{
           width: '100%',
           margin: '0 auto 32px',
           padding: '36px 32px',
@@ -283,7 +283,7 @@ export default function TrackingView({
           </form>
 
           {/* Professional Security & Format Notice */}
-          <div style={{ 
+          <div className="tracking-security-bar" style={{ 
             marginTop: '18px', 
             paddingTop: '16px', 
             borderTop: '1px solid var(--color-border-subtle)', 
@@ -299,7 +299,7 @@ export default function TrackingView({
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
               <ShieldCheck size={14} color="#10B981" />
-              <span>Reference Format: <strong style={{ color: 'var(--color-primary-blue)' }}>ACE-2026-XXXXXX</strong> or Master Waybill</span>
+              <span>Reference Format: <strong className="security-awb-tag" style={{ color: 'var(--color-primary-blue)' }}>ACE-2026-XXXXXX</strong> or Master Waybill</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px', fontSize: '11.5px' }}>
               <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
@@ -1068,14 +1068,45 @@ export default function TrackingView({
           }
         }
         @media (max-width: 640px) {
+          .tracking-search-card {
+            background: linear-gradient(155deg, #092c45 0%, #061e30 100%) !important;
+            border: 1px solid rgba(56, 189, 248, 0.35) !important;
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45) !important;
+            padding: 16px 14px 14px !important;
+            margin-bottom: 20px !important;
+          }
+          .tracking-search-card h1 {
+            color: #FFFFFF !important;
+            font-size: 22px !important;
+          }
+          .tracking-search-card p {
+            color: #CBD5E1 !important;
+            font-size: 13px !important;
+          }
+          .tracking-search-card .ace-input {
+            background-color: #FFFFFF !important;
+            border: 1.5px solid #38BDF8 !important;
+            color: #0F172A !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+          }
+          .tracking-security-bar {
+            color: #94A3B8 !important;
+            border-top: 1px solid rgba(255, 255, 255, 0.12) !important;
+            padding-top: 10px !important;
+            margin-top: 10px !important;
+            font-size: 11px !important;
+          }
+          .tracking-security-bar .security-awb-tag {
+            color: #38BDF8 !important;
+          }
           .tracking-card-visual-banner {
-            margin-bottom: 16px;
+            margin-bottom: 14px !important;
           }
           .tracking-card-visual-banner img {
-            height: 155px;
+            height: 145px !important;
           }
           .tracking-card-visual-overlay {
-            padding: 12px 14px;
+            padding: 10px 12px !important;
           }
           .tracking-milestones-grid {
             display: flex !important;
