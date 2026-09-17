@@ -47,7 +47,7 @@ export default function AboutView({ setView }) {
               <p style={{ fontSize: '14.5px', color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: '16px' }}>
                 ACE Logistics was established to solve cross-border supply chain friction through technology, certified carrier infrastructure, and unyielding adherence to delivery SLAs. Operating across four continents, our bonded terminals and proprietary satellite tracking ensure every container, pallet, and priority parcel arrives intact and on schedule.
               </p>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', fontWeight: 600 }}>
                   <CheckCircle2 size={16} color="#10B981" />
                   <span>IATA Cargo Agent Accredited</span>
@@ -148,7 +148,7 @@ export default function AboutView({ setView }) {
           <p style={{ fontSize: '14.5px', color: '#D9E7F0', maxWidth: '600px', margin: '0 auto 24px' }}>
             Contact our operations command center to open a corporate account or book freight.
           </p>
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '12px' }}>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '12px', flexWrap: 'wrap' }}>
             <button onClick={() => setView('quote')} className="ace-btn ace-btn-action">
               <span>Calculate Shipping Quote</span>
               <ArrowRight size={15} />
@@ -164,6 +164,15 @@ export default function AboutView({ setView }) {
         @media (max-width: 820px) {
           .about-split {
             grid-template-columns: 1fr !important;
+          }
+        }
+        @media (max-width: 480px) {
+          .ace-cta-banner {
+            padding: 24px 16px !important;
+          }
+          .ace-cta-banner .ace-btn {
+            width: 100%;
+            justify-content: center;
           }
         }
       `}</style>

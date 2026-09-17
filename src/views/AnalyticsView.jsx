@@ -39,7 +39,7 @@ export default function AnalyticsView({ setView, activeRole, setActiveRole }) {
         </div>
 
         {/* 4 Analytics KPI Cards */}
-        <div style={{
+        <div className="ace-metrics-grid-2x2" style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))',
           gap: '20px',
