@@ -177,7 +177,7 @@ export default function QuoteView({ onProceedToShipment }) {
 
             <form onSubmit={handleCalculate}>
               {/* Origin & Destination Geography Selectors */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '18px', marginBottom: '20px' }}>
+              <div className="quote-hubs-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '18px', marginBottom: '20px' }}>
                 {/* Origin Hub Card */}
                 <div style={{
                   backgroundColor: 'var(--color-surface)',
@@ -334,7 +334,7 @@ export default function QuoteView({ onProceedToShipment }) {
               </div>
 
               {/* Weight & Dimensions */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))', gap: '12px', marginBottom: '16px' }}>
+              <div className="quote-dimensions-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))', gap: '12px', marginBottom: '16px' }}>
                 <div className="ace-form-group">
                   <label className="ace-label ace-label-required">Weight (kg)</label>
                   <input
@@ -495,6 +495,21 @@ export default function QuoteView({ onProceedToShipment }) {
       <style>{`
         @media (max-width: 820px) {
           .quote-grid {
+            grid-template-columns: 1fr !important;
+          }
+        }
+        @media (max-width: 640px) {
+          .quote-hubs-grid {
+            grid-template-columns: 1fr !important;
+            gap: 14px !important;
+          }
+          .quote-dimensions-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 10px !important;
+          }
+        }
+        @media (max-width: 380px) {
+          .quote-dimensions-grid {
             grid-template-columns: 1fr !important;
           }
         }

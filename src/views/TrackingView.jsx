@@ -283,7 +283,7 @@ export default function TrackingView({
                 <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Last synced: {lastSyncTime}</span>
               </div>
 
-              <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
+              <div className="ace-telemetry-actions" style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
                 <button
                   onClick={handleRefreshTelemetry}
                   className="ace-btn ace-btn-ghost ace-btn-sm"
@@ -315,15 +315,15 @@ export default function TrackingView({
             </div>
 
             {/* Primary Shipment Summary Card */}
-            <div className="ace-card" style={{ marginBottom: '24px', padding: '28px 32px' }}>
+            <div className="ace-card" style={{ marginBottom: '24px' }}>
               <div style={{
                 display: 'flex',
                 flexWrap: 'wrap',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                gap: '20px',
+                gap: '16px',
                 borderBottom: '1px solid var(--color-border)',
-                paddingBottom: '22px',
+                paddingBottom: '20px',
                 marginBottom: '24px'
               }}>
                 <div>
@@ -337,14 +337,14 @@ export default function TrackingView({
                   </div>
                   
                   <div style={{ display: 'flex', alignItems: 'baseline', gap: '12px', marginTop: '4px' }}>
-                    <h2 style={{ fontSize: '30px', fontWeight: 800, color: 'var(--color-primary-blue)', letterSpacing: '0.04em', margin: 0 }}>
+                    <h2 className="ace-tracking-code" style={{ fontWeight: 800, color: 'var(--color-primary-blue)', letterSpacing: '0.03em', margin: 0 }}>
                       {shipment.trackingNumber}
                     </h2>
                   </div>
 
-                  <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '14px', fontSize: '13px', color: 'var(--text-secondary)', marginTop: '8px' }}>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '10px', fontSize: '12.5px', color: 'var(--text-secondary)', marginTop: '8px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                      <TransportIcon size={15} color="var(--color-bright-action)" />
+                      <TransportIcon size={14} color="var(--color-bright-action)" />
                       <span>Service Tier: <strong style={{ color: 'var(--text-primary)' }}>{shipment.method}</strong></span>
                     </div>
                     <span>•</span>
@@ -354,9 +354,9 @@ export default function TrackingView({
                   </div>
                 </div>
 
-                <div style={{ textAlign: 'right', minWidth: '180px' }}>
+                <div className="tracking-status-badge-wrap" style={{ textAlign: 'right', minWidth: '160px' }}>
                   <StatusBadge status={shipment.status} />
-                  <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '8px' }}>
+                  <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '6px' }}>
                     SLA Status: <strong style={{ color: '#059669' }}>On-Time Guaranteed</strong>
                   </div>
                 </div>
@@ -368,7 +368,7 @@ export default function TrackingView({
                   Transit Milestone Pipeline
                 </div>
 
-                <div style={{ 
+                <div className="tracking-milestones-grid" style={{ 
                   display: 'grid', 
                   gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', 
                   gap: '10px',
@@ -437,7 +437,7 @@ export default function TrackingView({
               </div>
 
               {/* 4 Core Corridor Metric Cards */}
-              <div style={{
+              <div className="tracking-corridor-grid" style={{
                 display: 'grid',
                 gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
                 gap: '16px'
@@ -976,6 +976,41 @@ export default function TrackingView({
       <style>{`
         @media (max-width: 880px) {
           .tracking-grid {
+            grid-template-columns: 1fr !important;
+          }
+        }
+        @media (max-width: 640px) {
+          .tracking-milestones-grid {
+            display: flex !important;
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch !important;
+            padding-bottom: 8px !important;
+            gap: 8px !important;
+            width: 100% !important;
+          }
+          .tracking-milestones-grid > div {
+            min-width: 140px !important;
+            flex-shrink: 0 !important;
+          }
+          .tracking-status-badge-wrap {
+            text-align: left !important;
+            min-width: auto !important;
+            width: 100% !important;
+            display: flex !important;
+            justifyContent: space-between !important;
+            align-items: center !important;
+            margin-top: 10px !important;
+          }
+          .tracking-corridor-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 10px !important;
+          }
+          .tracking-corridor-grid > div {
+            padding: 12px 14px !important;
+          }
+        }
+        @media (max-width: 420px) {
+          .tracking-corridor-grid {
             grid-template-columns: 1fr !important;
           }
         }

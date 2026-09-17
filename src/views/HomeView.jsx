@@ -367,7 +367,7 @@ export default function HomeView({ setView, onSearchTracking }) {
           =================================================== */}
       <section style={{ backgroundColor: 'var(--color-white)', borderBottom: '1px solid var(--color-border)', padding: '32px 0' }}>
         <div className="ace-container">
-          <div style={{
+          <div className="home-metrics-grid" style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
             gap: '24px',
@@ -699,6 +699,22 @@ export default function HomeView({ setView, onSearchTracking }) {
           .hero-track-form button {
             width: 100% !important;
             justifyContent: center !important;
+          }
+          .home-metrics-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 16px !important;
+          }
+          .home-metrics-grid > div > div:first-child {
+            font-size: 26px !important;
+          }
+        }
+        @media (max-width: 400px) {
+          .home-metrics-grid {
+            grid-template-columns: 1fr 1fr !important;
+            gap: 10px !important;
+          }
+          .home-metrics-grid > div > div:first-child {
+            font-size: 22px !important;
           }
         }
       `}</style>

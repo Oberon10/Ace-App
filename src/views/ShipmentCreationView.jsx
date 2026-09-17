@@ -488,7 +488,7 @@ export default function ShipmentCreationView({
                 <h3 style={{ fontSize: '18px', color: 'var(--color-primary-blue)' }}>Step 1: Shipper Information (Sender)</h3>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px' }}>
+              <div className="shipment-form-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px' }}>
                 <div className="ace-form-group">
                   <label className="ace-label ace-label-required">Full Contact Name</label>
                   <input
@@ -617,7 +617,7 @@ export default function ShipmentCreationView({
                 <h3 style={{ fontSize: '18px', color: 'var(--color-primary-blue)' }}>Step 2: Consignee Information (Receiver)</h3>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px' }}>
+              <div className="shipment-form-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px' }}>
                 <div className="ace-form-group">
                   <label className="ace-label ace-label-required">Recipient Name</label>
                   <input
@@ -745,7 +745,7 @@ export default function ShipmentCreationView({
                 <h3 style={{ fontSize: '18px', color: 'var(--color-primary-blue)' }}>Step 3: Package & Cargo Specifications</h3>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
+              <div className="package-specs-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
                 <div className="ace-form-group" style={{ gridColumn: '1 / -1' }}>
                   <label className="ace-label ace-label-required">Cargo Description</label>
                   <input
@@ -945,7 +945,7 @@ export default function ShipmentCreationView({
               </div>
 
               {/* Review Summary Grid */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '20px', marginBottom: '24px' }}>
+              <div className="shipment-form-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '20px', marginBottom: '24px' }}>
                 {/* Shipper */}
                 <div style={{ backgroundColor: 'var(--color-very-light-blue)', padding: '16px', borderRadius: '8px', border: '1px solid var(--color-border)' }}>
                   <div style={{ fontSize: '11.5px', fontWeight: 700, color: 'var(--color-primary-blue)', textTransform: 'uppercase', marginBottom: '4px' }}>
@@ -1006,7 +1006,7 @@ export default function ShipmentCreationView({
           )}
 
           {/* Form Navigation Buttons */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '28px', borderTop: '1px solid var(--color-border)', paddingTop: '20px' }}>
+          <div className="wizard-nav-actions" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '28px', borderTop: '1px solid var(--color-border)', paddingTop: '20px' }}>
             {currentStep > 1 ? (
               <button
                 type="button"
@@ -1049,6 +1049,30 @@ export default function ShipmentCreationView({
           </div>
         </div>
       </div>
+
+      <style>{`
+        @media (max-width: 640px) {
+          .shipment-form-grid {
+            grid-template-columns: 1fr !important;
+          }
+          .package-specs-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 10px !important;
+          }
+          .wizard-nav-actions {
+            gap: 12px !important;
+          }
+          .wizard-nav-actions button {
+            flex: 1 1 auto !important;
+            justify-content: center !important;
+          }
+        }
+        @media (max-width: 420px) {
+          .package-specs-grid {
+            grid-template-columns: 1fr !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }
