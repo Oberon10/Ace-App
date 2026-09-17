@@ -85,7 +85,7 @@ export default function StaffDashboardView({
           <button
             onClick={handleSimulateScan}
             disabled={scanSimulating}
-            className="ace-btn ace-btn-action"
+            className="ace-btn ace-btn-action staff-header-btn"
           >
             <QrCode size={16} />
             <span>{scanSimulating ? 'Scanning Barcode...' : 'Simulate Handheld Scan'}</span>
@@ -297,6 +297,12 @@ export default function StaffDashboardView({
         @media (max-width: 860px) {
           .staff-grid {
             grid-template-columns: 1fr !important;
+          }
+        }
+        @media (max-width: 640px) {
+          .staff-header-btn {
+            width: 100%;
+            justify-content: center;
           }
         }
       `}</style>

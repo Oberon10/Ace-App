@@ -255,7 +255,7 @@ export default function UserManagementView({
             </div>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div className="admin-banner-actions" style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
             <button
               onClick={handleToggleAllPasswords}
               style={{
@@ -338,7 +338,7 @@ export default function UserManagementView({
           marginBottom: '20px'
         }}>
           {/* Category Filter Tabs */}
-          <div className="ace-filter-scroll" style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+          <div className="ace-filter-scroll" style={{ display: 'flex', gap: '8px', maxWidth: '100%', overflowX: 'auto', paddingBottom: '4px' }}>
             {[
               { id: 'ALL', label: `All Accounts (${users.length})` },
               { id: 'Staff', label: `Staff Personnel (${users.filter(u => u.role === 'Staff').length})` },
@@ -713,7 +713,7 @@ export default function UserManagementView({
                 </div>
 
                 {/* Phone & Department */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '14px' }}>
                   <div style={{ backgroundColor: 'var(--color-surface)', padding: '12px', borderRadius: '8px', border: '1px solid var(--color-border)' }}>
                     <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase' }}>Phone Number</div>
                     <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-primary)', marginTop: '4px' }}>
@@ -746,7 +746,7 @@ export default function UserManagementView({
               </div>
 
               {/* Modal Actions */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
                 <button
                   type="button"
                   onClick={() => toggleStatus(inspectUser.id)}
@@ -755,7 +755,7 @@ export default function UserManagementView({
                 >
                   {inspectUser.status === 'Active' ? 'Deactivate Account' : 'Reactivate Account'}
                 </button>
-                <div style={{ display: 'flex', gap: '10px' }}>
+                <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                   <button
                     type="button"
                     onClick={() => {
@@ -842,7 +842,7 @@ export default function UserManagementView({
                   </div>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '14px' }}>
                   <div className="ace-form-group">
                     <label className="ace-label ace-label-required">Role Permission</label>
                     <select
@@ -889,6 +889,17 @@ export default function UserManagementView({
             </div>
           </div>
         )}
+        <style>{`
+          @media (max-width: 640px) {
+            .admin-banner-actions {
+              width: 100%;
+            }
+            .admin-banner-actions button {
+              flex: 1;
+              justify-content: center;
+            }
+          }
+        `}</style>
       </main>
     </div>
   );

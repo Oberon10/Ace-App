@@ -79,7 +79,7 @@ export default function CustomerDashboardView({
       {/* Main Content Area */}
       <main className="ace-dashboard-main">
         {/* Top Header Greeting */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '16px', marginBottom: '24px' }}>
+        <div className="dashboard-header-flex" style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '16px', marginBottom: '24px' }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
               <span style={{ 
@@ -111,7 +111,7 @@ export default function CustomerDashboardView({
             </p>
           </div>
 
-          <div style={{ display: 'flex', gap: '10px' }}>
+          <div className="dashboard-header-actions" style={{ display: 'flex', gap: '10px' }}>
             <button
               onClick={() => setView('quote')}
               className="ace-btn ace-btn-secondary"
@@ -171,7 +171,7 @@ export default function CustomerDashboardView({
         {/* ===================================================
             SECTION 11 & 28: DASHBOARD STATS CARDS (DYNAMICALLY CALCULATED)
             =================================================== */}
-        <div style={{
+        <div className="ace-metrics-grid-2x2" style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))',
           gap: '20px',
@@ -384,9 +384,9 @@ export default function CustomerDashboardView({
             </p>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+          <div className="dashboard-filter-search-wrap" style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
             {/* Status Tabs */}
-            <div style={{ backgroundColor: 'var(--color-white)', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '3px', display: 'flex', gap: '2px' }}>
+            <div className="ace-filter-scroll" style={{ backgroundColor: 'var(--color-white)', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '3px', display: 'flex', gap: '2px', maxWidth: '100%', overflowX: 'auto' }}>
               {['ALL', 'IN TRANSIT', 'DELIVERED', 'PENDING'].map(status => (
                 <button
                   key={status}
@@ -399,7 +399,8 @@ export default function CustomerDashboardView({
                     fontWeight: filterStatus === status ? 700 : 500,
                     backgroundColor: filterStatus === status ? 'var(--color-light-blue)' : 'transparent',
                     color: filterStatus === status ? 'var(--color-primary-blue)' : 'var(--text-secondary)',
-                    cursor: 'pointer'
+                    cursor: 'pointer',
+                    whiteSpace: 'nowrap'
                   }}
                 >
                   {status}
@@ -408,7 +409,7 @@ export default function CustomerDashboardView({
             </div>
 
             {/* Search Input */}
-            <div style={{ position: 'relative' }}>
+            <div className="dashboard-search-input-box" style={{ position: 'relative' }}>
               <div className="ace-input-icon">
                 <Search size={15} />
               </div>
@@ -473,6 +474,31 @@ export default function CustomerDashboardView({
             emptyMessage={`No shipments found matching status "${filterStatus}" or search term.`}
           />
         )}
+        <style>{`
+          @media (max-width: 640px) {
+            .dashboard-header-actions {
+              width: 100%;
+              display: flex;
+              flex-direction: column;
+              gap: 8px;
+            }
+            .dashboard-header-actions .ace-btn {
+              width: 100%;
+              justify-content: center;
+            }
+            .dashboard-filter-search-wrap {
+              width: 100%;
+              flex-direction: column;
+              align-items: stretch !important;
+            }
+            .dashboard-search-input-box {
+              width: 100%;
+            }
+            .dashboard-search-input-box input {
+              width: 100% !important;
+            }
+          }
+        `}</style>
       </main>
     </div>
   );

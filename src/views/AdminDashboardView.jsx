@@ -64,7 +64,7 @@ export default function AdminDashboardView({
             </h1>
           </div>
 
-          <div style={{ display: 'flex', gap: '10px' }}>
+          <div className="admin-header-actions" style={{ display: 'flex', gap: '10px' }}>
             <button
               onClick={() => setView('analytics')}
               className="ace-btn ace-btn-secondary"
@@ -86,7 +86,7 @@ export default function AdminDashboardView({
         {/* ===================================================
             SECTION 12 & 28: ENTERPRISE STATISTICS CARDS
             =================================================== */}
-        <div style={{
+        <div className="ace-metrics-grid-2x2" style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
           gap: '20px',
@@ -346,7 +346,7 @@ export default function AdminDashboardView({
             </p>
           </div>
 
-          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+          <div className="ace-filter-scroll" style={{ display: 'flex', gap: '8px', maxWidth: '100%', overflowX: 'auto', paddingBottom: '4px' }}>
             {['ALL', 'Air', 'Ocean', 'Road', 'Rail'].map(m => (
               <button
                 key={m}
@@ -359,7 +359,8 @@ export default function AdminDashboardView({
                   color: filterMode === m ? '#FFFFFF' : 'var(--text-secondary)',
                   fontSize: '12px',
                   fontWeight: 600,
-                  cursor: 'pointer'
+                  cursor: 'pointer',
+                  whiteSpace: 'nowrap'
                 }}
               >
                 {m} Freight
@@ -380,6 +381,18 @@ export default function AdminDashboardView({
         @media (max-width: 860px) {
           .admin-charts-grid {
             grid-template-columns: 1fr !important;
+          }
+        }
+        @media (max-width: 640px) {
+          .admin-header-actions {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+          }
+          .admin-header-actions .ace-btn {
+            width: 100%;
+            justify-content: center;
           }
         }
       `}</style>
