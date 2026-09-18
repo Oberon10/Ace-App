@@ -75,7 +75,7 @@ export default function ContactView() {
           <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--color-bright-action)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
             24/7 Global Cargo Support
           </span>
-          <h1 style={{ fontSize: '36px', color: 'var(--color-primary-blue)', fontWeight: 800, marginTop: '4px', marginBottom: '12px' }}>
+          <h1 style={{ fontSize: 'clamp(24px, 6vw, 36px)', color: 'var(--color-primary-blue)', fontWeight: 800, marginTop: '4px', marginBottom: '12px' }}>
             Contact ACE Logistics Hubs
           </h1>
           <p style={{ fontSize: '15px', color: 'var(--text-secondary)' }}>
@@ -86,7 +86,7 @@ export default function ContactView() {
         {/* 3 Quick Help Cards */}
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 240px), 1fr))',
           gap: '20px',
           marginBottom: '40px'
         }}>
@@ -153,7 +153,7 @@ export default function ContactView() {
                     <span>{hub.address}</span>
                   </div>
 
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '8px', fontSize: '12px', color: 'var(--text-muted)', marginTop: '8px', borderTop: '1px solid var(--color-border-subtle)', paddingTop: '8px' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 160px), 1fr))', gap: '8px', fontSize: '12px', color: 'var(--text-muted)', marginTop: '8px', borderTop: '1px solid var(--color-border-subtle)', paddingTop: '8px' }}>
                     <div>
                       <strong style={{ color: 'var(--text-primary)' }}>Tel:</strong> {hub.phone}
                     </div>
@@ -170,7 +170,7 @@ export default function ContactView() {
           </div>
 
           {/* RIGHT: INQUIRY FORM */}
-          <div className="ace-card" style={{ padding: '32px', height: 'fit-content' }}>
+          <div className="ace-card contact-form-card" style={{ padding: '32px', height: 'fit-content' }}>
             <h3 style={{ fontSize: '20px', color: 'var(--color-primary-blue)', fontWeight: 700, marginBottom: '6px' }}>
               Send Operational Message
             </h3>
@@ -280,6 +280,16 @@ export default function ContactView() {
         @media (max-width: 860px) {
           .contact-grid {
             grid-template-columns: 1fr !important;
+          }
+        }
+        @media (max-width: 640px) {
+          .contact-form-card {
+            padding: 20px 16px !important;
+          }
+        }
+        @media (max-width: 380px) {
+          .contact-form-card {
+            padding: 16px 12px !important;
           }
         }
       `}</style>

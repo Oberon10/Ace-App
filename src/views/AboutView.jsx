@@ -21,7 +21,7 @@ export default function AboutView({ setView }) {
           <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--color-bright-action)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
             Corporate Profile & Fleet
           </span>
-          <h1 style={{ fontSize: '36px', color: 'var(--color-primary-blue)', fontWeight: 800, marginTop: '4px', marginBottom: '12px' }}>
+          <h1 style={{ fontSize: 'clamp(24px, 6vw, 36px)', color: 'var(--color-primary-blue)', fontWeight: 800, marginTop: '4px', marginBottom: '12px' }}>
             About ACE Logistics Global
           </h1>
           <p style={{ fontSize: '15px', color: 'var(--text-secondary)', lineHeight: 1.7 }}>
@@ -30,7 +30,7 @@ export default function AboutView({ setView }) {
         </div>
 
         {/* Vision Card */}
-        <div className="ace-card" style={{ padding: '40px', marginBottom: '40px' }}>
+        <div className="ace-card about-vision-card" style={{ padding: '40px', marginBottom: '40px' }}>
           <div style={{
             display: 'grid',
             gridTemplateColumns: 'minmax(0, 1.2fr) minmax(0, 1fr)',
@@ -41,7 +41,7 @@ export default function AboutView({ setView }) {
               <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--color-primary-blue)', textTransform: 'uppercase' }}>
                 Our Mission & Foundation
               </span>
-              <h2 style={{ fontSize: '26px', color: 'var(--color-primary-blue)', fontWeight: 800, marginTop: '4px', marginBottom: '16px' }}>
+              <h2 style={{ fontSize: 'clamp(20px, 5vw, 26px)', color: 'var(--color-primary-blue)', fontWeight: 800, marginTop: '4px', marginBottom: '16px' }}>
                 "Moving the World, One Shipment at a Time"
               </h2>
               <p style={{ fontSize: '14.5px', color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: '16px' }}>
@@ -79,7 +79,7 @@ export default function AboutView({ setView }) {
             Integrated Multimodal Fleet Assets
           </h2>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '24px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 240px), 1fr))', gap: '24px' }}>
             <div className="ace-card" style={{ padding: 0, overflow: 'hidden' }}>
               <img src="/images/container-ship.jpg" alt="ELBSPIRIT Container Ship" style={{ width: '100%', height: '170px', objectFit: 'cover' }} />
               <div style={{ padding: '20px' }}>
@@ -142,7 +142,7 @@ export default function AboutView({ setView }) {
           padding: '36px',
           textAlign: 'center'
         }}>
-          <h3 style={{ fontSize: '24px', fontWeight: 800, color: '#FFFFFF', marginBottom: '8px' }}>
+          <h3 style={{ fontSize: 'clamp(18px, 5vw, 24px)', fontWeight: 800, color: '#FFFFFF', marginBottom: '8px' }}>
             Ready to Partner with ACE Logistics?
           </h3>
           <p style={{ fontSize: '14.5px', color: '#D9E7F0', maxWidth: '600px', margin: '0 auto 24px' }}>
@@ -166,7 +166,15 @@ export default function AboutView({ setView }) {
             grid-template-columns: 1fr !important;
           }
         }
+        @media (max-width: 640px) {
+          .about-vision-card {
+            padding: 20px 16px !important;
+          }
+        }
         @media (max-width: 480px) {
+          .about-vision-card {
+            padding: 16px 14px !important;
+          }
           .ace-cta-banner {
             padding: 24px 16px !important;
           }
