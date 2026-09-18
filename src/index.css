@@ -10,6 +10,7 @@
   --color-light-blue: #EAF5FC;
   --color-very-light-blue: #F5FAFE;
   --color-white: #FFFFFF;
+  --color-surface: #FFFFFF;
   --color-border: #D9E7F0;
   --color-border-subtle: #E6EEF5;
 
@@ -603,6 +604,7 @@ button, input, select, textarea {
   --color-light-blue: #0F2338;
   --color-very-light-blue: #080E17;
   --color-white: #0E1A29;
+  --color-surface: #0E1A29;
   --color-border: #1E3851;
   --color-border-subtle: #162B3F;
 
@@ -651,15 +653,15 @@ button, input, select, textarea {
 [data-theme="dark"] h4, [data-theme="dark"] h5, [data-theme="dark"] h6,
 body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, 
 body.dark-mode h4, body.dark-mode h5, body.dark-mode h6 {
-  color: var(--text-primary);
+  color: var(--text-primary) !important;
 }
 
 [data-theme="dark"] p, body.dark-mode p {
-  color: var(--text-secondary);
+  color: var(--text-secondary) !important;
 }
 
 [data-theme="dark"] strong, body.dark-mode strong {
-  color: #FFFFFF;
+  color: #FFFFFF !important;
 }
 
 [data-theme="dark"] label, [data-theme="dark"] .ace-label,
@@ -677,6 +679,216 @@ body.dark-mode label, body.dark-mode .ace-label {
 body.dark-mode input::placeholder, 
 body.dark-mode textarea::placeholder {
   color: #94A3B8;
+}
+
+/* Protect official printable receipt document from dark mode text inversion */
+#printable-receipt, #printable-receipt * {
+  color: #0F172A !important;
+}
+#printable-receipt {
+  background-color: #FFFFFF !important;
+}
+#printable-receipt h1, #printable-receipt h2, #printable-receipt h3,
+#printable-receipt h4, #printable-receipt h5, #printable-receipt h6,
+#printable-receipt strong {
+  color: #0A2540 !important;
+}
+
+/* Universal High-Contrast Overrides for Hardcoded Dark Colors in Dark Mode */
+[data-theme="dark"] [style*="color: var(--color-dark-navy)"],
+[data-theme="dark"] [style*="color:var(--color-dark-navy)"],
+body.dark-mode [style*="color: var(--color-dark-navy)"],
+body.dark-mode [style*="color:var(--color-dark-navy)"],
+[data-theme="dark"] [style*="color: #0B4F7C"],
+[data-theme="dark"] [style*="color:#0B4F7C"],
+body.dark-mode [style*="color: #0B4F7C"],
+body.dark-mode [style*="color:#0B4F7C"],
+[data-theme="dark"] [style*="color: #0369A1"],
+[data-theme="dark"] [style*="color:#0369A1"],
+body.dark-mode [style*="color: #0369A1"],
+body.dark-mode [style*="color:#0369A1"],
+[data-theme="dark"] [style*="color: #073B5C"],
+[data-theme="dark"] [style*="color:#073B5C"],
+body.dark-mode [style*="color: #073B5C"],
+body.dark-mode [style*="color:#073B5C"] {
+  color: #38BDF8 !important;
+}
+
+[data-theme="dark"] [style*="color: #1E40AF"],
+[data-theme="dark"] [style*="color:#1E40AF"],
+body.dark-mode [style*="color: #1E40AF"],
+body.dark-mode [style*="color:#1E40AF"] {
+  color: #60A5FA !important;
+}
+
+[data-theme="dark"] [style*="color: #065F46"],
+[data-theme="dark"] [style*="color:#065F46"],
+[data-theme="dark"] [style*="color: #166534"],
+[data-theme="dark"] [style*="color:#166534"],
+[data-theme="dark"] [style*="color: #15803D"],
+[data-theme="dark"] [style*="color:#15803D"],
+[data-theme="dark"] [style*="color: #059669"],
+[data-theme="dark"] [style*="color:#059669"],
+body.dark-mode [style*="color: #065F46"],
+body.dark-mode [style*="color:#065F46"],
+body.dark-mode [style*="color: #166534"],
+body.dark-mode [style*="color:#166534"],
+body.dark-mode [style*="color: #15803D"],
+body.dark-mode [style*="color:#15803D"],
+body.dark-mode [style*="color: #059669"],
+body.dark-mode [style*="color:#059669"] {
+  color: #34D399 !important;
+}
+
+[data-theme="dark"] [style*="color: #0F766E"],
+[data-theme="dark"] [style*="color:#0F766E"],
+[data-theme="dark"] [style*="color: #0D9488"],
+[data-theme="dark"] [style*="color:#0D9488"],
+body.dark-mode [style*="color: #0F766E"],
+body.dark-mode [style*="color:#0F766E"],
+body.dark-mode [style*="color: #0D9488"],
+body.dark-mode [style*="color:#0D9488"] {
+  color: #2DD4BF !important;
+}
+
+[data-theme="dark"] [style*="color: #B45309"],
+[data-theme="dark"] [style*="color:#B45309"],
+[data-theme="dark"] [style*="color: #92400E"],
+[data-theme="dark"] [style*="color:#92400E"],
+[data-theme="dark"] [style*="color: #D97706"],
+[data-theme="dark"] [style*="color:#D97706"],
+body.dark-mode [style*="color: #B45309"],
+body.dark-mode [style*="color:#B45309"],
+body.dark-mode [style*="color: #92400E"],
+body.dark-mode [style*="color:#92400E"],
+body.dark-mode [style*="color: #D97706"],
+body.dark-mode [style*="color:#D97706"] {
+  color: #FBBF24 !important;
+}
+
+[data-theme="dark"] [style*="color: #DC2626"],
+[data-theme="dark"] [style*="color:#DC2626"],
+[data-theme="dark"] [style*="color: #B91C1C"],
+[data-theme="dark"] [style*="color:#B91C1C"],
+[data-theme="dark"] [style*="color: #991B1B"],
+[data-theme="dark"] [style*="color:#991B1B"],
+body.dark-mode [style*="color: #DC2626"],
+body.dark-mode [style*="color:#DC2626"],
+body.dark-mode [style*="color: #B91C1C"],
+body.dark-mode [style*="color:#B91C1C"],
+body.dark-mode [style*="color: #991B1B"],
+body.dark-mode [style*="color:#991B1B"] {
+  color: #F87171 !important;
+}
+
+/* Translucent Dark Badges replacing light pastel backgrounds in Dark Mode */
+[data-theme="dark"] [style*="backgroundColor: #ECFDF5"],
+[data-theme="dark"] [style*="background-color: #ECFDF5"],
+[data-theme="dark"] [style*="backgroundColor:#ECFDF5"],
+[data-theme="dark"] [style*="background-color:#ECFDF5"],
+[data-theme="dark"] [style*="backgroundColor: #F0FDF4"],
+[data-theme="dark"] [style*="background-color: #F0FDF4"],
+body.dark-mode [style*="backgroundColor: #ECFDF5"],
+body.dark-mode [style*="background-color: #ECFDF5"],
+body.dark-mode [style*="backgroundColor:#ECFDF5"],
+body.dark-mode [style*="background-color:#ECFDF5"],
+body.dark-mode [style*="backgroundColor: #F0FDF4"],
+body.dark-mode [style*="background-color: #F0FDF4"] {
+  background-color: rgba(16, 185, 129, 0.16) !important;
+  border-color: rgba(16, 185, 129, 0.35) !important;
+}
+
+[data-theme="dark"] [style*="backgroundColor: #EAF5FC"],
+[data-theme="dark"] [style*="background-color: #EAF5FC"],
+[data-theme="dark"] [style*="backgroundColor: #F0F9FF"],
+[data-theme="dark"] [style*="background-color: #F0F9FF"],
+[data-theme="dark"] [style*="backgroundColor: #E0F2FE"],
+[data-theme="dark"] [style*="background-color: #E0F2FE"],
+[data-theme="dark"] [style*="backgroundColor: #EFF6FF"],
+[data-theme="dark"] [style*="background-color: #EFF6FF"],
+body.dark-mode [style*="backgroundColor: #EAF5FC"],
+body.dark-mode [style*="background-color: #EAF5FC"],
+body.dark-mode [style*="backgroundColor: #F0F9FF"],
+body.dark-mode [style*="background-color: #F0F9FF"],
+body.dark-mode [style*="backgroundColor: #E0F2FE"],
+body.dark-mode [style*="background-color: #E0F2FE"],
+body.dark-mode [style*="backgroundColor: #EFF6FF"],
+body.dark-mode [style*="background-color: #EFF6FF"] {
+  background-color: rgba(14, 165, 233, 0.16) !important;
+  border-color: rgba(56, 189, 248, 0.35) !important;
+}
+
+[data-theme="dark"] [style*="backgroundColor: #CCFBF1"],
+[data-theme="dark"] [style*="background-color: #CCFBF1"],
+body.dark-mode [style*="backgroundColor: #CCFBF1"],
+body.dark-mode [style*="background-color: #CCFBF1"] {
+  background-color: rgba(20, 184, 166, 0.16) !important;
+  border-color: rgba(20, 184, 166, 0.35) !important;
+}
+
+[data-theme="dark"] [style*="backgroundColor: #FEF3C7"],
+[data-theme="dark"] [style*="background-color: #FEF3C7"],
+[data-theme="dark"] [style*="backgroundColor: #FFFBEB"],
+[data-theme="dark"] [style*="background-color: #FFFBEB"],
+[data-theme="dark"] [style*="backgroundColor: #FFF7ED"],
+[data-theme="dark"] [style*="background-color: #FFF7ED"],
+body.dark-mode [style*="backgroundColor: #FEF3C7"],
+body.dark-mode [style*="background-color: #FEF3C7"],
+body.dark-mode [style*="backgroundColor: #FFFBEB"],
+body.dark-mode [style*="background-color: #FFFBEB"],
+body.dark-mode [style*="backgroundColor: #FFF7ED"],
+body.dark-mode [style*="background-color: #FFF7ED"] {
+  background-color: rgba(245, 158, 11, 0.16) !important;
+  border-color: rgba(245, 158, 11, 0.35) !important;
+}
+
+[data-theme="dark"] [style*="backgroundColor: #FEF2F2"],
+[data-theme="dark"] [style*="background-color: #FEF2F2"],
+[data-theme="dark"] [style*="backgroundColor: #FEE2E2"],
+[data-theme="dark"] [style*="background-color: #FEE2E2"],
+body.dark-mode [style*="backgroundColor: #FEF2F2"],
+body.dark-mode [style*="background-color: #FEF2F2"],
+body.dark-mode [style*="backgroundColor: #FEE2E2"],
+body.dark-mode [style*="background-color: #FEE2E2"] {
+  background-color: rgba(239, 68, 68, 0.16) !important;
+  border-color: rgba(239, 68, 68, 0.35) !important;
+}
+
+/* Secondary Button Inversion in Dark Mode */
+[data-theme="dark"] .ace-btn-secondary,
+body.dark-mode .ace-btn-secondary {
+  background-color: #122234 !important;
+  color: #38BDF8 !important;
+  border-color: #1E3851 !important;
+}
+
+[data-theme="dark"] .ace-btn-secondary:hover,
+body.dark-mode .ace-btn-secondary:hover {
+  background-color: #182E46 !important;
+  border-color: #38BDF8 !important;
+  color: #7DD3FC !important;
+}
+
+/* Mobile Trust Metrics Section in Dark Mode */
+[data-theme="dark"] .home-trust-metrics-section,
+body.dark-mode .home-trust-metrics-section {
+  background-color: #0E1A29 !important;
+  border-bottom-color: #1E3851 !important;
+}
+
+/* Form Select Option Inversion in Dark Mode */
+[data-theme="dark"] select option,
+body.dark-mode select option {
+  background-color: #0A131F !important;
+  color: #FFFFFF !important;
+}
+
+/* Progress bar background tracks in dark mode */
+[data-theme="dark"] [style*="backgroundColor: #e2e8f0"],
+[data-theme="dark"] [style*="background-color: #e2e8f0"],
+body.dark-mode [style*="backgroundColor: #e2e8f0"],
+body.dark-mode [style*="background-color: #e2e8f0"] {
+  background-color: #1E3851 !important;
 }
 
 /* Header & Nav in Dark Mode */

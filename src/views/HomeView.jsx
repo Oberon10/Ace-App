@@ -809,10 +809,16 @@ export default function HomeView({ setView, onSearchTracking }) {
             font-size: 12.5px !important;
           }
           .home-tracking-card .ace-input {
-            background-color: #FFFFFF !important;
-            border: 1.5px solid #38BDF8 !important;
-            color: #0F172A !important;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+            background-color: #FFFFFF;
+            border: 1.5px solid #38BDF8;
+            color: #0F172A;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+          }
+          [data-theme="dark"] .home-tracking-card .ace-input,
+          body.dark-mode .home-tracking-card .ace-input {
+            background-color: #0A131F !important;
+            border-color: var(--color-border) !important;
+            color: #FFFFFF !important;
           }
           .home-tracking-security-bar {
             color: #94A3B8 !important;
@@ -825,8 +831,12 @@ export default function HomeView({ setView, onSearchTracking }) {
             color: #38BDF8 !important;
           }
           .home-trust-metrics-section {
-            background-color: #F8FAFC !important;
+            background-color: #F8FAFC;
             padding: 20px 0 !important;
+          }
+          [data-theme="dark"] .home-trust-metrics-section,
+          body.dark-mode .home-trust-metrics-section {
+            background-color: var(--color-white) !important;
           }
           .tracking-card-visual-banner {
             margin-bottom: 14px !important;
