@@ -79,6 +79,10 @@
   padding: 0;
 }
 
+img, svg, video, canvas, audio, iframe {
+  max-width: 100%;
+}
+
 html {
   font-family: var(--font-family);
   color: var(--text-primary);
@@ -1091,22 +1095,47 @@ html, body {
     flex: 1 1 100% !important;
   }
 
-  /* Telemetry actions full width */
+  /* Telemetry actions full width and responsive stacking */
   .ace-telemetry-actions {
     width: 100% !important;
-    justify-content: space-between !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
   }
 
   .ace-telemetry-actions button {
-    flex: 1 1 auto !important;
+    flex: 1 1 calc(50% - 4px) !important;
     justify-content: center !important;
+    min-height: 40px !important;
+    font-size: 12.5px !important;
+    padding: 8px 10px !important;
+  }
+
+  .ace-telemetry-actions button:last-child {
+    flex: 1 1 100% !important;
+  }
+
+  /* Safe Dropdown & Floating Menu Width */
+  .ace-safe-dropdown {
+    max-width: calc(100vw - 24px) !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Global utility: Full width on mobile */
+  .ace-mobile-full {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .ace-mobile-stack {
+    flex-direction: column !important;
   }
 }
 
 /* Breakpoint: Compact Smartphones (<= 480px) */
 @media (max-width: 480px) {
   .ace-container {
-    padding: 0 12px !important;
+    padding: 0 14px !important;
   }
 
   .ace-dashboard-main {
@@ -1114,7 +1143,7 @@ html, body {
   }
 
   .ace-card {
-    padding: 16px 12px !important;
+    padding: 16px 14px !important;
     border-radius: 12px !important;
   }
 
@@ -1135,8 +1164,12 @@ html, body {
 
 /* Breakpoint: Ultra-compact Screens (<= 360px) */
 @media (max-width: 360px) {
+  .ace-container {
+    padding: 0 10px !important;
+  }
+
   h1 {
-    font-size: 1.5rem !important;
+    font-size: 1.45rem !important;
   }
 
   .ace-btn {
@@ -1146,6 +1179,10 @@ html, body {
 
   .ace-metrics-grid-2x2 {
     grid-template-columns: 1fr !important;
+  }
+
+  .ace-telemetry-actions button {
+    flex: 1 1 100% !important;
   }
 }
 
