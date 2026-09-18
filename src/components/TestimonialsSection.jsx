@@ -7,8 +7,6 @@ import {
   ChevronLeft, 
   ChevronRight, 
   CheckCircle2, 
-  Pause, 
-  Play, 
   Plane, 
   ShieldCheck 
 } from 'lucide-react';
@@ -27,13 +25,8 @@ function TestimonialCard({ testimonial, isActive = false }) {
         justifyContent: 'space-between',
         padding: '28px 24px',
         borderRadius: '16px',
-        backgroundColor: 'rgba(255, 255, 255, 0.96)',
         backdropFilter: 'blur(16px)',
         WebkitBackdropFilter: 'blur(16px)',
-        border: isActive ? '2px solid var(--color-bright-action)' : '1px solid rgba(255, 255, 255, 0.85)',
-        boxShadow: isActive 
-          ? '0 20px 40px -10px rgba(14, 165, 233, 0.35), 0 8px 20px rgba(0, 0, 0, 0.2)' 
-          : '0 16px 36px -8px rgba(0, 0, 0, 0.38), 0 4px 12px rgba(0, 0, 0, 0.15)',
         transition: 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease',
         position: 'relative'
       }}
@@ -55,14 +48,14 @@ function TestimonialCard({ testimonial, isActive = false }) {
                 aria-hidden="true" 
               />
             ))}
-            <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-muted)', marginLeft: '6px' }}>
+            <span className="testimonial-rating-score" style={{ fontSize: '12px', fontWeight: 700, marginLeft: '6px' }}>
               5.0
             </span>
           </div>
 
           <div style={{ 
             color: 'var(--color-bright-action)', 
-            opacity: 0.3,
+            opacity: 0.35,
             display: 'flex',
             alignItems: 'center'
           }}>
@@ -71,10 +64,9 @@ function TestimonialCard({ testimonial, isActive = false }) {
         </div>
 
         {/* Testimonial Quote */}
-        <blockquote style={{ 
+        <blockquote className="testimonial-quote" style={{ 
           fontSize: '14.5px', 
           lineHeight: 1.65, 
-          color: 'var(--text-primary)',
           fontStyle: 'normal',
           margin: 0,
           marginBottom: '20px'
@@ -84,7 +76,7 @@ function TestimonialCard({ testimonial, isActive = false }) {
       </div>
 
       {/* Card Footer: Author Profile & Meta Badge */}
-      <div style={{ 
+      <div className="testimonial-card-footer" style={{ 
         borderTop: '1px solid var(--color-border-subtle)', 
         paddingTop: '16px',
         display: 'flex',
@@ -136,19 +128,17 @@ function TestimonialCard({ testimonial, isActive = false }) {
 
           <div style={{ minWidth: 0, flex: 1 }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'wrap' }}>
-              <h3 style={{ 
+              <h3 className="testimonial-author-name" style={{ 
                 fontSize: '15.5px', 
                 fontWeight: 700, 
-                color: 'var(--color-primary-blue)', 
                 margin: 0,
                 lineHeight: 1.2
               }}>
                 {testimonial.name}
               </h3>
             </div>
-            <div style={{ 
+            <div className="testimonial-author-role" style={{ 
               fontSize: '12px', 
-              color: 'var(--text-secondary)', 
               marginTop: '3px',
               fontWeight: 600,
               overflow: 'hidden',
@@ -157,9 +147,8 @@ function TestimonialCard({ testimonial, isActive = false }) {
             }}>
               {testimonial.role}
             </div>
-            <div style={{ 
+            <div className="testimonial-author-company" style={{ 
               fontSize: '11px', 
-              color: 'var(--text-muted)', 
               marginTop: '1px',
               overflow: 'hidden',
               textOverflow: 'ellipsis',
@@ -171,17 +160,14 @@ function TestimonialCard({ testimonial, isActive = false }) {
         </div>
 
         {/* Route or Service Meta Badge */}
-        <div style={{
+        <div className="testimonial-meta-badge" style={{
           display: 'inline-flex',
           alignItems: 'center',
           gap: '6px',
-          backgroundColor: '#F0F9FF',
-          border: '1px solid #BAE6FD',
           padding: '4px 10px',
           borderRadius: '6px',
           fontSize: '11.5px',
           fontWeight: 600,
-          color: '#0369A1',
           alignSelf: 'flex-start',
           maxWidth: '100%',
           overflow: 'hidden',
@@ -196,7 +182,7 @@ function TestimonialCard({ testimonial, isActive = false }) {
             <Truck size={13} color="var(--color-bright-action)" style={{ flexShrink: 0 }} />
           )}
           <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
-            {testimonial.metaType}: <strong style={{ color: 'var(--text-primary)' }}>{testimonial.metaValue}</strong>
+            {testimonial.metaType}: <strong className="testimonial-meta-value">{testimonial.metaValue}</strong>
           </span>
         </div>
       </div>
@@ -518,7 +504,7 @@ export default function TestimonialsSection() {
         </div>
 
         {/* ===================================================
-            CAROUSEL CONTROLS BAR: DOT INDICATORS & PLAY/PAUSE
+            CAROUSEL CONTROLS BAR: DOT INDICATORS & COUNTER
             =================================================== */}
         <div style={{
           display: 'flex',
@@ -528,31 +514,6 @@ export default function TestimonialsSection() {
           marginTop: '28px',
           flexWrap: 'wrap'
         }}>
-          {/* Play / Pause Auto-Slide Button */}
-          <button
-            type="button"
-            onClick={() => setIsPaused(!isPaused)}
-            style={{
-              background: 'rgba(255, 255, 255, 0.1)',
-              border: '1px solid rgba(255, 255, 255, 0.2)',
-              color: '#FFFFFF',
-              borderRadius: '20px',
-              padding: '6px 14px',
-              fontSize: '12px',
-              fontWeight: 600,
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
-              cursor: 'pointer',
-              backdropFilter: 'blur(8px)',
-              transition: 'all 0.2s ease'
-            }}
-            title={isPaused ? 'Resume auto-sliding' : 'Pause auto-sliding'}
-          >
-            {isPaused ? <Play size={13} fill="#38BDF8" color="#38BDF8" /> : <Pause size={13} />}
-            <span>{isPaused ? 'Resume Auto-Slide' : 'Auto-Sliding Active'}</span>
-          </button>
-
           {/* Dot Indicators */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             {Array.from({ length: maxIndex + 1 }).map((_, dotIdx) => (
@@ -721,6 +682,108 @@ export default function TestimonialsSection() {
 
         .carousel-nav-next {
           right: -20px;
+        }
+
+        /* Testimonial Card Light Mode Base */
+        .ace-testimonial-card {
+          background-color: rgba(255, 255, 255, 0.96) !important;
+          border: 1px solid rgba(255, 255, 255, 0.85) !important;
+          box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.38), 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+        }
+
+        .ace-testimonial-card.ace-testimonial-active {
+          border: 2px solid var(--color-bright-action) !important;
+          box-shadow: 0 20px 40px -10px rgba(14, 165, 233, 0.35), 0 8px 20px rgba(0, 0, 0, 0.2) !important;
+        }
+
+        .testimonial-rating-score {
+          color: #64748B;
+        }
+
+        .testimonial-quote {
+          color: #172B3A !important;
+        }
+
+        .testimonial-author-name {
+          color: #0B4F7C !important;
+        }
+
+        .testimonial-author-role {
+          color: #475569 !important;
+        }
+
+        .testimonial-author-company {
+          color: #64748B !important;
+        }
+
+        .testimonial-card-footer {
+          border-top: 1px solid #E2E8F0 !important;
+        }
+
+        .testimonial-meta-badge {
+          background-color: #F0F9FF !important;
+          border: 1px solid #BAE6FD !important;
+          color: #0369A1 !important;
+        }
+
+        .testimonial-meta-value {
+          color: #0F172A !important;
+        }
+
+        /* Testimonial Card Dark Mode Styles */
+        [data-theme="dark"] .ace-testimonial-card,
+        body.dark-mode .ace-testimonial-card {
+          background: linear-gradient(155deg, #0d2137 0%, #081626 100%) !important;
+          border: 1px solid #1E3851 !important;
+          box-shadow: 0 18px 44px -10px rgba(0, 0, 0, 0.7), 0 4px 14px rgba(0, 0, 0, 0.5) !important;
+        }
+
+        [data-theme="dark"] .ace-testimonial-card.ace-testimonial-active,
+        body.dark-mode .ace-testimonial-card.ace-testimonial-active {
+          border: 2px solid #38BDF8 !important;
+          box-shadow: 0 20px 44px -8px rgba(56, 189, 248, 0.35), 0 8px 24px rgba(0, 0, 0, 0.6) !important;
+        }
+
+        [data-theme="dark"] .testimonial-rating-score,
+        body.dark-mode .testimonial-rating-score {
+          color: #CBD5E1 !important;
+        }
+
+        [data-theme="dark"] .testimonial-quote,
+        body.dark-mode .testimonial-quote {
+          color: #F8FAFC !important;
+        }
+
+        [data-theme="dark"] .testimonial-author-name,
+        body.dark-mode .testimonial-author-name {
+          color: #38BDF8 !important;
+        }
+
+        [data-theme="dark"] .testimonial-author-role,
+        body.dark-mode .testimonial-author-role {
+          color: #E2E8F0 !important;
+        }
+
+        [data-theme="dark"] .testimonial-author-company,
+        body.dark-mode .testimonial-author-company {
+          color: #94A3B8 !important;
+        }
+
+        [data-theme="dark"] .testimonial-card-footer,
+        body.dark-mode .testimonial-card-footer {
+          border-top-color: #1E3851 !important;
+        }
+
+        [data-theme="dark"] .testimonial-meta-badge,
+        body.dark-mode .testimonial-meta-badge {
+          background-color: rgba(14, 165, 233, 0.16) !important;
+          border: 1px solid rgba(56, 189, 248, 0.35) !important;
+          color: #38BDF8 !important;
+        }
+
+        [data-theme="dark"] .testimonial-meta-value,
+        body.dark-mode .testimonial-meta-value {
+          color: #FFFFFF !important;
         }
 
         .ace-testimonial-card:hover {
