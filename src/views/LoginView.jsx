@@ -14,13 +14,15 @@ import {
   Truck,
   Building2,
   KeyRound,
-  ShieldAlert
+  ShieldAlert,
+  Package
 } from 'lucide-react';
 
 export default function LoginView({ 
   onLoginSuccess, 
   setView, 
-  initialPortal = 'customer' 
+  initialPortal = 'customer',
+  authNotice = ''
 }) {
   const [selectedPortal, setSelectedPortal] = useState(initialPortal); // 'customer', 'staff', 'admin'
   const [isRegister, setIsRegister] = useState(false);
@@ -342,6 +344,25 @@ export default function LoginView({
                 : 'Executive clearance only. Authorized to view staff and customer login details.'}
             </p>
           </div>
+
+          {/* Action Requirement Notice (e.g. redirected when clicking Send A Package) */}
+          {authNotice && (
+            <div style={{
+              backgroundColor: 'rgba(2, 132, 199, 0.08)',
+              border: '1px solid rgba(2, 132, 199, 0.35)',
+              borderRadius: '8px',
+              padding: '11px 14px',
+              marginBottom: '16px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px'
+            }}>
+              <Package size={19} color="var(--color-bright-action)" style={{ flexShrink: 0 }} />
+              <span style={{ fontSize: '12.5px', color: 'var(--color-primary-blue)', fontWeight: 600, lineHeight: 1.45 }}>
+                {authNotice}
+              </span>
+            </div>
+          )}
 
           {/* Security Notice for Staff & Admin */}
           {selectedPortal === 'staff' && (

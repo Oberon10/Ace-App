@@ -191,11 +191,32 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  // Auth Redirection & Notification State
+  const [authNotice, setAuthNotice] = useState('');
+  const [postLoginRedirect, setPostLoginRedirect] = useState(null);
+
+  const handleSendPackageClick = () => {
+    if (activeRole === 'guest') {
+      setLoginPortal('customer');
+      setAuthNotice('Please sign in or create an account to book and send a package.');
+      setPostLoginRedirect('new-shipment');
+      setCurrentView('login');
+    } else {
+      setCurrentView('new-shipment');
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   // Login handler
-  const handleLoginSuccess = (role, userObj) => {
+  const handleLoginSuccess = (role, userObj, customRedirect = null) => {
     setActiveRole(role);
     setCurrentUser(userObj);
-    if (role === 'admin') {
+    const destination = customRedirect || postLoginRedirect;
+    setPostLoginRedirect(null);
+    setAuthNotice('');
+    if (destination) {
+      setCurrentView(destination);
+    } else if (role === 'admin') {
       // Admin has full access to all portals and starts on the comprehensive Admin Dashboard
       setCurrentView('admin-dashboard');
     } else if (role === 'staff') {
@@ -250,6 +271,8 @@ export default function App() {
           <HomeView 
             setView={setCurrentView} 
             onSearchTracking={handleSearchTracking} 
+            activeRole={activeRole}
+            onSendPackageClick={handleSendPackageClick}
           />
         )}
 
@@ -289,12 +312,21 @@ export default function App() {
         )}
 
         {currentView === 'new-shipment' && (
-          <ShipmentCreationView 
-            onShipmentCreated={handleShipmentCreated} 
-            onCancel={() => setCurrentView('home')}
-            prefilledQuote={prefilledQuote}
-            currentUser={currentUser}
-          />
+          activeRole === 'guest' ? (
+            <LoginView 
+              onLoginSuccess={(role, userObj) => handleLoginSuccess(role, userObj, 'new-shipment')} 
+              setView={setCurrentView}
+              initialPortal="customer"
+              authNotice="Please sign in or create an account to book and send a package."
+            />
+          ) : (
+            <ShipmentCreationView 
+              onShipmentCreated={handleShipmentCreated} 
+              onCancel={() => setCurrentView('home')}
+              prefilledQuote={prefilledQuote}
+              currentUser={currentUser}
+            />
+          )
         )}
 
         {currentView === 'login' && (
@@ -302,6 +334,7 @@ export default function App() {
             onLoginSuccess={handleLoginSuccess} 
             setView={setCurrentView}
             initialPortal={loginPortal}
+            authNotice={authNotice}
           />
         )}
 

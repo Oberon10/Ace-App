@@ -22,7 +22,12 @@ import {
 } from 'lucide-react';
 import TestimonialsSection from '../components/TestimonialsSection';
 
-export default function HomeView({ setView, onSearchTracking }) {
+export default function HomeView({ 
+  setView, 
+  onSearchTracking, 
+  activeRole = 'guest', 
+  onSendPackageClick 
+}) {
   const [trackingInput, setTrackingInput] = useState('');
   const [isSearching, setIsSearching] = useState(false);
 
@@ -34,6 +39,16 @@ export default function HomeView({ setView, onSearchTracking }) {
       setIsSearching(false);
       onSearchTracking(query);
     }, 300);
+  };
+
+  const handleSendPackage = () => {
+    if (onSendPackageClick) {
+      onSendPackageClick();
+    } else if (activeRole === 'guest') {
+      setView('login');
+    } else {
+      setView('new-shipment');
+    }
   };
 
   const services = [
@@ -151,37 +166,31 @@ export default function HomeView({ setView, onSearchTracking }) {
                 Ship with confidence. Track every shipment from pickup to delivery.
               </p>
 
-              {/* 3 Primary Buttons (Section 7) */}
+              {/* Single Hero Action Button: Send A Package */}
               <div style={{
                 display: 'flex',
-                flexWrap: 'wrap',
+                alignItems: 'center',
                 gap: '12px',
                 marginBottom: '28px'
               }} className="hero-action-buttons">
                 <button
-                  onClick={() => handleTrackSubmit()}
-                  className="ace-btn ace-btn-action ace-btn-lg"
+                  onClick={handleSendPackage}
+                  className="ace-btn ace-btn-action ace-btn-lg hero-send-package-btn"
+                  style={{
+                    padding: '15px 36px',
+                    fontSize: '16px',
+                    fontWeight: 800,
+                    letterSpacing: '0.04em',
+                    boxShadow: '0 10px 28px rgba(22, 131, 216, 0.45)',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '10px'
+                  }}
+                  title="Send a package (sign in or sign up required)"
                 >
-                  <Search size={16} />
-                  <span>TRACK SHIPMENT</span>
-                </button>
-
-                <button
-                  onClick={() => setView('new-shipment')}
-                  className="ace-btn ace-btn-primary ace-btn-lg"
-                  style={{ backgroundColor: '#0e5f94', borderColor: '#1683D8' }}
-                >
-                  <Package size={16} />
+                  <Package size={20} />
                   <span>SEND A PACKAGE</span>
-                </button>
-
-                <button
-                  onClick={() => setView('quote')}
-                  className="ace-btn ace-btn-secondary ace-btn-lg"
-                  style={{ backgroundColor: 'rgba(255, 255, 255, 0.95)' }}
-                >
-                  <span>GET A QUOTE</span>
-                  <ArrowRight size={15} />
+                  <ArrowRight size={17} />
                 </button>
               </div>
 
@@ -716,7 +725,7 @@ export default function HomeView({ setView, onSearchTracking }) {
             Open an ACE Logistics corporate account today for priority scheduling, volume discounts, and full API integration.
           </p>
           <div className="cta-banner-buttons" style={{ display: 'flex', justifyContent: 'center', gap: '14px', flexWrap: 'wrap' }}>
-            <button onClick={() => setView('new-shipment')} className="ace-btn ace-btn-action ace-btn-lg">
+            <button onClick={handleSendPackage} className="ace-btn ace-btn-action ace-btn-lg">
               <span>Book Your First Shipment</span>
               <ArrowRight size={16} />
             </button>
