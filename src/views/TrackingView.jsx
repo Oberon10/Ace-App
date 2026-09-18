@@ -247,8 +247,8 @@ export default function TrackingView({
             </div>
           </div>
 
-          <form onSubmit={handleSearchSubmit} style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', maxWidth: '860px', margin: '0 auto' }}>
-            <div style={{ flex: '1 1 320px', position: 'relative' }}>
+          <form onSubmit={handleSearchSubmit} className="tracking-search-form" style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', maxWidth: '860px', margin: '0 auto' }}>
+            <div className="tracking-input-wrapper" style={{ flex: '1 1 320px', position: 'relative' }}>
               <div className="ace-input-icon">
                 <Search size={18} color="var(--color-primary-blue)" />
               </div>
@@ -265,7 +265,7 @@ export default function TrackingView({
             <button
               type="submit"
               disabled={isSearching}
-              className="ace-btn ace-btn-action"
+              className="ace-btn ace-btn-action tracking-submit-btn"
               style={{ height: '50px', padding: '0 32px', fontSize: '15px', display: 'flex', alignItems: 'center', gap: '8px' }}
             >
               {isSearching ? (
@@ -1068,6 +1068,21 @@ export default function TrackingView({
           }
         }
         @media (max-width: 640px) {
+          .tracking-search-form {
+            flex-direction: column !important;
+          }
+          .tracking-input-wrapper {
+            flex: 1 1 100% !important;
+            width: 100% !important;
+          }
+          .tracking-submit-btn {
+            width: 100% !important;
+            justify-content: center !important;
+          }
+          .ace-tracking-code {
+            font-size: clamp(18px, 5.5vw, 24px) !important;
+            word-break: break-all !important;
+          }
           .tracking-search-card {
             background: linear-gradient(155deg, #092c45 0%, #061e30 100%) !important;
             border: 1px solid rgba(56, 189, 248, 0.35) !important;

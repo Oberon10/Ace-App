@@ -18,7 +18,7 @@ export default function InteractiveMap({ shipment }) {
   const progressPercent = isDelivered ? 100 : shipment.status === 'PENDING' ? 15 : 62;
 
   return (
-    <div style={{
+    <div className="ace-map-container" style={{
       backgroundColor: '#072A42',
       borderRadius: 'var(--radius-card)',
       border: '1px solid #164e72',
@@ -28,6 +28,18 @@ export default function InteractiveMap({ shipment }) {
       overflow: 'hidden',
       boxShadow: 'inset 0 1px 4px rgba(0,0,0,0.3), var(--shadow-subtle)'
     }}>
+      <style>{`
+        @media (max-width: 480px) {
+          .ace-map-container {
+            padding: 14px 12px !important;
+          }
+          .ace-map-summary-grid {
+            grid-template-columns: 1fr !important;
+            gap: 10px !important;
+            padding: 10px 12px !important;
+          }
+        }
+      `}</style>
       {/* Top HUD Controls */}
       <div className="ace-map-hud" style={{ 
         display: 'flex', 
