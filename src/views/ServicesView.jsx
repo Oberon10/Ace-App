@@ -112,14 +112,14 @@ export default function ServicesView({ setView }) {
           <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--color-bright-action)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
             Multi-Modal Solutions
           </span>
-          <h1 style={{ fontSize: '36px', color: 'var(--color-primary-blue)', fontWeight: 800, marginTop: '4px', marginBottom: '12px' }}>
+          <h1 style={{ fontSize: 'clamp(24px, 6vw, 36px)', color: 'var(--color-primary-blue)', fontWeight: 800, marginTop: '4px', marginBottom: '12px' }}>
             Comprehensive Logistics & Freight Services
           </h1>
           <p style={{ fontSize: '15px', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
             Connecting your business to global markets with synchronized air, sea, road, and rail transportation, underpinned by proprietary real-time telemetry.
           </p>
 
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '12px', marginTop: '24px' }}>
+          <div className="services-hero-buttons" style={{ display: 'flex', justifyContent: 'center', gap: '12px', marginTop: '24px', flexWrap: 'wrap' }}>
             <button onClick={() => setView('quote')} className="ace-btn ace-btn-action">
               <span>Calculate Instant Rate</span>
               <ArrowRight size={15} />
@@ -181,7 +181,7 @@ export default function ServicesView({ setView }) {
                 </div>
 
                 {/* Content side */}
-                <div style={{
+                <div className="service-card-content" style={{
                   padding: '36px 32px',
                   display: 'flex',
                   flexDirection: 'column',
@@ -262,7 +262,7 @@ export default function ServicesView({ setView }) {
         </div>
 
         {/* Global Assurance Callout */}
-        <div style={{
+        <div className="services-callout-card" style={{
           marginTop: '48px',
           backgroundColor: 'var(--color-dark-navy)',
           color: '#FFFFFF',
@@ -270,13 +270,13 @@ export default function ServicesView({ setView }) {
           padding: '36px',
           textAlign: 'center'
         }}>
-          <h3 style={{ fontSize: '22px', fontWeight: 800, color: '#FFFFFF', marginBottom: '8px' }}>
+          <h3 style={{ fontSize: 'clamp(18px, 5vw, 22px)', fontWeight: 800, color: '#FFFFFF', marginBottom: '8px' }}>
             Need Custom Multi-Modal Supply Chain Coordination?
           </h3>
           <p style={{ fontSize: '14px', color: '#D9E7F0', maxWidth: '640px', margin: '0 auto 20px' }}>
             Our enterprise logistics engineers design end-to-end bespoke routing, combined sea-air transit, and dedicated warehouse distribution networks.
           </p>
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '12px' }}>
+          <div className="services-callout-buttons" style={{ display: 'flex', justifyContent: 'center', gap: '12px', flexWrap: 'wrap' }}>
             <button onClick={() => setView('contact')} className="ace-btn ace-btn-action">
               <span>Speak with Cargo Dispatcher</span>
             </button>
@@ -291,6 +291,29 @@ export default function ServicesView({ setView }) {
         @media (max-width: 860px) {
           .ace-card {
             grid-template-columns: 1fr !important;
+          }
+        }
+        @media (max-width: 640px) {
+          .service-card-content {
+            padding: 20px 16px !important;
+          }
+          .services-callout-card {
+            padding: 24px 16px !important;
+          }
+          .services-hero-buttons,
+          .services-callout-buttons {
+            flex-direction: column !important;
+            width: 100% !important;
+          }
+          .services-hero-buttons > button,
+          .services-callout-buttons > button {
+            width: 100% !important;
+            justify-content: center !important;
+          }
+        }
+        @media (max-width: 380px) {
+          .service-card-content {
+            padding: 16px 12px !important;
           }
         }
       `}</style>

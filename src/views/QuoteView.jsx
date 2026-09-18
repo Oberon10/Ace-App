@@ -149,7 +149,7 @@ export default function QuoteView({ onProceedToShipment }) {
           <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--color-bright-action)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
             Instant Freight Rates
           </span>
-          <h1 style={{ fontSize: '32px', color: 'var(--color-primary-blue)', fontWeight: 800, marginTop: '4px', marginBottom: '8px' }}>
+          <h1 style={{ fontSize: 'clamp(22px, 6vw, 32px)', color: 'var(--color-primary-blue)', fontWeight: 800, marginTop: '4px', marginBottom: '8px' }}>
             Get a Competitive Shipping Quote
           </h1>
           <p style={{ fontSize: '14.5px', color: 'var(--text-secondary)' }}>
@@ -167,7 +167,7 @@ export default function QuoteView({ onProceedToShipment }) {
           alignItems: 'start'
         }} className="quote-grid">
           {/* LEFT: QUOTE FORM */}
-          <div className="ace-card" style={{ padding: '32px' }}>
+          <div className="ace-card quote-form-card" style={{ padding: '32px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '24px', borderBottom: '1px solid var(--color-border)', paddingBottom: '14px' }}>
               <Calculator size={22} color="var(--color-primary-blue)" />
               <h3 style={{ fontSize: '18px', color: 'var(--color-primary-blue)', fontWeight: 700 }}>
@@ -410,7 +410,7 @@ export default function QuoteView({ onProceedToShipment }) {
           </div>
 
           {/* RIGHT: ESTIMATED RESULT CARD */}
-          <div className="ace-card" style={{
+          <div className="ace-card quote-result-card" style={{
             backgroundColor: 'var(--color-white)',
             boxShadow: 'var(--shadow-card)',
             border: '2px solid var(--color-border)',
@@ -429,7 +429,7 @@ export default function QuoteView({ onProceedToShipment }) {
             {/* Big Price Headline */}
             <div style={{ marginBottom: '20px' }}>
               <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: 600 }}>Estimated Shipping Cost</div>
-              <div style={{ fontSize: '38px', fontWeight: 800, color: 'var(--color-primary-blue)', lineHeight: 1.1, marginTop: '4px' }}>
+              <div style={{ fontSize: 'clamp(28px, 8vw, 38px)', fontWeight: 800, color: 'var(--color-primary-blue)', lineHeight: 1.1, marginTop: '4px' }}>
                 ${quoteResult.estimatedCost}.00 <span style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text-secondary)' }}>USD</span>
               </div>
               <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '4px' }}>
@@ -499,6 +499,10 @@ export default function QuoteView({ onProceedToShipment }) {
           }
         }
         @media (max-width: 640px) {
+          .quote-form-card,
+          .quote-result-card {
+            padding: 20px 16px !important;
+          }
           .quote-hubs-grid {
             grid-template-columns: 1fr !important;
             gap: 14px !important;
@@ -509,6 +513,10 @@ export default function QuoteView({ onProceedToShipment }) {
           }
         }
         @media (max-width: 380px) {
+          .quote-form-card,
+          .quote-result-card {
+            padding: 16px 12px !important;
+          }
           .quote-dimensions-grid {
             grid-template-columns: 1fr !important;
           }
