@@ -112,7 +112,7 @@ export default function HomeView({ setView, onSearchTracking }) {
             {/* Left Column: Headline, Supporting Text & CTAs */}
             <div>
               {/* Trust Pill */}
-              <div style={{
+              <div className="hero-trust-pill" style={{
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '8px',
@@ -125,13 +125,13 @@ export default function HomeView({ setView, onSearchTracking }) {
                 color: '#90CDF4',
                 marginBottom: '20px'
               }}>
-                <ShieldCheck size={14} color="#38BDF8" />
+                <ShieldCheck size={14} color="#38BDF8" style={{ flexShrink: 0 }} />
                 <span>Certified International Freight & Supply Chain Carrier</span>
               </div>
 
               {/* Main Headline (Section 7) */}
               <h1 style={{
-                fontSize: 'clamp(2.2rem, 4.5vw, 3.2rem)',
+                fontSize: 'clamp(1.75rem, 6.2vw, 3.2rem)',
                 fontWeight: 800,
                 color: '#FFFFFF',
                 lineHeight: 1.15,
@@ -143,7 +143,7 @@ export default function HomeView({ setView, onSearchTracking }) {
 
               {/* Supporting Text (Section 7) */}
               <p style={{
-                fontSize: 'clamp(1rem, 1.6vw, 1.2rem)',
+                fontSize: 'clamp(0.95rem, 1.6vw, 1.2rem)',
                 color: '#D9E7F0',
                 lineHeight: 1.6,
                 marginBottom: '28px'
@@ -186,7 +186,7 @@ export default function HomeView({ setView, onSearchTracking }) {
               </div>
 
               {/* Operational Proof Bullets */}
-              <div style={{
+              <div className="hero-proof-bullets" style={{
                 display: 'flex',
                 flexWrap: 'wrap',
                 gap: '16px',
@@ -196,15 +196,15 @@ export default function HomeView({ setView, onSearchTracking }) {
                 paddingTop: '16px'
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <CheckCircle2 size={15} color="#10B981" />
+                  <CheckCircle2 size={15} color="#10B981" style={{ flexShrink: 0 }} />
                   <span>Real-Time Satellite Telemetry</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <CheckCircle2 size={15} color="#10B981" />
+                  <CheckCircle2 size={15} color="#10B981" style={{ flexShrink: 0 }} />
                   <span>99.8% On-Time Delivery SLA</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <CheckCircle2 size={15} color="#10B981" />
+                  <CheckCircle2 size={15} color="#10B981" style={{ flexShrink: 0 }} />
                   <span>Bonded Customs Clearance</span>
                 </div>
               </div>
@@ -589,12 +589,7 @@ export default function HomeView({ setView, onSearchTracking }) {
         borderBottom: '1px solid var(--color-border)'
       }}>
         <div className="ace-container">
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-            gap: '40px',
-            alignItems: 'center'
-          }}>
+          <div className="home-global-reach-grid">
             <div>
               <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--color-bright-action)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
                 Worldwide Connectivity
@@ -606,26 +601,26 @@ export default function HomeView({ setView, onSearchTracking }) {
                 Connecting businesses and people across borders with reliable logistics solutions. Our integrated intermodal infrastructure links manufacturing hubs in Africa, Europe, North America, and Asia with synchronized customs clearance and continuous tracking.
               </p>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '28px' }}>
+              <div className="home-hubs-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '28px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13.5px', fontWeight: 600, color: 'var(--text-primary)' }}>
-                  <CheckCircle2 size={16} color="#10B981" />
+                  <CheckCircle2 size={16} color="#10B981" style={{ flexShrink: 0 }} />
                   <span>Accra Airport Air Hub</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13.5px', fontWeight: 600, color: 'var(--text-primary)' }}>
-                  <CheckCircle2 size={16} color="#10B981" />
+                  <CheckCircle2 size={16} color="#10B981" style={{ flexShrink: 0 }} />
                   <span>Rotterdam Euro Port</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13.5px', fontWeight: 600, color: 'var(--text-primary)' }}>
-                  <CheckCircle2 size={16} color="#10B981" />
+                  <CheckCircle2 size={16} color="#10B981" style={{ flexShrink: 0 }} />
                   <span>New York JFK Gateway</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13.5px', fontWeight: 600, color: 'var(--text-primary)' }}>
-                  <CheckCircle2 size={16} color="#10B981" />
+                  <CheckCircle2 size={16} color="#10B981" style={{ flexShrink: 0 }} />
                   <span>Singapore Maritime Yard</span>
                 </div>
               </div>
 
-              <div style={{ display: 'flex', gap: '12px' }}>
+              <div className="home-global-reach-buttons" style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
                 <button onClick={() => setView('quote')} className="ace-btn ace-btn-action">
                   <span>Calculate Route Quote</span>
                   <ArrowRight size={15} />
@@ -656,7 +651,7 @@ export default function HomeView({ setView, onSearchTracking }) {
               </div>
 
               {/* Vector Globe Route Diagram */}
-              <div style={{ position: 'relative', height: '240px', backgroundColor: '#0A3757', borderRadius: '10px', overflow: 'hidden' }}>
+              <div className="home-vector-map-canvas" style={{ position: 'relative', height: '240px', backgroundColor: '#0A3757', borderRadius: '10px', overflow: 'hidden' }}>
                 <svg width="100%" height="100%" viewBox="0 0 500 240">
                   <defs>
                     <linearGradient id="routeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -720,7 +715,7 @@ export default function HomeView({ setView, onSearchTracking }) {
           <p style={{ fontSize: '15px', color: '#D9E7F0', lineHeight: 1.6, marginBottom: '24px' }}>
             Open an ACE Logistics corporate account today for priority scheduling, volume discounts, and full API integration.
           </p>
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '14px', flexWrap: 'wrap' }}>
+          <div className="cta-banner-buttons" style={{ display: 'flex', justifyContent: 'center', gap: '14px', flexWrap: 'wrap' }}>
             <button onClick={() => setView('new-shipment')} className="ace-btn ace-btn-action ace-btn-lg">
               <span>Book Your First Shipment</span>
               <ArrowRight size={16} />
@@ -771,6 +766,12 @@ export default function HomeView({ setView, onSearchTracking }) {
         .services-card-bottom {
           grid-column: span 3;
         }
+        .home-global-reach-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+          gap: 40px;
+          align-items: center;
+        }
         @media (max-width: 960px) {
           .services-multi-grid {
             grid-template-columns: repeat(2, 1fr) !important;
@@ -782,6 +783,10 @@ export default function HomeView({ setView, onSearchTracking }) {
         @media (max-width: 860px) {
           .hero-grid {
             grid-template-columns: 1fr !important;
+          }
+          .home-global-reach-grid {
+            grid-template-columns: 1fr !important;
+            gap: 28px !important;
           }
         }
         @media (max-width: 640px) {
@@ -821,7 +826,7 @@ export default function HomeView({ setView, onSearchTracking }) {
           }
           .home-trust-metrics-section {
             background-color: #F8FAFC !important;
-            padding: 24px 0 !important;
+            padding: 20px 0 !important;
           }
           .tracking-card-visual-banner {
             margin-bottom: 14px !important;
@@ -843,7 +848,7 @@ export default function HomeView({ setView, onSearchTracking }) {
           }
           .hero-action-buttons button {
             width: 100% !important;
-            justifyContent: center !important;
+            justify-content: center !important;
           }
           .hero-track-form {
             flex-direction: column !important;
@@ -852,23 +857,59 @@ export default function HomeView({ setView, onSearchTracking }) {
           .hero-track-form input,
           .hero-track-form button {
             width: 100% !important;
-            justifyContent: center !important;
+            justify-content: center !important;
           }
           .home-metrics-grid {
             grid-template-columns: repeat(2, 1fr) !important;
-            gap: 16px !important;
+            gap: 14px 12px !important;
           }
           .home-metrics-grid > div > div:first-child {
-            font-size: 26px !important;
+            font-size: 24px !important;
           }
-        }
-        @media (max-width: 400px) {
-          .home-metrics-grid {
-            grid-template-columns: 1fr 1fr !important;
+          .home-hubs-grid {
+            grid-template-columns: 1fr !important;
             gap: 10px !important;
           }
+          .home-global-reach-buttons {
+            flex-direction: column !important;
+            gap: 10px !important;
+          }
+          .home-global-reach-buttons button {
+            width: 100% !important;
+            justify-content: center !important;
+          }
+          .cta-banner-buttons {
+            flex-direction: column !important;
+            gap: 10px !important;
+          }
+          .cta-banner-buttons button {
+            width: 100% !important;
+            justify-content: center !important;
+          }
+          .home-vector-map-canvas {
+            height: 190px !important;
+          }
+        }
+        @media (max-width: 480px) {
+          .hero-trust-pill {
+            font-size: 11px !important;
+            padding: 5px 10px !important;
+          }
+          .hero-proof-bullets {
+            flex-direction: column !important;
+            gap: 10px !important;
+          }
+        }
+        @media (max-width: 360px) {
+          .home-metrics-grid {
+            grid-template-columns: 1fr 1fr !important;
+            gap: 8px !important;
+          }
           .home-metrics-grid > div > div:first-child {
-            font-size: 22px !important;
+            font-size: 20px !important;
+          }
+          .home-metrics-grid > div > div:last-child {
+            font-size: 11px !important;
           }
         }
       `}</style>
