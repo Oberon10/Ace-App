@@ -48,30 +48,37 @@ export default function TrackingView({
   hasSearched = false,
   onClearTracking
 }) {
-  const [searchInput, setSearchInput] = useState(initialQuery || (shipment?.trackingNumber || ''));
+  const [searchInput, setSearchInput] = useState(hasSearched && (initialQuery || shipment?.trackingNumber) ? (initialQuery || shipment?.trackingNumber) : '');
   const [copied, setCopied] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [lastSyncTime, setLastSyncTime] = useState('Just now');
+  const [validationNotice, setValidationNotice] = useState('');
 
   useEffect(() => {
-    if (shipment) {
-      setSearchInput(shipment.trackingNumber);
-    } else if (initialQuery) {
-      setSearchInput(initialQuery);
-    }
-
-    if (shipment) {
+    if (hasSearched && shipment) {
+      setSearchInput(shipment.trackingNumber || initialQuery || '');
+      setValidationNotice('');
       setTimeout(() => {
         const el = document.getElementById('shipment-telemetry-root');
         if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, 150);
+    } else if (!hasSearched) {
+      setSearchInput('');
+      setValidationNotice('');
+    } else if (initialQuery) {
+      setSearchInput(initialQuery);
     }
-  }, [shipment, initialQuery]);
+  }, [shipment, initialQuery, hasSearched]);
 
   const handleSearchSubmit = (e) => {
     if (e && e.preventDefault) e.preventDefault();
-    const query = searchInput.trim() || 'ACE-2026-8F72K9';
+    const query = searchInput.trim();
+    if (!query) {
+      setValidationNotice('Please enter your consignment tracking number to proceed.');
+      return;
+    }
+    setValidationNotice('');
     setIsSearching(true);
     setTimeout(() => {
       setIsSearching(false);
@@ -146,19 +153,25 @@ export default function TrackingView({
   const milestoneSteps = shipment ? getMilestoneSteps() : [];
 
   return (
-    <div style={{ backgroundColor: 'var(--color-very-light-blue)', padding: '40px 0 80px', minHeight: 'calc(100vh - 140px)' }}>
+    <div style={{ 
+      backgroundColor: 'var(--color-very-light-blue)', 
+      padding: (hasSearched && shipment) ? '40px 0 80px' : '56px 0 90px', 
+      minHeight: 'calc(100vh - 140px)' 
+    }}>
       <div className="ace-container">
         {/* ===================================================
             PROMINENT ENTERPRISE TRACKING SEARCH CARD
             =================================================== */}
         <div className="ace-card tracking-search-card" style={{
           width: '100%',
-          margin: '0 auto 32px',
+          maxWidth: (hasSearched && shipment) ? '100%' : '900px',
+          margin: (hasSearched && shipment) ? '0 auto 32px' : '10px auto 40px',
           padding: '36px 32px',
           borderRadius: '16px',
           boxShadow: 'var(--shadow-card)',
           border: '1px solid var(--color-border)',
-          backgroundColor: 'var(--color-white)'
+          backgroundColor: 'var(--color-white)',
+          transition: 'all 0.3s ease'
         }}>
           <div style={{ textAlign: 'center', marginBottom: '24px' }}>
             <div style={{ 
@@ -257,7 +270,10 @@ export default function TrackingView({
                 className="ace-input ace-input-with-icon"
                 placeholder="Enter consignment tracking number (e.g. ACE-2026-8F72K9)"
                 value={searchInput}
-                onChange={(e) => setSearchInput(e.target.value)}
+                onChange={(e) => {
+                  setSearchInput(e.target.value);
+                  if (validationNotice) setValidationNotice('');
+                }}
                 style={{ height: '50px', fontSize: '15px', fontWeight: 500 }}
               />
             </div>
@@ -282,6 +298,44 @@ export default function TrackingView({
             </button>
           </form>
 
+          {validationNotice && (
+            <div style={{
+              maxWidth: '860px',
+              margin: '14px auto 0',
+              backgroundColor: '#FEF2F2',
+              border: '1px solid #FECACA',
+              borderRadius: '8px',
+              padding: '10px 14px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              color: '#B91C1C',
+              fontSize: '13px'
+            }}>
+              <AlertCircle size={16} />
+              <span>{validationNotice}</span>
+              <button
+                type="button"
+                onClick={() => {
+                  setSearchInput('ACE-2026-8F72K9');
+                  setValidationNotice('');
+                }}
+                style={{
+                  marginLeft: 'auto',
+                  background: 'none',
+                  border: 'none',
+                  color: 'var(--color-primary-blue)',
+                  fontWeight: 700,
+                  fontSize: '12px',
+                  cursor: 'pointer',
+                  textDecoration: 'underline'
+                }}
+              >
+                Use sample: ACE-2026-8F72K9
+              </button>
+            </div>
+          )}
+
           {/* Professional Security & Format Notice */}
           <div className="tracking-security-bar" style={{ 
             marginTop: '18px', 
@@ -299,7 +353,21 @@ export default function TrackingView({
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
               <ShieldCheck size={14} color="#10B981" />
-              <span>Reference Format: <strong className="security-awb-tag" style={{ color: 'var(--color-primary-blue)' }}>ACE-2026-XXXXXX</strong> or Master Waybill</span>
+              <span>
+                Reference Format:{' '}
+                <strong 
+                  className="security-awb-tag" 
+                  style={{ color: 'var(--color-primary-blue)', cursor: 'pointer', textDecoration: 'underline dotted' }}
+                  onClick={() => {
+                    setSearchInput('ACE-2026-8F72K9');
+                    if (validationNotice) setValidationNotice('');
+                  }}
+                  title="Click to insert sample tracking number"
+                >
+                  ACE-2026-8F72K9
+                </strong>{' '}
+                or Master Waybill
+              </span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px', fontSize: '11.5px' }}>
               <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
@@ -317,7 +385,7 @@ export default function TrackingView({
         {/* ===================================================
             STATE 1: SHIPMENT FOUND — DISPLAY ALL DETAILS
             =================================================== */}
-        {shipment ? (
+        {(hasSearched && shipment) ? (
           <div id="shipment-telemetry-root">
             {/* Action Bar & Live Telemetry Verification */}
             <div style={{ 
@@ -974,64 +1042,7 @@ export default function TrackingView({
               </a>
             </div>
           </div>
-        ) : (
-          /* ===================================================
-              STATE 3: INITIAL LANDING STATE — ENTERPRISE TRACKING PORTAL
-              =================================================== */
-          <div style={{ width: '100%' }}>
-            <div className="ace-card" style={{ padding: '40px 36px', textAlign: 'center', marginBottom: '24px' }}>
-              <h2 style={{ fontSize: '22px', color: 'var(--color-primary-blue)', fontWeight: 700, marginBottom: '8px' }}>
-                Global Consignment & Freight Intelligence
-              </h2>
-              <p style={{ fontSize: '14.5px', color: 'var(--text-secondary)', maxWidth: '720px', margin: '0 auto 32px' }}>
-                Enter your shipment tracking number above to access full cargo specifications, live multi-modal route telemetry, carrier documents, and proof of delivery.
-              </p>
-
-              <div style={{ 
-                display: 'grid', 
-                gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', 
-                gap: '20px',
-                textAlign: 'left'
-              }}>
-                <div style={{ backgroundColor: 'var(--color-very-light-blue)', padding: '20px', borderRadius: '10px', border: '1px solid var(--color-border)' }}>
-                  <div style={{ width: '36px', height: '36px', borderRadius: '8px', backgroundColor: 'var(--color-light-blue)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-bright-action)', marginBottom: '12px' }}>
-                    <Compass size={18} />
-                  </div>
-                  <h4 style={{ fontSize: '15px', color: 'var(--color-primary-blue)', fontWeight: 700, marginBottom: '4px' }}>
-                    Real-Time Telemetry
-                  </h4>
-                  <p style={{ fontSize: '12.5px', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
-                    Live GPS positioning, waypoint progress, and automated milestone logging across air, ocean, rail, and road transit corridors.
-                  </p>
-                </div>
-
-                <div style={{ backgroundColor: 'var(--color-very-light-blue)', padding: '20px', borderRadius: '10px', border: '1px solid var(--color-border)' }}>
-                  <div style={{ width: '36px', height: '36px', borderRadius: '8px', backgroundColor: 'var(--color-light-blue)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-bright-action)', marginBottom: '12px' }}>
-                    <FileText size={18} />
-                  </div>
-                  <h4 style={{ fontSize: '15px', color: 'var(--color-primary-blue)', fontWeight: 700, marginBottom: '4px' }}>
-                    Electronic Documents
-                  </h4>
-                  <p style={{ fontSize: '12.5px', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
-                    Instant access to authenticated digital Bills of Lading, Air Waybills, customs export clearances, and signed Proof of Delivery.
-                  </p>
-                </div>
-
-                <div style={{ backgroundColor: 'var(--color-very-light-blue)', padding: '20px', borderRadius: '10px', border: '1px solid var(--color-border)' }}>
-                  <div style={{ width: '36px', height: '36px', borderRadius: '8px', backgroundColor: 'var(--color-light-blue)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-bright-action)', marginBottom: '12px' }}>
-                    <ShieldCheck size={18} />
-                  </div>
-                  <h4 style={{ fontSize: '15px', color: 'var(--color-primary-blue)', fontWeight: 700, marginBottom: '4px' }}>
-                    Tamper Verification
-                  </h4>
-                  <p style={{ fontSize: '12.5px', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
-                    Continuous integrity monitoring with electronic security seals, climate telemetry, and chain-of-custody signatures.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+        ) : null}
       </div>
 
       <style>{`

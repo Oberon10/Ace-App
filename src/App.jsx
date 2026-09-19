@@ -129,6 +129,17 @@ export default function App() {
     setHasSearchedTracking(false);
   };
 
+  // Global Router Navigator: resets tracking query and clears consignment details when accessing 'track' from header or footer
+  const handleNavigate = (view) => {
+    if (view === 'track') {
+      setSelectedShipment(null);
+      setTrackingQuery('');
+      setHasSearchedTracking(false);
+    }
+    setCurrentView(view);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   // Open Receipt
   const handleOpenReceipt = (shipment) => {
     setReceiptShipment(shipment);
@@ -255,7 +266,7 @@ export default function App() {
       {/* Sticky Global Navigation with Role Permissions */}
       <Navbar 
         currentView={currentView} 
-        setView={setCurrentView} 
+        setView={handleNavigate} 
         activeRole={activeRole} 
         setActiveRole={setActiveRole} 
         currentUser={currentUser}
@@ -468,7 +479,7 @@ export default function App() {
 
       {/* Global Footer */}
       {!isDashboardView && (
-        <Footer setView={setCurrentView} />
+        <Footer setView={handleNavigate} />
       )}
     </div>
   );
