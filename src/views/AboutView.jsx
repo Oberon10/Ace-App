@@ -14,21 +14,54 @@ import {
 
 export default function AboutView({ setView }) {
   return (
-    <div style={{ backgroundColor: 'var(--color-very-light-blue)', padding: '48px 0 80px' }}>
-      <div className="ace-container">
-        {/* Header */}
-        <div style={{ textAlign: 'center', maxWidth: '720px', margin: '0 auto 48px' }}>
-          <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--color-bright-action)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-            Corporate Profile & Fleet
-          </span>
-          <h1 style={{ fontSize: 'clamp(24px, 6vw, 36px)', color: 'var(--color-primary-blue)', fontWeight: 800, marginTop: '4px', marginBottom: '12px' }}>
+    <div style={{ backgroundColor: 'var(--color-very-light-blue)' }}>
+      {/* ===================================================
+          HERO BANNER — CORPORATE PROFILE & GLOBAL INFRASTRUCTURE
+          =================================================== */}
+      <section className="ace-page-hero-banner" style={{
+        backgroundImage: "linear-gradient(135deg, rgba(7, 42, 66, 0.94) 0%, rgba(11, 79, 124, 0.86) 100%), url('/images/corporate-logistics-hub.jpg')",
+        padding: '52px 0 56px'
+      }}>
+        <div className="ace-container" style={{ textAlign: 'center', maxWidth: '780px', margin: '0 auto' }}>
+          <div style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '8px',
+            backgroundColor: 'rgba(255, 255, 255, 0.12)',
+            border: '1px solid rgba(255, 255, 255, 0.22)',
+            padding: '6px 14px',
+            borderRadius: '20px',
+            fontSize: '12px',
+            fontWeight: 700,
+            color: '#90CDF4',
+            marginBottom: '16px',
+            letterSpacing: '0.06em',
+            textTransform: 'uppercase'
+          }}>
+            <Globe2 size={14} color="#38BDF8" />
+            <span>Corporate Infrastructure & Global Network</span>
+          </div>
+          <h1 style={{ fontSize: 'clamp(26px, 6vw, 38px)', fontWeight: 800, color: '#FFFFFF', marginBottom: '14px', letterSpacing: '-0.02em' }}>
             About ACE Logistics Global
           </h1>
-          <p style={{ fontSize: '15px', color: 'var(--text-secondary)', lineHeight: 1.7 }}>
-            Leading international freight forwarding, bonded container logistics, and multimodal supply chain infrastructure connecting developing industrial hubs with global commerce.
+          <p style={{ fontSize: '15.5px', color: '#D9E7F0', lineHeight: 1.6, maxWidth: '680px', margin: '0 auto 24px' }}>
+            Leading international freight forwarding, bonded container logistics, and multimodal supply chain infrastructure connecting developing industrial hubs with worldwide commerce.
           </p>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', flexWrap: 'wrap', fontSize: '12.5px', color: 'rgba(255,255,255,0.85)' }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <CheckCircle2 size={15} color="#10B981" /> 40+ Intermodal Terminal Hubs
+            </span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <CheckCircle2 size={15} color="#10B981" /> 99.8% On-Time SLA Guarantee
+            </span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <CheckCircle2 size={15} color="#10B981" /> 180+ Global Destinations
+            </span>
+          </div>
         </div>
+      </section>
 
+      <div className="ace-container" style={{ paddingTop: '40px', paddingBottom: '80px' }}>
         {/* Vision Card */}
         <div className="ace-card about-vision-card" style={{ padding: '40px', marginBottom: '40px' }}>
           <div style={{
@@ -67,8 +100,20 @@ export default function AboutView({ setView }) {
               </div>
             </div>
 
-            <div style={{ borderRadius: '12px', overflow: 'hidden', border: '1px solid var(--color-border)' }}>
-              <img src="/images/container-port.jpg" alt="Port Operations" style={{ width: '100%', height: '320px', objectFit: 'cover' }} />
+            <div style={{ position: 'relative', borderRadius: '12px', overflow: 'hidden', border: '1px solid var(--color-border)', boxShadow: 'var(--shadow-card)' }}>
+              <img src="/images/corporate-logistics-hub.jpg" alt="ACE Logistics International Headquarters" style={{ width: '100%', height: '320px', objectFit: 'cover' }} />
+              <div style={{
+                position: 'absolute',
+                bottom: 0,
+                left: 0,
+                right: 0,
+                background: 'linear-gradient(to top, rgba(7, 42, 66, 0.92) 0%, rgba(7, 42, 66, 0.2) 70%, transparent 100%)',
+                padding: '12px 16px',
+                color: '#FFFFFF'
+              }}>
+                <div style={{ fontSize: '13px', fontWeight: 700 }}>Global Operations Campus & Fleet Terminal</div>
+                <div style={{ fontSize: '11px', color: '#90CDF4' }}>Central coordination center managing intercontinental logistics</div>
+              </div>
             </div>
           </div>
         </div>
@@ -136,7 +181,6 @@ export default function AboutView({ setView }) {
 
         {/* Action Banner */}
         <div className="ace-cta-banner" style={{
-          backgroundColor: 'var(--color-primary-blue)',
           color: '#FFFFFF',
           borderRadius: 'var(--radius-card)',
           padding: '36px',
