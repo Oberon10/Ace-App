@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { KNOWN_ACCOUNTS } from '../data/shipments';
+import { KNOWN_ACCOUNTS, USERS_LIST } from '../data/shipments';
 import { 
   Shield, 
   Lock, 
@@ -18,6 +18,117 @@ import {
   Package
 } from 'lucide-react';
 
+// Helper to retrieve all registered customers (merging pre-configured accounts with localStorage)
+export function getRegisteredCustomers() {
+  let stored = [];
+  try {
+    const raw = localStorage.getItem('ace_registered_customers');
+    if (raw) {
+      stored = JSON.parse(raw);
+    }
+  } catch (err) {
+    console.error('Failed to parse ace_registered_customers from storage', err);
+  }
+
+  // Pre-configured registered customer accounts
+  const defaultCustomers = [
+    ...KNOWN_ACCOUNTS.filter(a => a.role === 'customer'),
+    ...USERS_LIST.filter(u => u.role?.toLowerCase() === 'customer').map(u => ({
+      name: u.name,
+      email: u.email,
+      loginPassword: u.loginPassword,
+      company: u.department || `${u.name}'s Enterprise`,
+      phone: u.phone,
+      role: 'customer'
+    }))
+  ];
+
+  // Map by email for deduplication
+  const customerMap = new Map();
+  defaultCustomers.forEach(c => {
+    if (c.email) {
+      customerMap.set(c.email.trim().toLowerCase(), c);
+    }
+  });
+
+  // Stored customer registrations override or append
+  stored.forEach(c => {
+    if (c.email) {
+      customerMap.set(c.email.trim().toLowerCase(), c);
+    }
+  });
+
+  return Array.from(customerMap.values());
+}
+
+export function saveRegisteredCustomer(newCustomer) {
+  try {
+    const raw = localStorage.getItem('ace_registered_customers');
+    const list = raw ? JSON.parse(raw) : [];
+    const filtered = list.filter(c => c.email?.trim().toLowerCase() !== newCustomer.email?.trim().toLowerCase());
+    filtered.push(newCustomer);
+    localStorage.setItem('ace_registered_customers', JSON.stringify(filtered));
+  } catch (err) {
+    console.error('Failed to save customer to localStorage', err);
+  }
+}
+
+// Helper to retrieve all admin-registered staff members (merging pre-configured accounts with localStorage)
+export function getRegisteredStaff() {
+  let stored = [];
+  try {
+    const raw = localStorage.getItem('ace_registered_staff');
+    if (raw) {
+      stored = JSON.parse(raw);
+    }
+  } catch (err) {
+    console.error('Failed to parse ace_registered_staff from storage', err);
+  }
+
+  // Pre-configured staff accounts registered in the system
+  const defaultStaff = [
+    ...KNOWN_ACCOUNTS.filter(a => a.role === 'staff'),
+    ...USERS_LIST.filter(u => u.role?.toLowerCase() === 'staff').map(u => ({
+      name: u.name,
+      email: u.email,
+      loginPassword: u.loginPassword,
+      department: u.department || 'Terminal Operations',
+      phone: u.phone,
+      status: u.status || 'Active',
+      role: 'staff'
+    }))
+  ];
+
+  // Map by email for deduplication
+  const staffMap = new Map();
+  defaultStaff.forEach(s => {
+    if (s.email) {
+      staffMap.set(s.email.trim().toLowerCase(), s);
+    }
+  });
+
+  // Stored staff registrations (e.g. added by Admin in User Management) override or append
+  stored.forEach(s => {
+    if (s.email) {
+      staffMap.set(s.email.trim().toLowerCase(), s);
+    }
+  });
+
+  return Array.from(staffMap.values());
+}
+
+export function saveRegisteredStaff(newStaff) {
+  try {
+    const raw = localStorage.getItem('ace_registered_staff');
+    const list = raw ? JSON.parse(raw) : [];
+    const filtered = list.filter(s => s.email?.trim().toLowerCase() !== newStaff.email?.trim().toLowerCase());
+    filtered.push(newStaff);
+    localStorage.setItem('ace_registered_staff', JSON.stringify(filtered));
+  } catch (err) {
+    console.error('Failed to save staff to localStorage', err);
+  }
+}
+
 export default function LoginView({ 
   onLoginSuccess, 
   setView, 
@@ -35,11 +146,10 @@ export default function LoginView({
     }
   }, [initialPortal]);
 
-  // Login Fields
+  // Login Fields - customer & staff inputs start completely blank with clear placeholders
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
   const [showLoginPassword, setShowLoginPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(true);
 
   // Staff specific fields
   const [staffStation, setStaffStation] = useState('ACC-T1 (Accra Central Air Hub)');
@@ -58,14 +168,11 @@ export default function LoginView({
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [passwordError, setPasswordError] = useState('');
 
-  // Auto-fill sensible default email placeholders when switching portal tabs
+  // Auto-fill sensible default credentials only for Admin demo console; Customer and Staff portals start blank
   useEffect(() => {
-    if (selectedPortal === 'customer') {
-      setLoginEmail('k.mensah@goldcoasttrading.com');
-      setLoginPassword('KwameTrading#Accra24');
-    } else if (selectedPortal === 'staff') {
-      setLoginEmail('s.oconnor@acelogistics.com');
-      setLoginPassword('StaffDispatchKey@99');
+    if (selectedPortal === 'customer' || selectedPortal === 'staff') {
+      setLoginEmail('');
+      setLoginPassword('');
     } else if (selectedPortal === 'admin') {
       setLoginEmail('d.sterling@acelogistics.com');
       setLoginPassword('AdminSecurePass#2026');
@@ -81,26 +188,84 @@ export default function LoginView({
   const handleLoginSubmit = (e) => {
     e.preventDefault();
     const cleanEmail = (loginEmail || '').trim().toLowerCase();
+    const cleanPassword = (loginPassword || '').trim();
 
-    // Check against known accounts for exact user profile
-    const matchedAccount = KNOWN_ACCOUNTS.find(a => a.email.toLowerCase() === cleanEmail);
-    if (matchedAccount) {
-      onLoginSuccess(matchedAccount.role, { ...matchedAccount });
+    if (!cleanEmail) {
+      setPasswordError('Please enter your email address.');
       return;
     }
 
-    // Unlisted user login: derive role based on active portal tab
-    const role = selectedPortal;
-    const prefix = cleanEmail.split('@')[0].replace(/[._-]/g, ' ');
-    const capitalizedName = prefix.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') || 
-      (role === 'admin' ? 'System Administrator' : role === 'staff' ? 'Terminal Officer' : 'Authorized Customer');
+    if (!cleanPassword) {
+      setPasswordError('Please enter your password.');
+      return;
+    }
 
-    onLoginSuccess(role, { 
-      name: capitalizedName, 
-      email: loginEmail.trim(), 
-      company: role === 'customer' ? `${capitalizedName}'s Commercial Account` : 'ACE Global Logistics Network',
-      role 
-    });
+    // STRICT CUSTOMER VERIFICATION: Only registered customers can log in
+    if (selectedPortal === 'customer') {
+      const registeredCustomers = getRegisteredCustomers();
+      const matchedCustomer = registeredCustomers.find(c => c.email?.trim().toLowerCase() === cleanEmail);
+
+      if (!matchedCustomer) {
+        setPasswordError('Account not found. Only registered customers can log in. Please create an account or verify your email.');
+        return;
+      }
+
+      // Validate customer password
+      if (matchedCustomer.loginPassword && matchedCustomer.loginPassword !== cleanPassword) {
+        setPasswordError('Incorrect password. Please verify your password and try again.');
+        return;
+      }
+
+      setPasswordError('');
+      onLoginSuccess('customer', { ...matchedCustomer, role: 'customer' });
+      return;
+    }
+
+    // STRICT STAFF VERIFICATION: Only admin-registered staff can log in
+    if (selectedPortal === 'staff') {
+      const registeredStaff = getRegisteredStaff();
+      const staffAccount = registeredStaff.find(s => s.email?.trim().toLowerCase() === cleanEmail);
+
+      if (!staffAccount) {
+        setPasswordError('Account not found. Only admin-registered staff can log in. Please contact your system administrator.');
+        return;
+      }
+
+      if (staffAccount.status === 'Inactive') {
+        setPasswordError('This staff account is currently inactive. Please contact your administrator.');
+        return;
+      }
+
+      if (staffAccount.loginPassword && staffAccount.loginPassword !== cleanPassword) {
+        setPasswordError('Incorrect password. Please verify your staff credentials and try again.');
+        return;
+      }
+
+      setPasswordError('');
+      onLoginSuccess('staff', { ...staffAccount, role: 'staff', station: staffStation });
+      return;
+    }
+
+    // Admin portal verification
+    if (selectedPortal === 'admin') {
+      const adminAccount = USERS_LIST.find(u => u.email.toLowerCase() === cleanEmail && u.role?.toLowerCase() === 'admin') ||
+                           KNOWN_ACCOUNTS.find(a => a.email.toLowerCase() === cleanEmail && a.role === 'admin');
+      if (!adminAccount) {
+        setPasswordError('Administrator record not found.');
+        return;
+      }
+      if (adminAccount.loginPassword && adminAccount.loginPassword !== cleanPassword) {
+        setPasswordError('Incorrect administrator passkey.');
+        return;
+      }
+      if (!adminToken || adminToken.trim() !== 'ACE-SEC-2026') {
+        setPasswordError('Invalid Hardware Security Token. Key must be ACE-SEC-2026.');
+        return;
+      }
+      setPasswordError('');
+      onLoginSuccess('admin', { ...adminAccount, role: 'admin' });
+      return;
+    }
   };
 
   const handleSignupSubmit = (e) => {
@@ -109,16 +274,32 @@ export default function LoginView({
       setPasswordError('Passwords do not match. Please ensure both passwords match.');
       return;
     }
-    setPasswordError('');
+    if (!signupPassword || signupPassword.length < 4) {
+      setPasswordError('Password must be at least 4 characters long.');
+      return;
+    }
 
+    const cleanEmail = signupEmail.trim().toLowerCase();
+    const existingCustomers = getRegisteredCustomers();
+    if (existingCustomers.some(c => c.email?.trim().toLowerCase() === cleanEmail)) {
+      setPasswordError('An account with this email address already exists. Please log in.');
+      return;
+    }
+
+    setPasswordError('');
     const fullName = `${firstName.trim()} ${lastName.trim()}`.trim() || 'New Customer';
-    onLoginSuccess('customer', { 
+    const newCustomer = { 
       name: fullName, 
       email: signupEmail.trim(), 
+      loginPassword: signupPassword,
       phone: phoneNumber.trim(),
       company: `${fullName}'s Trading Co`,
       role: 'customer' 
-    });
+    };
+
+    // Persist new registered customer
+    saveRegisteredCustomer(newCustomer);
+    onLoginSuccess('customer', newCustomer);
   };
 
   return (
@@ -183,142 +364,60 @@ export default function LoginView({
             </div>
 
             <h2 style={{ fontSize: '26px', fontWeight: 800, color: '#FFFFFF', lineHeight: 1.25, marginBottom: '14px' }}>
-              Multi-Console Enterprise Access
+              {selectedPortal === 'customer' ? 'Customer Freight Access' :
+               selectedPortal === 'staff' ? 'Terminal Dispatch Console' : 'Executive Admin Console'}
             </h2>
             <p style={{ color: '#D9E7F0', fontSize: '13.5px', lineHeight: 1.6 }}>
-              Select your authorized portal to access live tracking, dispatcher scheduling, or executive system administration.
+              {selectedPortal === 'customer' ? 'Secure portal to manage personal consignments, book cargo, and monitor real-time tracking.' :
+               selectedPortal === 'staff' ? 'Authorized terminal dispatch portal for manifest intake and flight/vessel status operations.' :
+               'Executive authority console for global network monitoring, user access control, and platform audit records.'}
             </p>
           </div>
 
-          {/* Role Access Matrix Info on Left */}
+          {/* Role Access Matrix Info on Left - strictly isolated to current portal */}
           <div style={{ position: 'relative', zIndex: 2, display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '12.5px', borderTop: '1px solid rgba(255,255,255,0.18)', paddingTop: '20px' }}>
-            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
-              <User size={16} color="#38BDF8" style={{ marginTop: '2px', flexShrink: 0 }} />
-              <div>
-                <strong style={{ color: '#FFFFFF' }}>Customer Portal:</strong>
-                <span style={{ color: '#CBD5E1', display: 'block', fontSize: '11.5px' }}>Strictly isolated records for personal bookings and deliveries.</span>
+            {selectedPortal === 'customer' && (
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
+                <User size={16} color="#38BDF8" style={{ marginTop: '2px', flexShrink: 0 }} />
+                <div>
+                  <strong style={{ color: '#FFFFFF' }}>Customer Portal:</strong>
+                  <span style={{ color: '#CBD5E1', display: 'block', fontSize: '11.5px' }}>Strictly isolated records for personal bookings and deliveries.</span>
+                </div>
               </div>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
-              <Truck size={16} color="#38BDF8" style={{ marginTop: '2px', flexShrink: 0 }} />
-              <div>
-                <strong style={{ color: '#FFFFFF' }}>Staff Dispatcher:</strong>
-                <span style={{ color: '#CBD5E1', display: 'block', fontSize: '11.5px' }}>Terminal intake, manifest queue & consignment status manager only.</span>
+            )}
+            {selectedPortal === 'staff' && (
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
+                <Truck size={16} color="#38BDF8" style={{ marginTop: '2px', flexShrink: 0 }} />
+                <div>
+                  <strong style={{ color: '#FFFFFF' }}>Staff Dispatcher:</strong>
+                  <span style={{ color: '#CBD5E1', display: 'block', fontSize: '11.5px' }}>Terminal intake, manifest queue & consignment status manager only.</span>
+                </div>
               </div>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
-              <Shield size={16} color="#FBBF24" style={{ marginTop: '2px', flexShrink: 0 }} />
-              <div>
-                <strong style={{ color: '#FBBF24' }}>Executive Admin:</strong>
-                <span style={{ color: '#CBD5E1', display: 'block', fontSize: '11.5px' }}>Sole authority to view staff & customer login details and full analytics.</span>
+            )}
+            {selectedPortal === 'admin' && (
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
+                <Shield size={16} color="#FBBF24" style={{ marginTop: '2px', flexShrink: 0 }} />
+                <div>
+                  <strong style={{ color: '#FBBF24' }}>Executive Admin:</strong>
+                  <span style={{ color: '#CBD5E1', display: 'block', fontSize: '11.5px' }}>Sole authority to view staff & customer login details and full analytics.</span>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
 
         {/* ===================================================
-            RIGHT SIDE: AUTH CARD (PORTAL SELECTOR + FORM)
+            RIGHT SIDE: AUTH CARD
             =================================================== */}
         <div className="auth-card-body" style={{ padding: '36px 32px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-          
-          {/* Top 3-Way Portal Selector: Customer, Staff, Admin */}
-          <div style={{ marginBottom: '20px' }}>
-            <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '8px', letterSpacing: '0.06em' }}>
-              Select Login Portal:
-            </div>
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(3, 1fr)',
-              gap: '6px',
-              backgroundColor: 'var(--color-very-light-blue)',
-              padding: '5px',
-              borderRadius: '10px',
-              border: '1px solid var(--color-border)'
-            }}>
-              {/* 1. Customer Login */}
-              <button
-                type="button"
-                onClick={() => handlePortalSwitch('customer')}
-                style={{
-                  padding: '9px 6px',
-                  borderRadius: '7px',
-                  border: 'none',
-                  backgroundColor: selectedPortal === 'customer' ? 'var(--color-white)' : 'transparent',
-                  color: selectedPortal === 'customer' ? 'var(--color-primary-blue)' : 'var(--text-secondary)',
-                  fontWeight: selectedPortal === 'customer' ? 700 : 500,
-                  fontSize: '12.5px',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '6px',
-                  boxShadow: selectedPortal === 'customer' ? 'var(--shadow-subtle)' : 'none',
-                  transition: 'all 0.15s ease'
-                }}
-              >
-                <User size={15} color={selectedPortal === 'customer' ? 'var(--color-bright-action)' : 'currentColor'} />
-                <span>Customer</span>
-              </button>
-
-              {/* 2. Staff Login */}
-              <button
-                type="button"
-                onClick={() => handlePortalSwitch('staff')}
-                style={{
-                  padding: '9px 6px',
-                  borderRadius: '7px',
-                  border: 'none',
-                  backgroundColor: selectedPortal === 'staff' ? 'var(--color-white)' : 'transparent',
-                  color: selectedPortal === 'staff' ? '#0D9488' : 'var(--text-secondary)',
-                  fontWeight: selectedPortal === 'staff' ? 700 : 500,
-                  fontSize: '12.5px',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '6px',
-                  boxShadow: selectedPortal === 'staff' ? 'var(--shadow-subtle)' : 'none',
-                  transition: 'all 0.15s ease'
-                }}
-              >
-                <Truck size={15} color={selectedPortal === 'staff' ? '#0D9488' : 'currentColor'} />
-                <span>Staff</span>
-              </button>
-
-              {/* 3. Admin Login */}
-              <button
-                type="button"
-                onClick={() => handlePortalSwitch('admin')}
-                style={{
-                  padding: '9px 6px',
-                  borderRadius: '7px',
-                  border: 'none',
-                  backgroundColor: selectedPortal === 'admin' ? 'var(--color-white)' : 'transparent',
-                  color: selectedPortal === 'admin' ? 'var(--color-primary-blue)' : 'var(--text-secondary)',
-                  fontWeight: selectedPortal === 'admin' ? 700 : 500,
-                  fontSize: '12.5px',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '6px',
-                  boxShadow: selectedPortal === 'admin' ? 'var(--shadow-subtle)' : 'none',
-                  transition: 'all 0.15s ease'
-                }}
-              >
-                <Shield size={15} color={selectedPortal === 'admin' ? '#F59E0B' : 'currentColor'} />
-                <span>Admin</span>
-              </button>
-            </div>
-          </div>
 
           {/* Heading & Contextual Subtitle based on Portal */}
           <div style={{ marginBottom: '16px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <h3 style={{ fontSize: '22px', color: 'var(--color-primary-blue)', fontWeight: 800 }}>
                 {isRegister ? 'Create Customer Account' : 
-                 selectedPortal === 'customer' ? 'Customer Portal Login' :
-                 selectedPortal === 'staff' ? 'Staff Dispatcher Login' : 'Admin Console Login'}
+                 selectedPortal === 'customer' ? 'Customer Login' :
+                 selectedPortal === 'staff' ? 'Staff Login' : 'Admin Console Login'}
               </h3>
               <span style={{
                 fontSize: '10px',
@@ -590,8 +689,7 @@ export default function LoginView({
               {/* Email Address */}
               <div className="ace-form-group">
                 <label className="ace-label ace-label-required">
-                  {selectedPortal === 'admin' ? 'Administrator Corporate Email' :
-                   selectedPortal === 'staff' ? 'Staff Dispatcher Email' : 'Customer Account Email'}
+                  {selectedPortal === 'admin' ? 'Administrator Corporate Email' : 'Email'}
                 </label>
                 <div className="ace-input-wrapper">
                   <div className="ace-input-icon">
@@ -601,11 +699,13 @@ export default function LoginView({
                     type="email"
                     className="ace-input ace-input-with-icon"
                     placeholder={
-                      selectedPortal === 'admin' ? 'd.sterling@acelogistics.com' :
-                      selectedPortal === 'staff' ? 's.oconnor@acelogistics.com' : 'name@company.com'
+                      selectedPortal === 'admin' ? 'd.sterling@acelogistics.com' : 'Enter your email'
                     }
                     value={loginEmail}
-                    onChange={(e) => setLoginEmail(e.target.value)}
+                    onChange={(e) => {
+                      setLoginEmail(e.target.value);
+                      if (passwordError) setPasswordError('');
+                    }}
                     required
                   />
                 </div>
@@ -615,8 +715,7 @@ export default function LoginView({
               <div className="ace-form-group">
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <label className="ace-label ace-label-required">
-                    {selectedPortal === 'admin' ? 'Administrative Passkey' :
-                     selectedPortal === 'staff' ? 'Staff Security Password' : 'Password'}
+                    {selectedPortal === 'admin' ? 'Administrative Passkey' : 'Password'}
                   </label>
                   {selectedPortal === 'customer' && (
                     <button
@@ -635,9 +734,12 @@ export default function LoginView({
                     type={showLoginPassword ? 'text' : 'password'}
                     className="ace-input ace-input-with-icon"
                     value={loginPassword}
-                    onChange={(e) => setLoginPassword(e.target.value)}
+                    onChange={(e) => {
+                      setLoginPassword(e.target.value);
+                      if (passwordError) setPasswordError('');
+                    }}
                     style={{ paddingRight: '40px' }}
-                    placeholder="••••••••••••"
+                    placeholder={selectedPortal === 'admin' ? '••••••••••••' : 'Enter your password'}
                     required
                   />
                   <button
@@ -704,19 +806,6 @@ export default function LoginView({
                 </div>
               )}
 
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px' }}>
-                <input
-                  type="checkbox"
-                  id="rememberMe"
-                  checked={rememberMe}
-                  onChange={(e) => setRememberMe(e.target.checked)}
-                  style={{ accentColor: 'var(--color-bright-action)' }}
-                />
-                <label htmlFor="rememberMe" style={{ fontSize: '13px', color: 'var(--text-secondary)', cursor: 'pointer' }}>
-                  Remember this workstation for 30 days
-                </label>
-              </div>
-
               <button
                 type="submit"
                 className="ace-btn"
@@ -724,6 +813,7 @@ export default function LoginView({
                   width: '100%',
                   height: '46px',
                   fontSize: '15px',
+                  marginTop: '6px',
                   marginBottom: '16px',
                   backgroundColor: selectedPortal === 'staff' ? '#0D9488' : 'var(--color-primary-blue)',
                   color: '#FFFFFF',
@@ -731,8 +821,8 @@ export default function LoginView({
                 }}
               >
                 <span>
-                  {selectedPortal === 'customer' ? 'Sign In to Customer Portal' :
-                   selectedPortal === 'staff' ? 'Authenticate Staff Dispatcher' : 'Sign In as Administrator'}
+                  {selectedPortal === 'customer' ? 'Customer Login' :
+                   selectedPortal === 'staff' ? 'Staff Login' : 'Sign In as Administrator'}
                 </span>
                 <ArrowRight size={16} />
               </button>
