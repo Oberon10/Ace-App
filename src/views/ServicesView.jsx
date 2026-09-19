@@ -105,21 +105,41 @@ export default function ServicesView({ setView }) {
   ];
 
   return (
-    <div style={{ backgroundColor: 'var(--color-very-light-blue)', padding: '48px 0 80px' }}>
-      <div className="ace-container">
-        {/* Header */}
-        <div style={{ textAlign: 'center', maxWidth: '720px', margin: '0 auto 48px' }}>
-          <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--color-bright-action)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-            Multi-Modal Solutions
-          </span>
-          <h1 style={{ fontSize: 'clamp(24px, 6vw, 36px)', color: 'var(--color-primary-blue)', fontWeight: 800, marginTop: '4px', marginBottom: '12px' }}>
+    <div style={{ backgroundColor: 'var(--color-very-light-blue)' }}>
+      {/* ===================================================
+          HERO BANNER — MULTI-MODAL LOGISTICS & FREIGHT
+          =================================================== */}
+      <section className="ace-page-hero-banner" style={{
+        backgroundImage: "linear-gradient(135deg, rgba(7, 42, 66, 0.94) 0%, rgba(7, 28, 44, 0.88) 100%), url('/images/global-logistics-network.jpg')",
+        padding: '52px 0 56px'
+      }}>
+        <div className="ace-container" style={{ textAlign: 'center', maxWidth: '780px', margin: '0 auto' }}>
+          <div style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '8px',
+            backgroundColor: 'rgba(255, 255, 255, 0.12)',
+            border: '1px solid rgba(255, 255, 255, 0.22)',
+            padding: '6px 14px',
+            borderRadius: '20px',
+            fontSize: '12px',
+            fontWeight: 700,
+            color: '#90CDF4',
+            marginBottom: '16px',
+            letterSpacing: '0.06em',
+            textTransform: 'uppercase'
+          }}>
+            <Layers size={14} color="#38BDF8" />
+            <span>End-to-End Intermodal Cargo Transport</span>
+          </div>
+          <h1 style={{ fontSize: 'clamp(26px, 6vw, 38px)', fontWeight: 800, color: '#FFFFFF', marginBottom: '14px', letterSpacing: '-0.02em' }}>
             Comprehensive Logistics & Freight Services
           </h1>
-          <p style={{ fontSize: '15px', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-            Connecting your business to global markets with synchronized air, sea, road, and rail transportation, underpinned by proprietary real-time telemetry.
+          <p style={{ fontSize: '15.5px', color: '#D9E7F0', lineHeight: 1.6, maxWidth: '680px', margin: '0 auto 24px' }}>
+            Connecting your business to global markets with synchronized air, sea, road, and rail transportation, underpinned by proprietary real-time telemetry and certified customs brokerage.
           </p>
 
-          <div className="services-hero-buttons" style={{ display: 'flex', justifyContent: 'center', gap: '12px', marginTop: '24px', flexWrap: 'wrap' }}>
+          <div className="services-hero-buttons" style={{ display: 'flex', justifyContent: 'center', gap: '14px', flexWrap: 'wrap' }}>
             <button onClick={() => setView('quote')} className="ace-btn ace-btn-action">
               <span>Calculate Instant Rate</span>
               <ArrowRight size={15} />
@@ -129,6 +149,9 @@ export default function ServicesView({ setView }) {
             </button>
           </div>
         </div>
+      </section>
+
+      <div className="ace-container" style={{ paddingTop: '40px', paddingBottom: '80px' }}>
 
         {/* Services List */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '36px' }}>
@@ -262,9 +285,8 @@ export default function ServicesView({ setView }) {
         </div>
 
         {/* Global Assurance Callout */}
-        <div className="services-callout-card" style={{
+        <div className="services-callout-card ace-cta-banner" style={{
           marginTop: '48px',
-          backgroundColor: 'var(--color-dark-navy)',
           color: '#FFFFFF',
           borderRadius: 'var(--radius-card)',
           padding: '36px',
