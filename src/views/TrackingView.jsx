@@ -155,8 +155,11 @@ export default function TrackingView({
   return (
     <div style={{ 
       backgroundColor: 'var(--color-very-light-blue)', 
-      padding: (hasSearched && shipment) ? '40px 0 80px' : '56px 0 90px', 
-      minHeight: 'calc(100vh - 140px)' 
+      padding: (hasSearched && shipment) ? '32px 0 64px' : '28px 0 40px', 
+      minHeight: (hasSearched && shipment) ? 'calc(100vh - 140px)' : 'calc(100vh - 240px)',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: (hasSearched && shipment) ? 'flex-start' : 'center'
     }}>
       <div className="ace-container">
         {/* ===================================================
@@ -164,16 +167,16 @@ export default function TrackingView({
             =================================================== */}
         <div className="ace-card tracking-search-card" style={{
           width: '100%',
-          maxWidth: (hasSearched && shipment) ? '100%' : '900px',
-          margin: (hasSearched && shipment) ? '0 auto 32px' : '10px auto 40px',
-          padding: '36px 32px',
+          maxWidth: (hasSearched && shipment) ? '100%' : '840px',
+          margin: (hasSearched && shipment) ? '0 auto 28px' : '12px auto 28px',
+          padding: '28px 28px 24px',
           borderRadius: '16px',
-          boxShadow: 'var(--shadow-card)',
+          boxShadow: '0 4px 20px rgba(11, 79, 124, 0.08)',
           border: '1px solid var(--color-border)',
           backgroundColor: 'var(--color-white)',
           transition: 'all 0.3s ease'
         }}>
-          <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+          <div style={{ textAlign: 'center', marginBottom: '20px' }}>
             <div style={{ 
               display: 'inline-flex', 
               alignItems: 'center', 
@@ -191,78 +194,39 @@ export default function TrackingView({
               <Radio size={13} color="var(--color-bright-action)" className="animate-pulse" />
               <span>Real-Time Freight Telemetry System</span>
             </div>
-            <h1 style={{ fontSize: '28px', color: 'var(--color-primary-blue)', fontWeight: 800, marginTop: '2px', marginBottom: '6px' }}>
+            <h1 style={{ fontSize: '26px', color: 'var(--color-primary-blue)', fontWeight: 800, marginTop: '2px', marginBottom: '6px' }}>
               Track Your Shipment
             </h1>
-            <p style={{ fontSize: '14.5px', color: 'var(--text-secondary)', maxWidth: '640px', margin: '0 auto' }}>
+            <p style={{ fontSize: '14px', color: 'var(--text-secondary)', maxWidth: '620px', margin: '0 auto' }}>
               Enter your official Air Waybill (AWB), Ocean Bill of Lading, or ACE Consignment reference to access live telemetry and milestone records.
             </p>
           </div>
 
-          {/* Lively Telemetry Visual Banner */}
-          <div className="tracking-card-visual-banner" style={{ maxWidth: '860px', margin: '0 auto 20px' }}>
-            <img 
-              src="/images/cargo-tracking-banner.jpg" 
-              alt="Active Air and Sea Telemetry Operations" 
-            />
-            <div className="tracking-card-visual-overlay">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
-                <span style={{
-                  backgroundColor: 'rgba(16, 185, 129, 0.92)',
-                  color: '#FFFFFF',
-                  fontSize: '10.5px',
-                  fontWeight: 700,
-                  padding: '3px 10px',
-                  borderRadius: '12px',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '5px',
-                  boxShadow: '0 2px 8px rgba(16, 185, 129, 0.4)'
-                }}>
-                  <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#FFFFFF', display: 'inline-block' }} />
-                  SATELLITE TELEMETRY ACTIVE
-                </span>
-                <span style={{
-                  backgroundColor: 'rgba(7, 42, 66, 0.8)',
-                  color: '#90CDF4',
-                  fontSize: '11px',
-                  fontWeight: 600,
-                  padding: '3px 10px',
-                  borderRadius: '8px',
-                  backdropFilter: 'blur(6px)',
-                  border: '1px solid rgba(255, 255, 255, 0.2)'
-                }}>
-                  Worldwide Radar: 140+ Gateway Terminals
-                </span>
-              </div>
-
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '8px' }}>
-                <div>
-                  <div style={{ fontSize: '13.5px', fontWeight: 800, color: '#FFFFFF' }}>
-                    Air, Ocean & Intermodal Freight Telemetry
-                  </div>
-                  <div style={{ fontSize: '11px', color: '#E2E8F0', marginTop: '2px' }}>
-                    Continuous GPS tracking, temperature monitoring & blockchain chain of custody
-                  </div>
-                </div>
-                <span style={{ 
-                  fontSize: '11px', 
-                  color: '#FCD34D', 
-                  fontWeight: 700, 
-                  backgroundColor: 'rgba(7, 26, 43, 0.75)', 
-                  padding: '3px 8px', 
-                  borderRadius: '6px',
-                  border: '1px solid rgba(252, 211, 77, 0.3)' 
-                }}>
-                  99.8% On-Time SLA
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <form onSubmit={handleSearchSubmit} className="tracking-search-form" style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', maxWidth: '860px', margin: '0 auto' }}>
-            <div className="tracking-input-wrapper" style={{ flex: '1 1 320px', position: 'relative' }}>
-              <div className="ace-input-icon">
+          <form onSubmit={handleSearchSubmit} className="tracking-search-form" style={{ 
+            display: 'flex', 
+            gap: '10px', 
+            maxWidth: '760px', 
+            margin: '0 auto',
+            width: '100%',
+            alignItems: 'stretch'
+          }}>
+            <div className="tracking-input-wrapper" style={{ 
+              flex: 1, 
+              minWidth: 0, 
+              position: 'relative',
+              display: 'flex',
+              alignItems: 'center'
+            }}>
+              <div className="ace-input-icon" style={{
+                position: 'absolute',
+                left: '14px',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                pointerEvents: 'none',
+                display: 'flex',
+                alignItems: 'center',
+                zIndex: 2
+              }}>
                 <Search size={18} color="var(--color-primary-blue)" />
               </div>
               <input
@@ -274,7 +238,16 @@ export default function TrackingView({
                   setSearchInput(e.target.value);
                   if (validationNotice) setValidationNotice('');
                 }}
-                style={{ height: '50px', fontSize: '15px', fontWeight: 500 }}
+                style={{ 
+                  width: '100%',
+                  height: '50px', 
+                  fontSize: '15px', 
+                  fontWeight: 500,
+                  paddingLeft: '44px',
+                  paddingRight: '14px',
+                  borderRadius: '10px',
+                  boxSizing: 'border-box'
+                }}
               />
             </div>
 
@@ -282,7 +255,18 @@ export default function TrackingView({
               type="submit"
               disabled={isSearching}
               className="ace-btn ace-btn-action tracking-submit-btn"
-              style={{ height: '50px', padding: '0 32px', fontSize: '15px', display: 'flex', alignItems: 'center', gap: '8px' }}
+              style={{ 
+                height: '50px', 
+                padding: '0 28px', 
+                fontSize: '15px', 
+                fontWeight: 700,
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: '8px',
+                flexShrink: 0,
+                borderRadius: '10px',
+                whiteSpace: 'nowrap'
+              }}
             >
               {isSearching ? (
                 <>
@@ -300,7 +284,7 @@ export default function TrackingView({
 
           {validationNotice && (
             <div style={{
-              maxWidth: '860px',
+              maxWidth: '760px',
               margin: '14px auto 0',
               backgroundColor: '#FEF2F2',
               border: '1px solid #FECACA',
@@ -338,18 +322,18 @@ export default function TrackingView({
 
           {/* Professional Security & Format Notice */}
           <div className="tracking-security-bar" style={{ 
-            marginTop: '18px', 
-            paddingTop: '16px', 
+            marginTop: '16px', 
+            paddingTop: '14px', 
             borderTop: '1px solid var(--color-border-subtle)', 
             display: 'flex', 
             alignItems: 'center', 
             justifyContent: 'space-between', 
             flexWrap: 'wrap', 
-            gap: '12px', 
+            gap: '10px', 
             fontSize: '12px', 
             color: 'var(--text-muted)',
-            maxWidth: '860px',
-            margin: '18px auto 0'
+            maxWidth: '760px',
+            margin: '16px auto 0'
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
               <ShieldCheck size={14} color="#10B981" />
@@ -1046,33 +1030,6 @@ export default function TrackingView({
       </div>
 
       <style>{`
-        .tracking-card-visual-banner {
-          position: relative;
-          border-radius: 12px;
-          overflow: hidden;
-          margin-bottom: 22px;
-          border: 1px solid rgba(14, 76, 119, 0.15);
-          box-shadow: 0 4px 18px rgba(7, 42, 66, 0.12);
-        }
-        .tracking-card-visual-banner img {
-          width: 100%;
-          height: 190px;
-          object-fit: cover;
-          display: block;
-          transition: transform 0.4s ease;
-        }
-        .tracking-card-visual-banner:hover img {
-          transform: scale(1.02);
-        }
-        .tracking-card-visual-overlay {
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(to top, rgba(7, 42, 66, 0.92) 0%, rgba(7, 42, 66, 0.35) 55%, transparent 100%);
-          display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-          padding: 16px 20px;
-        }
         @media (max-width: 880px) {
           .tracking-grid {
             grid-template-columns: 1fr !important;
@@ -1081,6 +1038,7 @@ export default function TrackingView({
         @media (max-width: 640px) {
           .tracking-search-form {
             flex-direction: column !important;
+            gap: 10px !important;
           }
           .tracking-input-wrapper {
             flex: 1 1 100% !important;
@@ -1095,44 +1053,13 @@ export default function TrackingView({
             word-break: break-all !important;
           }
           .tracking-search-card {
-            background: linear-gradient(155deg, #092c45 0%, #061e30 100%) !important;
-            border: 1px solid rgba(56, 189, 248, 0.35) !important;
-            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45) !important;
-            padding: 16px 14px 14px !important;
+            padding: 20px 16px 18px !important;
             margin-bottom: 20px !important;
           }
-          .tracking-search-card h1 {
-            color: #FFFFFF !important;
-            font-size: 22px !important;
-          }
-          .tracking-search-card p {
-            color: #CBD5E1 !important;
-            font-size: 13px !important;
-          }
-          .tracking-search-card .ace-input {
-            background-color: #FFFFFF !important;
-            border: 1.5px solid #38BDF8 !important;
-            color: #0F172A !important;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
-          }
           .tracking-security-bar {
-            color: #94A3B8 !important;
-            border-top: 1px solid rgba(255, 255, 255, 0.12) !important;
-            padding-top: 10px !important;
-            margin-top: 10px !important;
+            padding-top: 12px !important;
+            margin-top: 12px !important;
             font-size: 11px !important;
-          }
-          .tracking-security-bar .security-awb-tag {
-            color: #38BDF8 !important;
-          }
-          .tracking-card-visual-banner {
-            margin-bottom: 14px !important;
-          }
-          .tracking-card-visual-banner img {
-            height: 145px !important;
-          }
-          .tracking-card-visual-overlay {
-            padding: 10px 12px !important;
           }
           .tracking-milestones-grid {
             display: flex !important;
