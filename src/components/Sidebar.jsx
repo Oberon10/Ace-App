@@ -38,10 +38,9 @@ export default function Sidebar({
     { id: 'admin-settings', label: 'System Settings', icon: Settings },
   ];
 
-  // Staff menu: Strictly Staff Dispatcher and Customer Portal ONLY
+  // Staff menu: Strictly Staff Dispatcher console operations
   const staffMenuItems = [
     { id: 'staff-dashboard', label: 'Staff Dispatcher', icon: Truck },
-    { id: 'customer-dashboard', label: 'Customer Portal View', icon: LayoutDashboard },
     { id: 'admin-shipments', label: 'Consignment Queue', icon: Package },
     { id: 'track', label: 'Terminal Tracker', icon: Search },
     { id: 'new-shipment', label: 'Package Intake', icon: PlusCircle }

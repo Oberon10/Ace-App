@@ -54,22 +54,16 @@ export default function Navbar({
     setRoleDropdownOpen(false);
   };
 
-  // Define authorized workspaces depending on role
-  // Admin: full access to Admin, Staff, and Customer
-  // Staff: access to Staff Dispatcher and Customer Portal ONLY
-  // Customer: access to Customer Portal ONLY
+  // Define authorized workspaces depending on role - strictly isolated
   const getAuthorizedWorkspaces = () => {
     if (activeRole === 'admin') {
       return [
         { id: 'admin-dashboard', label: 'Admin Enterprise Portal', desc: 'Full KPIs, Users & Settings' },
-        { id: 'staff-dashboard', label: 'Staff Dispatcher Console', desc: 'Terminal Intake & Status Manager' },
-        { id: 'customer-dashboard', label: 'Customer Portal', desc: 'Client Shipments Overview' },
         { id: 'home', label: 'Public Website', desc: 'Return to Marketing Site' }
       ];
     } else if (activeRole === 'staff') {
       return [
         { id: 'staff-dashboard', label: 'Staff Dispatcher Console', desc: 'Terminal Intake & Status Manager' },
-        { id: 'customer-dashboard', label: 'Customer Portal', desc: 'Client Shipments Overview' },
         { id: 'home', label: 'Public Website', desc: 'Return to Marketing Site' }
       ];
     } else if (activeRole === 'customer') {
@@ -629,7 +623,7 @@ export default function Navbar({
                   style={{ width: '100%', minHeight: '44px', justifyContent: 'flex-start', border: '1px solid var(--color-border)', gap: '10px' }}
                 >
                   <Truck size={16} color="#0D9488" />
-                  <span>Staff Dispatcher Login</span>
+                  <span>Staff Login</span>
                 </button>
                 <button
                   onClick={() => {
