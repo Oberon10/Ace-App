@@ -592,6 +592,62 @@ button, input, select, textarea {
 }
 
 /* ===================================================
+   ENTERPRISE HERO & CTA BANNERS WITH MEANINGFUL IMAGERY
+   =================================================== */
+.ace-cta-banner {
+  position: relative;
+  background-color: var(--color-dark-navy);
+  background-image: linear-gradient(135deg, rgba(7, 42, 66, 0.92) 0%, rgba(11, 79, 124, 0.88) 100%), url('/images/global-logistics-network.jpg');
+  background-size: cover;
+  background-position: center;
+  color: #FFFFFF;
+  padding: 54px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+}
+
+.ace-cta-banner h2,
+.ace-cta-banner h3 {
+  color: #FFFFFF !important;
+}
+
+.ace-cta-banner p {
+  color: #E0EDF6 !important;
+}
+
+.ace-page-hero-banner {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  color: #FFFFFF;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+}
+
+.ace-page-hero-banner h1 {
+  color: #FFFFFF !important;
+}
+
+.ace-page-hero-banner p {
+  color: #E2E8F0 !important;
+}
+
+.ace-visual-media-card {
+  position: relative;
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-card);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.ace-visual-media-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-elevated);
+}
+
+/* ===================================================
    DARK THEME SYSTEM (Default is Light)
    =================================================== */
 [data-theme="dark"], body.dark-mode {
@@ -996,8 +1052,11 @@ body.dark-mode [style*="background-color: #e2e8f0"] {
 /* Interactive CTA Banners in Dark Mode */
 [data-theme="dark"] .ace-cta-banner,
 body.dark-mode .ace-cta-banner {
-  background: linear-gradient(135deg, #071524 0%, #0c233c 100%) !important;
-  border: 1px solid var(--color-border) !important;
+  background-image: linear-gradient(135deg, rgba(5, 15, 26, 0.94) 0%, rgba(8, 28, 48, 0.92) 100%), url('/images/global-logistics-network.jpg') !important;
+  background-size: cover !important;
+  background-position: center !important;
+  border-top: 1px solid var(--color-border) !important;
+  border-bottom: 1px solid var(--color-border) !important;
   color: #FFFFFF !important;
 }
 

@@ -9,7 +9,8 @@ import {
   Building2, 
   ShieldCheck, 
   Headphones,
-  Globe2
+  Globe2,
+  Radio
 } from 'lucide-react';
 
 export default function ContactView() {
@@ -68,21 +69,54 @@ export default function ContactView() {
   };
 
   return (
-    <div style={{ backgroundColor: 'var(--color-very-light-blue)', padding: '48px 0 80px' }}>
-      <div className="ace-container">
-        {/* Title */}
-        <div style={{ textAlign: 'center', maxWidth: '640px', margin: '0 auto 48px' }}>
-          <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--color-bright-action)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-            24/7 Global Cargo Support
-          </span>
-          <h1 style={{ fontSize: 'clamp(24px, 6vw, 36px)', color: 'var(--color-primary-blue)', fontWeight: 800, marginTop: '4px', marginBottom: '12px' }}>
+    <div style={{ backgroundColor: 'var(--color-very-light-blue)' }}>
+      {/* ===================================================
+          HERO BANNER — 24/7 GLOBAL OPERATIONS COMMAND CENTER
+          =================================================== */}
+      <section className="ace-page-hero-banner" style={{
+        backgroundImage: "linear-gradient(135deg, rgba(7, 42, 66, 0.94) 0%, rgba(7, 28, 44, 0.88) 100%), url('/images/contact-operations-center.jpg')",
+        padding: '52px 0 56px'
+      }}>
+        <div className="ace-container" style={{ textAlign: 'center', maxWidth: '780px', margin: '0 auto' }}>
+          <div style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '8px',
+            backgroundColor: 'rgba(255, 255, 255, 0.12)',
+            border: '1px solid rgba(255, 255, 255, 0.22)',
+            padding: '6px 14px',
+            borderRadius: '20px',
+            fontSize: '12px',
+            fontWeight: 700,
+            color: '#90CDF4',
+            marginBottom: '16px',
+            letterSpacing: '0.06em',
+            textTransform: 'uppercase'
+          }}>
+            <Radio size={14} color="#38BDF8" className="animate-pulse" />
+            <span>24/7 Global Cargo Operations & Dispatch Desk</span>
+          </div>
+          <h1 style={{ fontSize: 'clamp(26px, 6vw, 38px)', fontWeight: 800, color: '#FFFFFF', marginBottom: '14px', letterSpacing: '-0.02em' }}>
             Contact ACE Logistics Hubs
           </h1>
-          <p style={{ fontSize: '15px', color: 'var(--text-secondary)' }}>
-            Connect with our international dispatch offices, flight coordinators, and certified customs agents.
+          <p style={{ fontSize: '15.5px', color: '#D9E7F0', lineHeight: 1.6, maxWidth: '660px', margin: '0 auto 24px' }}>
+            Direct coordination with our international dispatch desks, chartered flight coordinators, maritime logistics controllers, and certified customs clearance agents.
           </p>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', flexWrap: 'wrap', fontSize: '12.5px', color: 'rgba(255,255,255,0.85)' }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <CheckCircle2 size={15} color="#10B981" /> 4 Intercontinental Gateways
+            </span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <CheckCircle2 size={15} color="#10B981" /> 12-Minute Average SLA Response
+            </span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <CheckCircle2 size={15} color="#10B981" /> Licensed Customs Brokerage
+            </span>
+          </div>
         </div>
+      </section>
 
+      <div className="ace-container" style={{ paddingTop: '40px', paddingBottom: '80px' }}>
         {/* 3 Quick Help Cards */}
         <div style={{
           display: 'grid',
@@ -132,6 +166,40 @@ export default function ContactView() {
         }} className="contact-grid">
           {/* LEFT: WORLDWIDE HUBS DIRECTORY */}
           <div>
+            {/* Visual Operations Center Showcase Card */}
+            <div className="ace-card" style={{ padding: 0, overflow: 'hidden', marginBottom: '24px', border: '1px solid var(--color-border)' }}>
+              <div style={{ position: 'relative', height: '210px' }}>
+                <img
+                  src="/images/contact-operations-center.jpg"
+                  alt="ACE Logistics Global Operations Command Center"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                />
+                <div style={{
+                  position: 'absolute',
+                  inset: 0,
+                  background: 'linear-gradient(to top, rgba(7, 42, 66, 0.92) 0%, rgba(7, 42, 66, 0.2) 60%, transparent 100%)',
+                  display: 'flex',
+                  alignItems: 'flex-end',
+                  padding: '16px 20px'
+                }}>
+                  <div>
+                    <span style={{ fontSize: '11px', fontWeight: 700, color: '#38BDF8', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                      Operational Command Hub
+                    </span>
+                    <h4 style={{ fontSize: '16px', color: '#FFFFFF', fontWeight: 700, margin: '2px 0 0' }}>
+                      24/7 Global Telemetry & Flight Dispatch Control Desk
+                    </h4>
+                  </div>
+                </div>
+              </div>
+              <div style={{ padding: '14px 20px', fontSize: '12.5px', color: 'var(--text-secondary)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
+                <span>Real-time flight tracking, container vessel monitoring & automated EDI customs clearance.</span>
+                <span style={{ fontSize: '11.5px', fontWeight: 700, color: '#10B981', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#10B981' }} /> Live System Active
+                </span>
+              </div>
+            </div>
+
             <h2 style={{ fontSize: '22px', color: 'var(--color-primary-blue)', fontWeight: 800, marginBottom: '20px' }}>
               Global Station Network
             </h2>

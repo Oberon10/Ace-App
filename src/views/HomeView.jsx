@@ -97,6 +97,9 @@ export default function HomeView({
       <section className="home-hero-section" style={{
         position: 'relative',
         backgroundColor: 'var(--color-dark-navy)',
+        backgroundImage: "linear-gradient(135deg, rgba(7, 42, 66, 0.94) 0%, rgba(7, 30, 48, 0.92) 50%, rgba(5, 20, 32, 0.96) 100%), url('/images/global-logistics-network.jpg')",
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
         color: '#FFFFFF',
         paddingTop: '48px',
         paddingBottom: '80px',
@@ -712,11 +715,7 @@ export default function HomeView({
       {/* ===================================================
           CALL TO ACTION BANNER
           =================================================== */}
-      <section className="ace-cta-banner" style={{
-        padding: '54px 0',
-        backgroundColor: 'var(--color-primary-blue)',
-        color: '#FFFFFF'
-      }}>
+      <section className="ace-cta-banner">
         <div className="ace-container" style={{ textAlign: 'center', maxWidth: '820px', margin: '0 auto' }}>
           <h2 style={{ fontSize: '28px', color: '#FFFFFF', fontWeight: 800, marginBottom: '12px' }}>
             Ready to Streamline Your Supply Chain?
