@@ -142,20 +142,54 @@ export default function QuoteView({ onProceedToShipment }) {
   };
 
   return (
-    <div style={{ backgroundColor: 'var(--color-very-light-blue)', padding: '48px 0 80px' }}>
-      <div className="ace-container">
-        {/* Page Header */}
-        <div style={{ textAlign: 'center', maxWidth: '640px', margin: '0 auto 40px' }}>
-          <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--color-bright-action)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-            Instant Freight Rates
-          </span>
-          <h1 style={{ fontSize: 'clamp(22px, 6vw, 32px)', color: 'var(--color-primary-blue)', fontWeight: 800, marginTop: '4px', marginBottom: '8px' }}>
+    <div style={{ backgroundColor: 'var(--color-very-light-blue)' }}>
+      {/* ===================================================
+          HERO BANNER — INSTANT MULTIMODAL FREIGHT RATES
+          =================================================== */}
+      <section className="ace-page-hero-banner" style={{
+        backgroundImage: "linear-gradient(135deg, rgba(7, 42, 66, 0.94) 0%, rgba(11, 79, 124, 0.86) 100%), url('/images/freight-quote-banner.jpg')",
+        padding: '52px 0 56px'
+      }}>
+        <div className="ace-container" style={{ textAlign: 'center', maxWidth: '780px', margin: '0 auto' }}>
+          <div style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '8px',
+            backgroundColor: 'rgba(255, 255, 255, 0.12)',
+            border: '1px solid rgba(255, 255, 255, 0.22)',
+            padding: '6px 14px',
+            borderRadius: '20px',
+            fontSize: '12px',
+            fontWeight: 700,
+            color: '#90CDF4',
+            marginBottom: '16px',
+            letterSpacing: '0.06em',
+            textTransform: 'uppercase'
+          }}>
+            <Calculator size={14} color="#38BDF8" />
+            <span>Instant Carrier Freight Rate Calculator</span>
+          </div>
+          <h1 style={{ fontSize: 'clamp(26px, 6vw, 38px)', fontWeight: 800, color: '#FFFFFF', marginBottom: '14px', letterSpacing: '-0.02em' }}>
             Get a Competitive Shipping Quote
           </h1>
-          <p style={{ fontSize: '14.5px', color: 'var(--text-secondary)' }}>
-            Calculate real-time door-to-door and port-to-port freight rates across our air, ocean, rail, and road networks.
+          <p style={{ fontSize: '15.5px', color: '#D9E7F0', lineHeight: 1.6, maxWidth: '680px', margin: '0 auto 24px' }}>
+            Calculate real-time door-to-door and port-to-port freight rates across our air cargo charters, ocean container lines, rail corridors, and road networks.
           </p>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '16px', flexWrap: 'wrap', fontSize: '12.5px', color: 'rgba(255,255,255,0.85)' }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <ShieldCheck size={15} color="#10B981" /> Guaranteed Carrier Capacity
+            </span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <ShieldCheck size={15} color="#10B981" /> Automated Customs Handling
+            </span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <ShieldCheck size={15} color="#10B981" /> Fixed Price Guarantee
+            </span>
+          </div>
         </div>
+      </section>
+
+      <div className="ace-container" style={{ paddingTop: '40px', paddingBottom: '80px' }}>
 
         {/* ===================================================
             SECTION: TWO-COLUMN QUOTE LAYOUT
@@ -424,6 +458,59 @@ export default function QuoteView({ onProceedToShipment }) {
                 <ShieldCheck size={13} />
                 Guaranteed Tier
               </span>
+            </div>
+
+            {/* Dynamic Transport Mode Visual Header */}
+            <div style={{
+              position: 'relative',
+              borderRadius: '10px',
+              overflow: 'hidden',
+              height: '140px',
+              marginBottom: '20px',
+              border: '1px solid var(--color-border)'
+            }}>
+              <img
+                src={
+                  method.includes('Ocean')
+                    ? '/images/container-ship.jpg'
+                    : method.includes('Ground') || method.includes('Road')
+                    ? '/images/truck-freight.jpg'
+                    : method.includes('Rail')
+                    ? '/images/freight-train.jpg'
+                    : '/images/freight-quote-banner.jpg'
+                }
+                alt={quoteResult.method}
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              />
+              <div style={{
+                position: 'absolute',
+                inset: 0,
+                background: 'linear-gradient(to top, rgba(7, 42, 66, 0.92) 0%, rgba(7, 42, 66, 0.25) 60%, transparent 100%)',
+                display: 'flex',
+                alignItems: 'flex-end',
+                justifyContent: 'space-between',
+                padding: '12px 16px'
+              }}>
+                <div>
+                  <span style={{ fontSize: '11px', fontWeight: 700, color: '#38BDF8', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                    Active Freight Tier
+                  </span>
+                  <div style={{ fontSize: '15px', fontWeight: 800, color: '#FFFFFF' }}>
+                    {quoteResult.method}
+                  </div>
+                </div>
+                <div style={{
+                  backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                  backdropFilter: 'blur(6px)',
+                  padding: '4px 10px',
+                  borderRadius: '14px',
+                  fontSize: '11.5px',
+                  fontWeight: 700,
+                  color: '#FFFFFF'
+                }}>
+                  {quoteResult.estimatedDelivery}
+                </div>
+              </div>
             </div>
 
             {/* Big Price Headline */}
