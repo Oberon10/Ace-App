@@ -327,8 +327,8 @@ export default function HomeView({
                 <h3 style={{ fontSize: '22px', color: 'var(--color-primary-blue)', fontWeight: 800, marginBottom: '4px' }}>
                   Track Your Shipment
                 </h3>
-                <p style={{ fontSize: '13.5px', color: 'var(--text-secondary)' }}>
-                  Enter your tracking number to get real-time GPS telemetry, waypoint logs, and estimated arrival.
+                <p style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>
+                  Locate, enter your consignment or tracking number to get real-time GPS telemetry, waypoint logs, and estimated arrival.
                 </p>
               </div>
 
@@ -401,7 +401,7 @@ export default function HomeView({
                   <input
                     type="text"
                     className="ace-input ace-input-with-icon"
-                    placeholder="Enter tracking number (e.g. ACE-2026-8F72K9)"
+                    placeholder="Enter your consignment tracking number (e.g. ACE-2026-8F72K9)"
                     value={trackingInput}
                     onChange={(e) => setTrackingInput(e.target.value)}
                     style={{ height: '48px', fontSize: '14.5px', fontWeight: 500 }}

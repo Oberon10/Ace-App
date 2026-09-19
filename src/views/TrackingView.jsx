@@ -194,12 +194,33 @@ export default function TrackingView({
               <Radio size={13} color="var(--color-bright-action)" className="animate-pulse" />
               <span>Real-Time Freight Telemetry System</span>
             </div>
-            <h1 style={{ fontSize: '26px', color: 'var(--color-primary-blue)', fontWeight: 800, marginTop: '2px', marginBottom: '6px' }}>
+            <h1 style={{ fontSize: '26px', color: 'var(--color-primary-blue)', fontWeight: 800, marginTop: '2px', marginBottom: '8px' }}>
               Track Your Shipment
             </h1>
-            <p style={{ fontSize: '14px', color: 'var(--text-secondary)', maxWidth: '620px', margin: '0 auto' }}>
-              Enter your official Air Waybill (AWB), Ocean Bill of Lading, or ACE Consignment reference to access live telemetry and milestone records.
+            <p style={{ fontSize: '14.5px', color: 'var(--text-primary)', fontWeight: 500, maxWidth: '640px', margin: '0 auto', lineHeight: 1.5 }}>
+              Locate, enter your consignment or tracking number below to view real-time cargo telemetry, transit waybills, and milestone status.
             </p>
+          </div>
+
+          <div style={{ maxWidth: '760px', margin: '0 auto 8px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '6px' }}>
+            <label 
+              htmlFor="consignment-input" 
+              style={{ 
+                display: 'inline-flex', 
+                alignItems: 'center', 
+                gap: '6px', 
+                fontSize: '13.5px', 
+                fontWeight: 700, 
+                color: 'var(--color-primary-blue)',
+                cursor: 'pointer'
+              }}
+            >
+              <MapPin size={15} color="var(--color-bright-action)" />
+              <span>Enter your consignment number:</span>
+            </label>
+            <span style={{ fontSize: '11.5px', color: 'var(--text-muted)' }}>
+              Format: ACE-2026-XXXXXX or Master Waybill
+            </span>
           </div>
 
           <form onSubmit={handleSearchSubmit} className="tracking-search-form" style={{ 
@@ -230,9 +251,10 @@ export default function TrackingView({
                 <Search size={18} color="var(--color-primary-blue)" />
               </div>
               <input
+                id="consignment-input"
                 type="text"
-                className="ace-input ace-input-with-icon"
-                placeholder="Enter consignment tracking number (e.g. ACE-2026-8F72K9)"
+                className="ace-input ace-input-with-icon tracking-number-input"
+                placeholder="Enter your consignment tracking number (e.g. ACE-2026-8F72K9)"
                 value={searchInput}
                 onChange={(e) => {
                   setSearchInput(e.target.value);
@@ -240,13 +262,17 @@ export default function TrackingView({
                 }}
                 style={{ 
                   width: '100%',
-                  height: '50px', 
+                  height: '52px', 
                   fontSize: '15px', 
                   fontWeight: 500,
+                  color: 'var(--text-primary)',
+                  backgroundColor: 'var(--color-white)',
+                  border: '1.5px solid var(--color-border)',
                   paddingLeft: '44px',
                   paddingRight: '14px',
                   borderRadius: '10px',
-                  boxSizing: 'border-box'
+                  boxSizing: 'border-box',
+                  boxShadow: '0 1px 3px rgba(11, 79, 124, 0.05)'
                 }}
               />
             </div>
@@ -256,7 +282,7 @@ export default function TrackingView({
               disabled={isSearching}
               className="ace-btn ace-btn-action tracking-submit-btn"
               style={{ 
-                height: '50px', 
+                height: '52px', 
                 padding: '0 28px', 
                 fontSize: '15px', 
                 fontWeight: 700,
@@ -1030,6 +1056,25 @@ export default function TrackingView({
       </div>
 
       <style>{`
+        .tracking-number-input::placeholder {
+          color: #64748B !important;
+          opacity: 1 !important;
+          font-weight: 500 !important;
+          font-size: 14px !important;
+        }
+        .tracking-number-input:focus {
+          border-color: var(--color-bright-action) !important;
+          box-shadow: 0 0 0 3px rgba(22, 131, 216, 0.18) !important;
+        }
+        body.dark-mode .tracking-number-input {
+          background-color: var(--color-surface) !important;
+          color: #FFFFFF !important;
+          border-color: #38BDF8 !important;
+        }
+        body.dark-mode .tracking-number-input::placeholder {
+          color: #94A3B8 !important;
+          opacity: 1 !important;
+        }
         @media (max-width: 880px) {
           .tracking-grid {
             grid-template-columns: 1fr !important;
