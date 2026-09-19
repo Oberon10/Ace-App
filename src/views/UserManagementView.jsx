@@ -87,12 +87,28 @@ export default function UserManagementView({
 
   // Toggle active / inactive status
   const toggleStatus = (id) => {
-    setUsers(users.map(u => {
+    const updatedUsers = users.map(u => {
       if (u.id === id) {
         return { ...u, status: u.status === 'Active' ? 'Inactive' : 'Active' };
       }
       return u;
-    }));
+    });
+    setUsers(updatedUsers);
+    
+    // Sync status change to localStorage for staff
+    const targetUser = updatedUsers.find(u => u.id === id);
+    if (targetUser && targetUser.role?.toLowerCase() === 'staff') {
+      try {
+        const raw = localStorage.getItem('ace_registered_staff');
+        const list = raw ? JSON.parse(raw) : [];
+        const filtered = list.filter(s => s.email?.trim().toLowerCase() !== targetUser.email?.trim().toLowerCase());
+        filtered.push(targetUser);
+        localStorage.setItem('ace_registered_staff', JSON.stringify(filtered));
+      } catch (err) {
+        console.error('Failed to sync staff status to localStorage', err);
+      }
+    }
+
     if (inspectUser && inspectUser.id === id) {
       setInspectUser(prev => ({ ...prev, status: prev.status === 'Active' ? 'Inactive' : 'Active' }));
     }
@@ -123,6 +139,30 @@ export default function UserManagementView({
     };
 
     setUsers([created, ...users]);
+
+    // Persist to localStorage so the new user can log in immediately
+    if (newUserRole === 'Staff') {
+      try {
+        const raw = localStorage.getItem('ace_registered_staff');
+        const list = raw ? JSON.parse(raw) : [];
+        const filtered = list.filter(s => s.email?.trim().toLowerCase() !== newUserEmail.trim().toLowerCase());
+        filtered.push(created);
+        localStorage.setItem('ace_registered_staff', JSON.stringify(filtered));
+      } catch (err) {
+        console.error('Failed to sync staff to localStorage', err);
+      }
+    } else if (newUserRole === 'Customer') {
+      try {
+        const raw = localStorage.getItem('ace_registered_customers');
+        const list = raw ? JSON.parse(raw) : [];
+        const filtered = list.filter(c => c.email?.trim().toLowerCase() !== newUserEmail.trim().toLowerCase());
+        filtered.push(created);
+        localStorage.setItem('ace_registered_customers', JSON.stringify(filtered));
+      } catch (err) {
+        console.error('Failed to sync customer to localStorage', err);
+      }
+    }
+
     setNewUserName('');
     setNewUserEmail('');
     setNewUserPassword('');

@@ -736,6 +736,18 @@ export const USERS_LIST = [
     lastLogin: "5 days ago",
     accessScope: "Terminal Dispatcher & Customer Console Only",
     phone: "+31 10 400 1255"
+  },
+  { 
+    id: "usr-7", 
+    name: "Marcus Cole", 
+    email: "mcole@apexretail.com", 
+    loginPassword: "MarcusRetailPass#212", 
+    role: "Customer", 
+    department: "Apex Retail Solutions", 
+    status: "Active", 
+    lastLogin: "3 days ago",
+    accessScope: "Personal Shipments & Telemetry Records Only",
+    phone: "+1 212 555 4910"
   }
 ];
 
@@ -743,6 +755,7 @@ export const KNOWN_ACCOUNTS = [
   {
     name: "Kwame Mensah",
     email: "k.mensah@goldcoasttrading.com",
+    loginPassword: "KwameTrading#Accra24",
     company: "Gold Coast Trading Ltd",
     phone: "+233 24 555 0192",
     city: "Accra",
@@ -753,6 +766,7 @@ export const KNOWN_ACCOUNTS = [
   {
     name: "Jan De Vries",
     email: "j.devries@maersklog.nl",
+    loginPassword: "MaerskRotterdamPass@82",
     company: "Maersk Logistics BV",
     phone: "+31 10 400 1200",
     city: "Rotterdam",
@@ -763,6 +777,7 @@ export const KNOWN_ACCOUNTS = [
   {
     name: "Marcus Cole",
     email: "mcole@apexretail.com",
+    loginPassword: "MarcusRetailPass#212",
     company: "Apex Retail Solutions",
     phone: "+1 212 555 4910",
     city: "New York",
@@ -773,6 +788,7 @@ export const KNOWN_ACCOUNTS = [
   {
     name: "Sarah O'Connor",
     email: "s.oconnor@acelogistics.com",
+    loginPassword: "StaffDispatchKey@99",
     company: "ACE Logistics Dispatch Hub (LHR)",
     phone: "+44 20 7946 0199",
     city: "London",
@@ -782,6 +798,7 @@ export const KNOWN_ACCOUNTS = [
   {
     name: "David Sterling",
     email: "d.sterling@acelogistics.com",
+    loginPassword: "AdminSecurePass#2026",
     company: "ACE Logistics Global Operations",
     phone: "+44 20 7946 0100",
     city: "London",
