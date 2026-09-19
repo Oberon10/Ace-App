@@ -303,31 +303,51 @@ export default function LoginView({
   };
 
   return (
-    <div style={{ backgroundColor: 'var(--color-very-light-blue)', minHeight: 'calc(100vh - 140px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px 16px' }}>
+    <div style={{
+      position: 'relative',
+      minHeight: 'calc(100vh - 140px)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '48px 16px',
+      backgroundImage: "linear-gradient(135deg, rgba(7, 42, 66, 0.88) 0%, rgba(11, 79, 124, 0.82) 100%), url('/images/contact-operations-center.jpg')",
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundAttachment: 'fixed'
+    }}>
       <div style={{
         maxWidth: '1040px',
         width: '100%',
         backgroundColor: 'var(--color-white)',
         borderRadius: 'var(--radius-section)',
-        border: '1px solid var(--color-border)',
-        boxShadow: 'var(--shadow-card)',
+        border: '1px solid rgba(255, 255, 255, 0.3)',
+        boxShadow: '0 24px 60px rgba(0, 0, 0, 0.35)',
         overflow: 'hidden',
         display: 'grid',
-        gridTemplateColumns: '1fr 1.2fr'
+        gridTemplateColumns: '1fr 1.2fr',
+        position: 'relative',
+        zIndex: 2
       }} className="auth-split">
         {/* ===================================================
             LEFT SIDE: LOGISTICS BRANDING & SECURITY NOTICE
             =================================================== */}
         <div className="auth-info-pane" style={{
           position: 'relative',
-          backgroundImage: 'url(/images/truck-freight.jpg)',
+          backgroundImage: `url(${
+            selectedPortal === 'admin'
+              ? '/images/corporate-logistics-hub.jpg'
+              : selectedPortal === 'staff'
+              ? '/images/contact-operations-center.jpg'
+              : '/images/truck-freight.jpg'
+          })`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           color: '#FFFFFF',
           padding: '48px 36px',
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'space-between'
+          justifyContent: 'space-between',
+          transition: 'background-image 0.4s ease'
         }}>
           {/* Dark Navy Overlay */}
           <div style={{
