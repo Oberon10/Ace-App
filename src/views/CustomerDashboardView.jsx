@@ -20,7 +20,11 @@ import {
   UserCheck,
   AlertCircle,
   Plane,
-  Ship
+  Ship,
+  Calendar,
+  Check,
+  FileCheck,
+  X
 } from 'lucide-react';
 
 export default function CustomerDashboardView({ 
@@ -35,6 +39,50 @@ export default function CustomerDashboardView({
   const [filterStatus, setFilterStatus] = useState('ALL');
   const [searchTerm, setSearchTerm] = useState('');
   const [adminCustomerFilter, setAdminCustomerFilter] = useState('ALL');
+
+  // Customer Appointments state (persisted in localStorage)
+  const [appointments, setAppointments] = useState(() => {
+    try {
+      const stored = localStorage.getItem('ace_customer_appointments');
+      return stored ? JSON.parse(stored) : [];
+    } catch {
+      return [];
+    }
+  });
+  const [showAppointmentModal, setShowAppointmentModal] = useState(false);
+  const [appointmentStep, setAppointmentStep] = useState('form');
+  const [appointmentData, setAppointmentData] = useState({
+    hub: 'Accra Air Cargo Hub (Ghana)',
+    purpose: 'Customs Document Clearance & GRA Review',
+    date: new Date(Date.now() + 86400000).toISOString().split('T')[0],
+    timeSlot: '10:00 AM - 10:45 AM GMT',
+    fullName: user.name || 'Kwame Mensah',
+    phone: '+233 24 555 0192',
+    email: user.email || 'k.mensah@goldcoasttrading.com',
+    consignmentRef: 'ACE-2T34-79011'
+  });
+  const [generatedAppointment, setGeneratedAppointment] = useState(null);
+
+  const handleBookAppointment = (e) => {
+    e.preventDefault();
+    const token = `ACE-APT-${Math.floor(1000 + Math.random() * 9000)}`;
+    const newAppt = {
+      id: token,
+      ...appointmentData,
+      assignedOfficer: 'Capt. Kwame Mensah (Airside Controller)',
+      status: 'CONFIRMED',
+      createdAt: new Date().toISOString()
+    };
+    const updated = [newAppt, ...appointments];
+    setAppointments(updated);
+    setGeneratedAppointment(newAppt);
+    setAppointmentStep('confirmed');
+    try {
+      localStorage.setItem('ace_customer_appointments', JSON.stringify(updated));
+    } catch (err) {
+      console.warn(err);
+    }
+  };
 
   // Strict Customer Delivery Isolation:
   // When activeRole is 'customer', the user can ONLY view records pertaining to their deliveries!
@@ -112,6 +160,14 @@ export default function CustomerDashboardView({
           </div>
 
           <div className="dashboard-header-actions" style={{ display: 'flex', gap: '10px' }}>
+            <button
+              onClick={() => { setAppointmentStep('form'); setShowAppointmentModal(true); }}
+              className="ace-btn ace-btn-secondary"
+            >
+              <Calendar size={15} />
+              <span>Book Appointment</span>
+            </button>
+
             <button
               onClick={() => setView('quote')}
               className="ace-btn ace-btn-secondary"
@@ -372,6 +428,64 @@ export default function CustomerDashboardView({
         )}
 
         {/* ===================================================
+            CONFIRMED OPERATIONAL APPOINTMENTS
+            =================================================== */}
+        {appointments.length > 0 && (
+          <div className="ace-card" style={{
+            backgroundColor: '#F8FAFC',
+            border: '1px solid #CBD5E1',
+            borderRadius: '12px',
+            padding: '18px 22px',
+            marginBottom: '24px'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Calendar size={18} color="#2563EB" />
+                <h4 style={{ fontSize: '15px', fontWeight: 800, color: 'var(--color-primary-blue)', margin: 0 }}>
+                  Confirmed Facility & Customs Appointments ({appointments.length})
+                </h4>
+              </div>
+              <button
+                onClick={() => { setAppointmentStep('form'); setShowAppointmentModal(true); }}
+                className="ace-btn ace-btn-secondary ace-btn-sm"
+              >
+                <PlusCircle size={13} />
+                <span>Book Another Slot</span>
+              </button>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '12px' }}>
+              {appointments.map((appt) => (
+                <div key={appt.id} style={{
+                  backgroundColor: 'var(--color-white)',
+                  border: '1px solid var(--color-border)',
+                  borderRadius: '8px',
+                  padding: '12px 14px',
+                  fontSize: '12px'
+                }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '6px' }}>
+                    <span style={{ fontWeight: 800, color: '#0369A1' }}>{appt.id}</span>
+                    <span style={{ backgroundColor: '#ECFDF5', color: '#065F46', padding: '2px 6px', borderRadius: '4px', fontSize: '10.5px', fontWeight: 700 }}>
+                      CONFIRMED
+                    </span>
+                  </div>
+                  <div style={{ fontWeight: 700, color: 'var(--text-primary)', marginBottom: '4px' }}>
+                    {appt.purpose}
+                  </div>
+                  <div style={{ color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <MapPin size={12} color="var(--color-primary-blue)" />
+                    <span>{appt.hub}</span>
+                  </div>
+                  <div style={{ color: 'var(--text-muted)', marginTop: '4px', display: 'flex', justifyContent: 'space-between' }}>
+                    <span>{appt.date} • {appt.timeSlot}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ===================================================
             DATA TABLE FILTER & SEARCH BAR
             =================================================== */}
         <div style={{ marginBottom: '20px', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '14px' }}>
@@ -474,6 +588,249 @@ export default function CustomerDashboardView({
             emptyMessage={`No shipments found matching status "${filterStatus}" or search term.`}
           />
         )}
+
+        {/* ===================================================
+            APPOINTMENT BOOKING MODAL
+            =================================================== */}
+        {showAppointmentModal && (
+          <div style={{
+            position: 'fixed',
+            inset: 0,
+            backgroundColor: 'rgba(7, 42, 66, 0.75)',
+            backdropFilter: 'blur(4px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 9999,
+            padding: '16px'
+          }}>
+            <div className="ace-card" style={{
+              maxWidth: '540px',
+              width: '100%',
+              backgroundColor: 'var(--color-surface)',
+              borderRadius: '16px',
+              padding: '28px',
+              boxShadow: 'var(--shadow-dropdown)',
+              maxHeight: '90vh',
+              overflowY: 'auto'
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Calendar size={20} color="var(--color-bright-action)" />
+                  <h3 style={{ fontSize: '18px', fontWeight: 800, color: 'var(--color-primary-blue)', margin: 0 }}>
+                    {appointmentStep === 'form' ? 'Book Operational Appointment' : 'Appointment Confirmed & Pass Issued'}
+                  </h3>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowAppointmentModal(false)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: 'var(--text-muted)',
+                    cursor: 'pointer',
+                    padding: '4px'
+                  }}
+                >
+                  <X size={20} />
+                </button>
+              </div>
+
+              {appointmentStep === 'form' ? (
+                <form onSubmit={handleBookAppointment}>
+                  <p style={{ fontSize: '13px', color: 'var(--text-secondary)', marginBottom: '18px', lineHeight: 1.5 }}>
+                    Schedule a private 1-on-1 session with our customs brokerage and warehouse facility controllers.
+                  </p>
+
+                  <div className="ace-form-group">
+                    <label className="ace-label ace-label-required">Regional Gateway Station</label>
+                    <select
+                      className="ace-select"
+                      value={appointmentData.hub}
+                      onChange={(e) => setAppointmentData({ ...appointmentData, hub: e.target.value })}
+                      required
+                    >
+                      <option value="Accra Air Cargo Hub (Ghana)">🇬🇭 Accra Air Cargo Hub (Ghana Gateway)</option>
+                      <option value="London Heathrow Gateway (UK)">🇬🇧 London Heathrow Gateway (UK)</option>
+                      <option value="Rotterdam Euro Terminal (Netherlands)">🇳🇱 Rotterdam Euro Terminal (Netherlands)</option>
+                      <option value="New York JFK Intermodal (USA)">🇺🇸 New York JFK Intermodal (USA)</option>
+                    </select>
+                  </div>
+
+                  <div className="ace-form-group">
+                    <label className="ace-label ace-label-required">Appointment Purpose</label>
+                    <select
+                      className="ace-select"
+                      value={appointmentData.purpose}
+                      onChange={(e) => setAppointmentData({ ...appointmentData, purpose: e.target.value })}
+                      required
+                    >
+                      <option value="Customs Document Clearance & GRA Review">Customs Document Clearance & Regulatory Review</option>
+                      <option value="Bonded Warehouse Cargo Viewing / Physical Inspection">Bonded Warehouse Cargo Viewing & Physical Inspection</option>
+                      <option value="Air Charter & Heavy-Lift Route Consultation">Air Charter & Heavy-Lift Route Consultation</option>
+                      <option value="Pharmaceutical Cold-Chain Compliance Audit">Pharmaceutical Cold-Chain Compliance Audit</option>
+                    </select>
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                    <div className="ace-form-group">
+                      <label className="ace-label ace-label-required">Appointment Date</label>
+                      <input
+                        type="date"
+                        className="ace-input"
+                        value={appointmentData.date}
+                        min={new Date().toISOString().split('T')[0]}
+                        onChange={(e) => setAppointmentData({ ...appointmentData, date: e.target.value })}
+                        required
+                      />
+                    </div>
+
+                    <div className="ace-form-group">
+                      <label className="ace-label ace-label-required">Preferred Time Window</label>
+                      <select
+                        className="ace-select"
+                        value={appointmentData.timeSlot}
+                        onChange={(e) => setAppointmentData({ ...appointmentData, timeSlot: e.target.value })}
+                        required
+                      >
+                        <option value="09:00 AM - 09:45 AM">09:00 AM - 09:45 AM (Morning Ramp)</option>
+                        <option value="11:30 AM - 12:15 PM">11:30 AM - 12:15 PM (Midday Shift)</option>
+                        <option value="02:00 PM - 02:45 PM">02:00 PM - 02:45 PM (Afternoon Intake)</option>
+                        <option value="04:30 PM - 05:15 PM">04:30 PM - 05:15 PM (Airside Debrief)</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                    <div className="ace-form-group">
+                      <label className="ace-label ace-label-required">Contact Phone</label>
+                      <input
+                        type="tel"
+                        className="ace-input"
+                        value={appointmentData.phone}
+                        onChange={(e) => setAppointmentData({ ...appointmentData, phone: e.target.value })}
+                        required
+                      />
+                    </div>
+
+                    <div className="ace-form-group">
+                      <label className="ace-label">Tracking / Consignment #</label>
+                      <input
+                        type="text"
+                        className="ace-input"
+                        placeholder="e.g. ACE-2T34-79011"
+                        value={appointmentData.consignmentRef}
+                        onChange={(e) => setAppointmentData({ ...appointmentData, consignmentRef: e.target.value })}
+                      />
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '16px' }}>
+                    <button
+                      type="button"
+                      onClick={() => setShowAppointmentModal(false)}
+                      className="ace-btn ace-btn-secondary"
+                    >
+                      Cancel
+                    </button>
+
+                    <button
+                      type="submit"
+                      className="ace-btn ace-btn-action"
+                    >
+                      <FileCheck size={15} />
+                      <span>Confirm Appointment Slot</span>
+                    </button>
+                  </div>
+                </form>
+              ) : (
+                <div>
+                  <div style={{
+                    backgroundColor: '#F8FAFC',
+                    border: '2px dashed #94A3B8',
+                    borderRadius: '12px',
+                    padding: '20px',
+                    marginBottom: '20px'
+                  }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px', borderBottom: '1px solid #E2E8F0', paddingBottom: '10px' }}>
+                      <div>
+                        <span style={{ fontSize: '10.5px', fontWeight: 800, color: '#0369A1', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                          ACE LOGISTICS GATE PASS
+                        </span>
+                        <h4 style={{ fontSize: '18px', color: '#0F172A', fontWeight: 800, margin: '2px 0 0' }}>
+                          {generatedAppointment?.id}
+                        </h4>
+                      </div>
+                      <span style={{
+                        backgroundColor: '#ECFDF5',
+                        color: '#065F46',
+                        border: '1px solid #A7F3D0',
+                        padding: '3px 8px',
+                        borderRadius: '20px',
+                        fontSize: '11px',
+                        fontWeight: 700,
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '4px'
+                      }}>
+                        <Check size={12} /> CONFIRMED
+                      </span>
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', fontSize: '12px', marginBottom: '12px' }}>
+                      <div>
+                        <span style={{ color: 'var(--text-muted)', display: 'block', fontSize: '11px' }}>Visitor</span>
+                        <strong style={{ color: 'var(--text-primary)' }}>{generatedAppointment?.fullName}</strong>
+                      </div>
+                      <div>
+                        <span style={{ color: 'var(--text-muted)', display: 'block', fontSize: '11px' }}>Station</span>
+                        <strong style={{ color: 'var(--text-primary)' }}>{generatedAppointment?.hub}</strong>
+                      </div>
+                      <div>
+                        <span style={{ color: 'var(--text-muted)', display: 'block', fontSize: '11px' }}>Date</span>
+                        <strong style={{ color: 'var(--text-primary)' }}>{generatedAppointment?.date}</strong>
+                      </div>
+                      <div>
+                        <span style={{ color: 'var(--text-muted)', display: 'block', fontSize: '11px' }}>Time</span>
+                        <strong style={{ color: 'var(--text-primary)' }}>{generatedAppointment?.timeSlot}</strong>
+                      </div>
+                      <div style={{ gridColumn: '1 / -1' }}>
+                        <span style={{ color: 'var(--text-muted)', display: 'block', fontSize: '11px' }}>Purpose</span>
+                        <strong style={{ color: 'var(--color-primary-blue)' }}>{generatedAppointment?.purpose}</strong>
+                      </div>
+                    </div>
+
+                    <div style={{
+                      backgroundColor: '#EFF6FF',
+                      border: '1px solid #BFDBFE',
+                      borderRadius: '8px',
+                      padding: '8px 12px',
+                      fontSize: '11.5px',
+                      color: '#1E40AF',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px'
+                    }}>
+                      <ShieldCheck size={15} color="#2563EB" style={{ flexShrink: 0 }} />
+                      <span>Bring photo ID for security gate access. Assigned Officer: {generatedAppointment?.assignedOfficer}</span>
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => setShowAppointmentModal(false)}
+                    className="ace-btn ace-btn-action"
+                    style={{ width: '100%', justifyContent: 'center' }}
+                  >
+                    <CheckCircle2 size={15} />
+                    <span>Done</span>
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         <style>{`
           @media (max-width: 640px) {
             .dashboard-header-actions {
