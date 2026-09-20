@@ -154,12 +154,20 @@ export default function TrackingView({
 
   return (
     <div style={{ 
-      backgroundColor: 'var(--color-very-light-blue)', 
-      padding: (hasSearched && shipment) ? '32px 0 64px' : '28px 0 40px', 
-      minHeight: (hasSearched && shipment) ? 'calc(100vh - 140px)' : 'calc(100vh - 240px)',
+      position: 'relative',
+      backgroundColor: (hasSearched && shipment) ? 'var(--color-very-light-blue)' : '#072A42', 
+      backgroundImage: (!hasSearched || !shipment) 
+        ? "linear-gradient(135deg, rgba(3, 11, 22, 0.88) 0%, rgba(7, 42, 66, 0.82) 100%), url('/images/hero-logistics-sunset.jpg')" 
+        : 'none',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundAttachment: 'fixed',
+      padding: (hasSearched && shipment) ? '32px 0 64px' : '24px 0 28px', 
+      minHeight: 'calc(100vh - 86px)',
       display: 'flex',
       flexDirection: 'column',
-      justifyContent: (hasSearched && shipment) ? 'flex-start' : 'center'
+      justifyContent: (hasSearched && shipment) ? 'flex-start' : 'center',
+      transition: 'background 0.3s ease'
     }}>
       <div className="ace-container">
         {/* ===================================================
@@ -167,58 +175,65 @@ export default function TrackingView({
             =================================================== */}
         <div className="ace-card tracking-search-card" style={{
           width: '100%',
-          maxWidth: (hasSearched && shipment) ? '100%' : '840px',
-          margin: (hasSearched && shipment) ? '0 auto 28px' : '12px auto 28px',
-          padding: '28px 28px 24px',
+          maxWidth: (hasSearched && shipment) ? '100%' : '860px',
+          margin: (hasSearched && shipment) ? '0 auto 24px' : '0 auto',
+          padding: '22px 28px 18px',
           borderRadius: '16px',
-          boxShadow: '0 4px 20px rgba(11, 79, 124, 0.08)',
-          border: '1px solid var(--color-border)',
-          backgroundColor: 'var(--color-white)',
+          boxShadow: '0 24px 60px rgba(0, 0, 0, 0.5)',
+          border: '1px solid rgba(56, 189, 248, 0.35)',
+          backgroundImage: "linear-gradient(145deg, rgba(5, 20, 36, 0.94) 0%, rgba(7, 38, 62, 0.90) 100%), url('/images/container-port.jpg')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          color: '#FFFFFF',
+          position: 'relative',
+          overflow: 'hidden',
           transition: 'all 0.3s ease'
         }}>
-          <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+          <div style={{ textAlign: 'center', marginBottom: '16px' }}>
             <div style={{ 
               display: 'inline-flex', 
               alignItems: 'center', 
               gap: '6px', 
-              backgroundColor: 'var(--color-light-blue)', 
-              padding: '4px 12px', 
+              backgroundColor: 'rgba(56, 189, 248, 0.15)', 
+              border: '1px solid rgba(56, 189, 248, 0.3)',
+              padding: '3px 12px', 
               borderRadius: '20px', 
-              fontSize: '11.5px', 
+              fontSize: '11px', 
               fontWeight: 700, 
-              color: 'var(--color-primary-blue)', 
+              color: '#38BDF8', 
               textTransform: 'uppercase', 
               letterSpacing: '0.06em',
-              marginBottom: '8px'
+              marginBottom: '6px'
             }}>
-              <Radio size={13} color="var(--color-bright-action)" className="animate-pulse" />
-              <span>Real-Time Freight Telemetry System</span>
+              <Radio size={12} color="#38BDF8" className="animate-pulse" />
+              <span>Real-Time Freight Telemetry System • Live Tracking</span>
             </div>
-            <h1 style={{ fontSize: '26px', color: 'var(--color-primary-blue)', fontWeight: 800, marginTop: '2px', marginBottom: '8px' }}>
+            <h1 style={{ fontSize: '24px', color: '#FFFFFF', fontWeight: 800, margin: '2px 0 4px', letterSpacing: '-0.01em' }}>
               Track Your Shipment
             </h1>
-            <p style={{ fontSize: '14.5px', color: 'var(--text-primary)', fontWeight: 500, maxWidth: '640px', margin: '0 auto', lineHeight: 1.5 }}>
-              Locate, enter your consignment or tracking number below to view real-time cargo telemetry, transit waybills, and milestone status.
+            <p style={{ fontSize: '13.5px', color: '#CBD5E1', maxWidth: '640px', margin: '0 auto', lineHeight: 1.45 }}>
+              Locate and enter your consignment tracking number below to view real-time multi-modal telemetry and waybill status.
             </p>
           </div>
 
-          <div style={{ maxWidth: '760px', margin: '0 auto 8px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '6px' }}>
+          <div style={{ width: '100%', margin: '0 auto 10px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
             <label 
               htmlFor="consignment-input" 
               style={{ 
                 display: 'inline-flex', 
                 alignItems: 'center', 
-                gap: '6px', 
-                fontSize: '13.5px', 
+                gap: '7px', 
+                fontSize: '14px', 
                 fontWeight: 700, 
-                color: 'var(--color-primary-blue)',
+                color: '#FFFFFF',
                 cursor: 'pointer'
               }}
+              className="consignment-tracking-label"
             >
-              <MapPin size={15} color="var(--color-bright-action)" />
-              <span>Enter your consignment number:</span>
+              <MapPin size={16} color="#FF6B00" />
+              <span>Enter your consignment tracking number:</span>
             </label>
-            <span style={{ fontSize: '11.5px', color: 'var(--text-muted)' }}>
+            <span style={{ fontSize: '12px', color: '#90CDF4', fontWeight: 500 }}>
               Format: ACE-2026-XXXXXX or Master Waybill
             </span>
           </div>
@@ -226,8 +241,6 @@ export default function TrackingView({
           <form onSubmit={handleSearchSubmit} className="tracking-search-form" style={{ 
             display: 'flex', 
             gap: '10px', 
-            maxWidth: '760px', 
-            margin: '0 auto',
             width: '100%',
             alignItems: 'stretch'
           }}>
@@ -263,7 +276,7 @@ export default function TrackingView({
                 style={{ 
                   width: '100%',
                   height: '52px', 
-                  fontSize: '15px', 
+                  fontSize: 'clamp(13px, 1.1vw, 15px)', 
                   fontWeight: 500,
                   color: 'var(--text-primary)',
                   backgroundColor: 'var(--color-white)',
@@ -1056,11 +1069,56 @@ export default function TrackingView({
       </div>
 
       <style>{`
+        .tracking-card-visual-banner {
+          position: relative;
+          border-radius: 12px;
+          overflow: hidden;
+          margin-bottom: 22px;
+          border: 1px solid rgba(14, 76, 119, 0.15);
+          box-shadow: 0 4px 18px rgba(7, 42, 66, 0.12);
+        }
+        .tracking-card-visual-banner img {
+          width: 100%;
+          height: 180px;
+          object-fit: cover;
+          display: block;
+          transition: transform 0.4s ease;
+        }
+        .tracking-card-visual-banner:hover img {
+          transform: scale(1.02);
+        }
+        .tracking-card-visual-overlay {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(to top, rgba(7, 42, 66, 0.94) 0%, rgba(7, 42, 66, 0.35) 55%, transparent 100%);
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          padding: 16px 20px;
+        }
+        body.dark-mode .tracking-search-card {
+          background-color: #0A131F !important;
+          border-color: rgba(56, 189, 248, 0.3) !important;
+        }
+        .consignment-tracking-label {
+          color: var(--color-primary-blue);
+          transition: color 0.2s ease;
+        }
+        body.dark-mode .consignment-tracking-label,
+        [data-theme="dark"] .consignment-tracking-label {
+          color: #90CDF4 !important;
+        }
+        .tracking-number-input {
+          font-size: clamp(13px, 1.1vw, 15px) !important;
+        }
         .tracking-number-input::placeholder {
           color: #64748B !important;
           opacity: 1 !important;
           font-weight: 500 !important;
-          font-size: 14px !important;
+          font-size: clamp(12px, 1vw, 14px) !important;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
         .tracking-number-input:focus {
           border-color: var(--color-bright-action) !important;
@@ -1081,6 +1139,15 @@ export default function TrackingView({
           }
         }
         @media (max-width: 640px) {
+          .tracking-card-visual-banner {
+            margin-bottom: 14px !important;
+          }
+          .tracking-card-visual-banner img {
+            height: 140px !important;
+          }
+          .tracking-card-visual-overlay {
+            padding: 10px 12px !important;
+          }
           .tracking-search-form {
             flex-direction: column !important;
             gap: 10px !important;
