@@ -234,7 +234,7 @@ export default function TrackingView({
               <span>Enter your consignment tracking number:</span>
             </label>
             <span style={{ fontSize: '12px', color: '#90CDF4', fontWeight: 500 }}>
-              Format: ACE-2026-XXXXXX or Master Waybill
+              Format: ACE-XXXX-XXXXX (e.g. ACE-2T34-79011)
             </span>
           </div>
 
@@ -244,9 +244,8 @@ export default function TrackingView({
             width: '100%',
             alignItems: 'stretch'
           }}>
-            <div className="tracking-input-wrapper" style={{ 
+            <div className="ace-input-wrapper tracking-input-wrapper" style={{ 
               flex: 1, 
-              minWidth: 0, 
               position: 'relative',
               display: 'flex',
               alignItems: 'center'
@@ -267,7 +266,7 @@ export default function TrackingView({
                 id="consignment-input"
                 type="text"
                 className="ace-input ace-input-with-icon tracking-number-input"
-                placeholder="Enter your consignment tracking number (e.g. ACE-2026-8F72K9)"
+                placeholder="Enter your registered tracking number (e.g. ACE-2T34-79011)"
                 value={searchInput}
                 onChange={(e) => {
                   setSearchInput(e.target.value);
@@ -337,25 +336,6 @@ export default function TrackingView({
             }}>
               <AlertCircle size={16} />
               <span>{validationNotice}</span>
-              <button
-                type="button"
-                onClick={() => {
-                  setSearchInput('ACE-2026-8F72K9');
-                  setValidationNotice('');
-                }}
-                style={{
-                  marginLeft: 'auto',
-                  background: 'none',
-                  border: 'none',
-                  color: 'var(--color-primary-blue)',
-                  fontWeight: 700,
-                  fontSize: '12px',
-                  cursor: 'pointer',
-                  textDecoration: 'underline'
-                }}
-              >
-                Use sample: ACE-2026-8F72K9
-              </button>
             </div>
           )}
 
@@ -377,19 +357,13 @@ export default function TrackingView({
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
               <ShieldCheck size={14} color="#10B981" />
               <span>
-                Reference Format:{' '}
+                Standard Format:{' '}
                 <strong 
                   className="security-awb-tag" 
-                  style={{ color: 'var(--color-primary-blue)', cursor: 'pointer', textDecoration: 'underline dotted' }}
-                  onClick={() => {
-                    setSearchInput('ACE-2026-8F72K9');
-                    if (validationNotice) setValidationNotice('');
-                  }}
-                  title="Click to insert sample tracking number"
+                  style={{ color: 'var(--color-primary-blue)' }}
                 >
-                  ACE-2026-8F72K9
-                </strong>{' '}
-                or Master Waybill
+                  ACE-XXXX-XXXXX (e.g. ACE-2T34-79011)
+                </strong>
               </span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px', fontSize: '11.5px' }}>
@@ -1031,9 +1005,8 @@ export default function TrackingView({
               </div>
               <ul style={{ paddingLeft: '18px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
                 <li>Confirm the complete tracking code from your booking receipt or Air Waybill (AWB).</li>
-                <li>Standard ACE references follow the format: <strong>ACE-2026-XXXXXX</strong>.</li>
-                <li>For bookings placed in the last 15 minutes, please allow a short window for initial terminal transponder intake.</li>
-                <li>If you received a container number (e.g. MSKU) or seal ID, verify with your freight coordinator.</li>
+                <li>Standard registered ACE references follow the 12-character format: <strong>ACE-XXXX-XXXXX</strong> (e.g. <strong>ACE-2T34-79011</strong>).</li>
+                <li>Only registered consignments can be tracked in the ACE network.</li>
               </ul>
             </div>
 

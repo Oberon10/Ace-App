@@ -22,14 +22,14 @@ export default function StaffDashboardView({
   activeRole = 'staff',
   setActiveRole 
 }) {
-  const [selectedTracking, setSelectedTracking] = useState('ACE-2026-8F72K9');
+  const [selectedTracking, setSelectedTracking] = useState(shipments[0]?.trackingNumber || '');
   const [scanSimulating, setScanSimulating] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [statusUpdateVal, setStatusUpdateVal] = useState('IN TRANSIT');
   const [newLocationVal, setNewLocationVal] = useState('');
   const [newNoteVal, setNewNoteVal] = useState('');
 
-  const activeShipment = shipments.find(s => s.trackingNumber === selectedTracking) || shipments[0];
+  const activeShipment = shipments.find(s => s.trackingNumber === selectedTracking) || shipments[0] || null;
 
   const handleSimulateScan = () => {
     setScanSimulating(true);
@@ -112,142 +112,172 @@ export default function StaffDashboardView({
           </div>
         )}
 
-        {/* Two-Column Layout: Status Update Control (Left) & Current Consignment Info (Right) */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'minmax(0, 1.2fr) minmax(0, 1fr)',
-          gap: '24px',
-          marginBottom: '32px'
-        }} className="staff-grid">
-          {/* LEFT: STATUS UPDATE FORM */}
-          <div className="ace-card">
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px', borderBottom: '1px solid var(--color-border)', paddingBottom: '12px' }}>
-              <RefreshCw size={18} color="var(--color-primary-blue)" />
-              <h3 style={{ fontSize: '17px', color: 'var(--color-primary-blue)', fontWeight: 700 }}>
-                Advance Consignment Status
-              </h3>
+        {/* If no shipments exist yet */}
+        {shipments.length === 0 ? (
+          <div className="ace-card" style={{ textAlign: 'center', padding: '60px 24px', maxWidth: '640px', margin: '20px auto 32px' }}>
+            <div style={{
+              width: '56px',
+              height: '56px',
+              borderRadius: '50%',
+              backgroundColor: 'var(--color-light-blue)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: '0 auto 16px',
+              color: 'var(--color-primary-blue)'
+            }}>
+              <Package size={28} />
             </div>
-
-            <form onSubmit={handleApplyStatusChange}>
-              <div className="ace-form-group">
-                <label className="ace-label ace-label-required">Select Consignment to Update</label>
-                <select
-                  className="ace-select"
-                  value={selectedTracking}
-                  onChange={(e) => setSelectedTracking(e.target.value)}
-                >
-                  {shipments.map(s => (
-                    <option key={s.id} value={s.trackingNumber}>
-                      {s.trackingNumber} — {s.sender?.company || s.sender?.name} ({s.status})
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="ace-form-group">
-                <label className="ace-label ace-label-required">Set New Milestone Status</label>
-                <select
-                  className="ace-select"
-                  value={statusUpdateVal}
-                  onChange={(e) => setStatusUpdateVal(e.target.value)}
-                >
-                  <option value="IN TRANSIT">IN TRANSIT (Active Courier / Flight)</option>
-                  <option value="DELIVERED">DELIVERED (Final Consignee Signed)</option>
-                  <option value="PENDING">PENDING (Warehouse Intake / Staging)</option>
-                  <option value="CANCELLED">CANCELLED (Shipper Voided)</option>
-                </select>
-              </div>
-
-              <div className="ace-form-group">
-                <label className="ace-label">Current Waypoint / Hub Location</label>
-                <input
-                  type="text"
-                  className="ace-input"
-                  placeholder={activeShipment?.currentLocation || "e.g. Accra Air Cargo Hub, Bay 4"}
-                  value={newLocationVal}
-                  onChange={(e) => setNewLocationVal(e.target.value)}
-                />
-              </div>
-
-              <div className="ace-form-group">
-                <label className="ace-label">Dispatcher Notes / Event Log Entry</label>
-                <input
-                  type="text"
-                  className="ace-input"
-                  placeholder="e.g. Cleared customs screening, loaded on flight ACE-802"
-                  value={newNoteVal}
-                  onChange={(e) => setNewNoteVal(e.target.value)}
-                />
-              </div>
-
-              <div style={{ marginTop: '20px', display: 'flex', gap: '10px' }}>
-                <button
-                  type="submit"
-                  className="ace-btn ace-btn-primary"
-                  style={{ flex: 1, height: '44px' }}
-                >
-                  <CheckCircle2 size={16} />
-                  <span>Commit Status Change</span>
-                </button>
-              </div>
-            </form>
+            <h3 style={{ fontSize: '20px', fontWeight: 800, color: 'var(--color-primary-blue)', marginBottom: '8px' }}>
+              No Active Registered Consignments
+            </h3>
+            <p style={{ fontSize: '14px', color: 'var(--text-secondary)', maxWidth: '500px', margin: '0 auto 24px', lineHeight: 1.5 }}>
+              There are currently no shipments registered in the operations queue. When customer bookings are created, they will be registered and displayed here for milestone updates.
+            </p>
+            <button
+              onClick={() => setView('new-shipment')}
+              className="ace-btn ace-btn-action"
+            >
+              <span>Create & Register Shipment</span>
+            </button>
           </div>
-
-          {/* RIGHT: SELECTED SHIPMENT SNAPSHOT */}
-          {activeShipment && (
-            <div className="ace-card" style={{ backgroundColor: 'var(--color-white)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', borderBottom: '1px solid var(--color-border)', paddingBottom: '12px' }}>
-                <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--color-primary-blue)', textTransform: 'uppercase' }}>
-                  Target Consignment Spec
-                </div>
-                <StatusBadge status={activeShipment.status} />
+        ) : (
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'minmax(0, 1.2fr) minmax(0, 1fr)',
+            gap: '24px',
+            marginBottom: '32px'
+          }} className="staff-grid">
+            {/* LEFT: STATUS UPDATE FORM */}
+            <div className="ace-card">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px', borderBottom: '1px solid var(--color-border)', paddingBottom: '12px' }}>
+                <RefreshCw size={18} color="var(--color-primary-blue)" />
+                <h3 style={{ fontSize: '17px', color: 'var(--color-primary-blue)', fontWeight: 700 }}>
+                  Advance Consignment Status
+                </h3>
               </div>
 
-              <div style={{ marginBottom: '16px' }}>
-                <div style={{ fontSize: '20px', fontWeight: 800, color: 'var(--color-primary-blue)' }}>
-                  {activeShipment.trackingNumber}
+              <form onSubmit={handleApplyStatusChange}>
+                <div className="ace-form-group">
+                  <label className="ace-label ace-label-required">Select Consignment to Update</label>
+                  <select
+                    className="ace-select"
+                    value={selectedTracking}
+                    onChange={(e) => setSelectedTracking(e.target.value)}
+                  >
+                    {shipments.map(s => (
+                      <option key={s.id} value={s.trackingNumber}>
+                        {s.trackingNumber} — {s.sender?.company || s.sender?.name} ({s.status})
+                      </option>
+                    ))}
+                  </select>
                 </div>
-                <div style={{ fontSize: '12.5px', color: 'var(--text-secondary)', marginTop: '2px' }}>
-                  {activeShipment.method} • ETA: {activeShipment.estimatedDelivery}
-                </div>
-              </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '13px', backgroundColor: 'var(--color-very-light-blue)', padding: '14px', borderRadius: '8px', border: '1px solid var(--color-border)' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ color: 'var(--text-secondary)' }}>Origin:</span>
-                  <strong>{activeShipment.origin}</strong>
+                <div className="ace-form-group">
+                  <label className="ace-label ace-label-required">Set New Milestone Status</label>
+                  <select
+                    className="ace-select"
+                    value={statusUpdateVal}
+                    onChange={(e) => setStatusUpdateVal(e.target.value)}
+                  >
+                    <option value="IN TRANSIT">IN TRANSIT (Active Courier / Flight)</option>
+                    <option value="DELIVERED">DELIVERED (Final Consignee Signed)</option>
+                    <option value="PENDING">PENDING (Warehouse Intake / Staging)</option>
+                    <option value="CANCELLED">CANCELLED (Shipper Voided)</option>
+                  </select>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ color: 'var(--text-secondary)' }}>Destination:</span>
-                  <strong>{activeShipment.destination}</strong>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ color: 'var(--text-secondary)' }}>Current Location:</span>
-                  <strong style={{ color: 'var(--color-bright-action)' }}>{activeShipment.currentLocation}</strong>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ color: 'var(--text-secondary)' }}>Total Cargo Weight:</span>
-                  <strong>{activeShipment.package?.weightKg} kg</strong>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ color: 'var(--text-secondary)' }}>Security Seal:</span>
-                  <strong style={{ fontFamily: 'monospace' }}>{activeShipment.package?.sealNumber}</strong>
-                </div>
-              </div>
 
-              <div style={{ marginTop: '18px' }}>
-                <button
-                  onClick={() => onSelectShipment(activeShipment)}
-                  className="ace-btn ace-btn-secondary ace-btn-sm"
-                  style={{ width: '100%' }}
-                >
-                  <span>View Full Customer Tracking View</span>
-                  <ArrowRight size={14} />
-                </button>
-              </div>
+                <div className="ace-form-group">
+                  <label className="ace-label">Current Waypoint / Hub Location</label>
+                  <input
+                    type="text"
+                    className="ace-input"
+                    placeholder={activeShipment?.currentLocation || "e.g. Accra Air Cargo Hub, Bay 4"}
+                    value={newLocationVal}
+                    onChange={(e) => setNewLocationVal(e.target.value)}
+                  />
+                </div>
+
+                <div className="ace-form-group">
+                  <label className="ace-label">Dispatcher Notes / Event Log Entry</label>
+                  <input
+                    type="text"
+                    className="ace-input"
+                    placeholder="e.g. Cleared customs screening, loaded on flight ACE-802"
+                    value={newNoteVal}
+                    onChange={(e) => setNewNoteVal(e.target.value)}
+                  />
+                </div>
+
+                <div style={{ marginTop: '20px', display: 'flex', gap: '10px' }}>
+                  <button
+                    type="submit"
+                    className="ace-btn ace-btn-primary"
+                    style={{ flex: 1, height: '44px' }}
+                  >
+                    <CheckCircle2 size={16} />
+                    <span>Commit Status Change</span>
+                  </button>
+                </div>
+              </form>
             </div>
-          )}
-        </div>
+
+            {/* RIGHT: SELECTED SHIPMENT SNAPSHOT */}
+            {activeShipment && (
+              <div className="ace-card" style={{ backgroundColor: 'var(--color-white)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', borderBottom: '1px solid var(--color-border)', paddingBottom: '12px' }}>
+                  <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--color-primary-blue)', textTransform: 'uppercase' }}>
+                    Target Consignment Spec
+                  </div>
+                  <StatusBadge status={activeShipment.status} />
+                </div>
+
+                <div style={{ marginBottom: '16px' }}>
+                  <div style={{ fontSize: '20px', fontWeight: 800, color: 'var(--color-primary-blue)' }}>
+                    {activeShipment.trackingNumber}
+                  </div>
+                  <div style={{ fontSize: '12.5px', color: 'var(--text-secondary)', marginTop: '2px' }}>
+                    {activeShipment.method} • ETA: {activeShipment.estimatedDelivery}
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '13px', backgroundColor: 'var(--color-very-light-blue)', padding: '14px', borderRadius: '8px', border: '1px solid var(--color-border)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ color: 'var(--text-secondary)' }}>Origin:</span>
+                    <strong>{activeShipment.origin}</strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ color: 'var(--text-secondary)' }}>Destination:</span>
+                    <strong>{activeShipment.destination}</strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ color: 'var(--text-secondary)' }}>Current Location:</span>
+                    <strong style={{ color: 'var(--color-bright-action)' }}>{activeShipment.currentLocation}</strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ color: 'var(--text-secondary)' }}>Total Cargo Weight:</span>
+                    <strong>{activeShipment.package?.weightKg} kg</strong>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ color: 'var(--text-secondary)' }}>Security Seal:</span>
+                    <strong style={{ fontFamily: 'monospace' }}>{activeShipment.package?.sealNumber}</strong>
+                  </div>
+                </div>
+
+                <div style={{ marginTop: '18px' }}>
+                  <button
+                    onClick={() => onSelectShipment(activeShipment)}
+                    className="ace-btn ace-btn-secondary ace-btn-sm"
+                    style={{ width: '100%' }}
+                  >
+                    <span>View Full Customer Tracking View</span>
+                    <ArrowRight size={14} />
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Dispatch Queue Table */}
         <div className="ace-card">

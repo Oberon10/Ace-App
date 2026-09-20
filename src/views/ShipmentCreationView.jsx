@@ -18,6 +18,7 @@ import {
   Globe
 } from 'lucide-react';
 import { COUNTRY_LIST, getCitiesForCountry } from '../data/locations';
+import { generateTrackingNumber } from '../data/shipments';
 
 export default function ShipmentCreationView({ 
   onShipmentCreated, 
@@ -183,9 +184,8 @@ export default function ShipmentCreationView({
     setIsSubmitting(true);
 
     setTimeout(() => {
-      // Generate realistic tracking code: ACE-2026-XXXXXX
-      const randomSuffix = Math.random().toString(36).substring(2, 8).toUpperCase();
-      const newTrackingId = `ACE-2026-${randomSuffix}`;
+      // Auto-generate registered 12-character tracking code: ACE-XXXX-XXXXX (e.g. ACE-2T34-79011)
+      const newTrackingId = generateTrackingNumber();
 
       const newShipment = {
         id: newTrackingId,

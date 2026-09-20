@@ -33,7 +33,8 @@ export default function HomeView({
 
   const handleTrackSubmit = (e) => {
     if (e && e.preventDefault) e.preventDefault();
-    const query = trackingInput.trim() || 'ACE-2026-8F72K9';
+    const query = trackingInput.trim();
+    if (!query) return;
     setIsSearching(true);
     setTimeout(() => {
       setIsSearching(false);
@@ -283,7 +284,7 @@ export default function HomeView({
                   <span>Enter your consignment tracking number:</span>
                 </label>
                 <span style={{ fontSize: '12px', color: '#90CDF4', fontWeight: 500 }}>
-                  Format: ACE-2026-XXXXXX or Master Waybill
+                  Format: ACE-XXXX-XXXXX (e.g. ACE-2T34-79011)
                 </span>
               </div>
 
@@ -296,7 +297,7 @@ export default function HomeView({
                     id="home-consignment-input"
                     type="text"
                     className="ace-input ace-input-with-icon"
-                    placeholder="Enter your consignment tracking number (e.g. ACE-2026-8F72K9)"
+                    placeholder="Enter your registered tracking number (e.g. ACE-2T34-79011)"
                     value={trackingInput}
                     onChange={(e) => setTrackingInput(e.target.value)}
                     style={{ 
@@ -338,7 +339,7 @@ export default function HomeView({
               <div className="home-tracking-security-bar" style={{ marginTop: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px', fontSize: '12px', color: 'var(--text-muted)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                   <ShieldCheck size={14} color="#10B981" />
-                  <span>Standard AWB / Bill of Lading format (e.g. <strong className="security-awb-tag" style={{ color: 'var(--color-primary-blue)' }}>ACE-2026-XXXXXX</strong>)</span>
+                  <span>Standard AWB / Bill of Lading format (e.g. <strong className="security-awb-tag" style={{ color: 'var(--color-primary-blue)' }}>ACE-2T34-79011</strong>)</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '14px', fontSize: '11.5px' }}>
                   <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>

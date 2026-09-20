@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ReceiptModal from './components/ReceiptModal';
+import AiAssistant from './components/AiAssistant';
 
 // Dedicated Views
 import HomeView from './views/HomeView';
@@ -19,7 +20,7 @@ import AnalyticsView from './views/AnalyticsView';
 import UserManagementView from './views/UserManagementView';
 
 // Initial Mock Data
-import { INITIAL_SHIPMENTS, createDynamicShipment } from './data/shipments';
+import { INITIAL_SHIPMENTS } from './data/shipments';
 
 export default function App() {
   const [currentView, setCurrentView] = useState('home');
@@ -46,8 +47,21 @@ export default function App() {
     setTheme(prev => prev === 'light' ? 'dark' : 'light');
   };
 
-  // Central Reactive Shipments Repository
-  const [shipments, setShipments] = useState(INITIAL_SHIPMENTS);
+  // Central Reactive Shipments Repository: Erased all mock shipments, only registered consignments exist
+  const [shipments, setShipments] = useState(() => {
+    try {
+      // Clear any legacy mock shipments
+      localStorage.removeItem('ace_shipments');
+      localStorage.removeItem('ace_mock_shipments');
+      const stored = localStorage.getItem('ace_registered_consignments');
+      if (stored) {
+        return JSON.parse(stored);
+      }
+    } catch {
+      // ignore
+    }
+    return INITIAL_SHIPMENTS; // starts empty []
+  });
   const [selectedShipment, setSelectedShipment] = useState(null);
   const [trackingQuery, setTrackingQuery] = useState('');
   const [hasSearchedTracking, setHasSearchedTracking] = useState(false);
@@ -55,13 +69,17 @@ export default function App() {
 
   // Receipt Modal State
   const [receiptModalOpen, setReceiptModalOpen] = useState(false);
-  const [receiptShipment, setReceiptShipment] = useState(INITIAL_SHIPMENTS[0]);
+  const [receiptShipment, setReceiptShipment] = useState(null);
 
-  // Tracking Search
+  // Tracking Search: STRICT - Unregistered tracking numbers do NOT display information
   const handleSearchTracking = (trackingNumber) => {
-    let cleanNumber = (trackingNumber || '').trim();
+    const cleanNumber = (trackingNumber || '').trim();
     if (!cleanNumber) {
-      cleanNumber = shipments[0]?.trackingNumber || 'ACE-2026-8F72K9';
+      setSelectedShipment(null);
+      setTrackingQuery('');
+      setHasSearchedTracking(false);
+      setCurrentView('track');
+      return;
     }
 
     setTrackingQuery(cleanNumber);
@@ -70,33 +88,20 @@ export default function App() {
     const upperClean = cleanNumber.toUpperCase();
     const stripped = upperClean.replace(/[^A-Z0-9]/g, '');
 
-    let found = shipments.find(s => {
-      const sNum = (s.trackingNumber || '').toUpperCase();
-      const sId = (s.id || '').toUpperCase();
-      const sSeal = (s.package?.sealNumber || '').toUpperCase();
-      const sNumStripped = sNum.replace(/[^A-Z0-9]/g, '');
-      const sIdStripped = sId.replace(/[^A-Z0-9]/g, '');
-
-      return sNum === upperClean || 
-             sId === upperClean || 
-             sSeal === upperClean ||
-             (stripped && sNumStripped === stripped) ||
-             (stripped && sIdStripped === stripped) ||
-             (stripped.length >= 4 && (sNumStripped.includes(stripped) || stripped.includes(sNumStripped)));
+    const found = shipments.find(s => {
+      const sNum = (s.trackingNumber || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+      const sId = (s.id || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+      const sSeal = (s.package?.sealNumber || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+      return sNum === stripped || sId === stripped || sSeal === stripped;
     });
 
-    // If not found in existing repository, dynamically generate a full, realistic shipment record
-    if (!found) {
-      found = createDynamicShipment(cleanNumber);
-      setShipments(prev => [found, ...prev]);
-    }
-
-    setSelectedShipment(found);
+    // If not found in registered consignments, found is null (no shipment information displayed)
+    setSelectedShipment(found || null);
     setCurrentView('track');
 
-    // Smoothly scroll to shipment details section so customer immediately sees all information
+    // Smoothly scroll to telemetry root if found or search form if not found
     setTimeout(() => {
-      const detailsEl = document.getElementById('shipment-telemetry-root') || document.getElementById('shipment-details-section');
+      const detailsEl = document.getElementById('shipment-telemetry-root') || document.getElementById('consignment-input') || document.getElementById('shipment-details-section');
       if (detailsEl) {
         detailsEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
       } else {
@@ -148,7 +153,15 @@ export default function App() {
 
   // New Shipment Created
   const handleShipmentCreated = (newShipment, postAction = null) => {
-    setShipments(prev => [newShipment, ...prev]);
+    setShipments(prev => {
+      const updated = [newShipment, ...prev];
+      try {
+        localStorage.setItem('ace_registered_consignments', JSON.stringify(updated));
+      } catch (err) {
+        console.error('Failed to sync shipments to localStorage', err);
+      }
+      return updated;
+    });
     setSelectedShipment(newShipment);
 
     if (postAction === 'view-details') {
@@ -160,39 +173,48 @@ export default function App() {
 
   // Update Status from Staff Console
   const handleUpdateShipmentStatus = (shipmentId, updates) => {
-    setShipments(prev => prev.map(s => {
-      if (s.id === shipmentId || s.trackingNumber === shipmentId) {
-        const now = new Date();
-        const dateStr = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-        const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+    setShipments(prev => {
+      const updatedList = prev.map(s => {
+        if (s.id === shipmentId || s.trackingNumber === shipmentId) {
+          const now = new Date();
+          const dateStr = now.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+          const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
 
-        const updatedTimeline = [
-          ...s.timeline.map(t => t.status === 'active' ? { ...t, status: 'completed' } : t),
-          {
-            id: s.timeline.length + 1,
-            title: `Status Milestone: ${updates.status}`,
-            description: updates.note || `Dispatcher update recorded at ${updates.currentLocation}.`,
-            location: updates.currentLocation || s.currentLocation,
-            date: dateStr,
-            time: timeStr,
-            status: 'active'
+          const updatedTimeline = [
+            ...s.timeline.map(t => t.status === 'active' ? { ...t, status: 'completed' } : t),
+            {
+              id: s.timeline.length + 1,
+              title: `Status Milestone: ${updates.status}`,
+              description: updates.note || `Dispatcher update recorded at ${updates.currentLocation}.`,
+              location: updates.currentLocation || s.currentLocation,
+              date: dateStr,
+              time: timeStr,
+              status: 'active'
+            }
+          ];
+
+          const updated = {
+            ...s,
+            status: updates.status,
+            currentLocation: updates.currentLocation || s.currentLocation,
+            timeline: updatedTimeline
+          };
+
+          if (selectedShipment?.id === s.id) {
+            setSelectedShipment(updated);
           }
-        ];
-
-        const updated = {
-          ...s,
-          status: updates.status,
-          currentLocation: updates.currentLocation || s.currentLocation,
-          timeline: updatedTimeline
-        };
-
-        if (selectedShipment?.id === s.id) {
-          setSelectedShipment(updated);
+          return updated;
         }
-        return updated;
+        return s;
+      });
+
+      try {
+        localStorage.setItem('ace_registered_consignments', JSON.stringify(updatedList));
+      } catch (err) {
+        console.error('Failed to sync updated shipment to localStorage', err);
       }
-      return s;
-    }));
+      return updatedList;
+    });
   };
 
   // Quote -> Shipment Booking transition
@@ -313,7 +335,11 @@ export default function App() {
         )}
 
         {currentView === 'contact' && (
-          <ContactView />
+          <ContactView 
+            setView={setCurrentView}
+            currentUser={currentUser}
+            activeRole={activeRole}
+          />
         )}
 
         {currentView === 'quote' && (
@@ -481,6 +507,17 @@ export default function App() {
       {!isDashboardView && (
         <Footer setView={handleNavigate} />
       )}
+
+      {/* Intelligent AI Logistics Assistant (24/7 Operations Desk) */}
+      <AiAssistant 
+        onSearchTracking={handleSearchTracking}
+        onProceedToShipment={handleProceedToShipmentFromQuote}
+        setView={handleNavigate}
+        allShipments={shipments}
+        currentUser={currentUser}
+        activeRole={activeRole}
+        theme={theme}
+      />
     </div>
   );
 }

@@ -3,7 +3,7 @@ import { X, Printer, ShieldCheck, CheckCircle2, Plane, Ship, Truck, Train } from
 import StatusBadge from './StatusBadge';
 
 // Authentic High-Density Vector Barcode Generator (Code 128 / Code 39 Style)
-function BarcodeSvg({ value = 'ACE-2026-8F72K9' }) {
+function BarcodeSvg({ value = 'ACE-2T34-79011' }) {
   const str = String(value).toUpperCase();
   const barWidths = [2, 1, 3, 1, 2, 4, 1, 3, 2, 1, 4, 2, 1, 3, 1, 2, 3, 1, 2, 4];
   
@@ -72,7 +72,7 @@ function BarcodeSvg({ value = 'ACE-2026-8F72K9' }) {
 }
 
 // Circular Certified Carrier Stamp Component
-function CertifiedCarrierStamp({ date = '2026-09-10', trackingNumber = 'ACE-2026-8F72K9' }) {
+function CertifiedCarrierStamp({ date = '2026-09-10', trackingNumber = 'ACE-2T34-79011' }) {
   return (
     <div style={{
       width: '84px',
