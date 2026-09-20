@@ -94,320 +94,223 @@ export default function HomeView({
       {/* ===================================================
           HERO SECTION — FEATURING ELBSPIRIT CONTAINER SHIP
           =================================================== */}
-      <section className="home-hero-section" style={{
-        position: 'relative',
-        backgroundColor: 'var(--color-dark-navy)',
-        backgroundImage: "linear-gradient(135deg, rgba(7, 42, 66, 0.94) 0%, rgba(7, 30, 48, 0.92) 50%, rgba(5, 20, 32, 0.96) 100%), url('/images/global-logistics-network.jpg')",
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        color: '#FFFFFF',
-        paddingTop: '48px',
-        paddingBottom: '80px',
-        overflow: 'hidden',
-        borderBottom: '1px solid rgba(255,255,255,0.1)'
-      }}>
-        {/* Ambient background glow */}
-        <div style={{
-          position: 'absolute',
-          top: '-20%',
-          right: '-10%',
-          width: '600px',
-          height: '600px',
-          borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(22, 131, 216, 0.25) 0%, rgba(7, 59, 92, 0) 70%)',
-          pointerEvents: 'none'
-        }} />
+      {/* ===================================================
+          PRIMARY FULL-SCREEN HERO SECTION (100vw x 100vh)
+          =================================================== */}
+      <section className="ace-fullscreen-hero" id="home-primary-hero">
+        {/* Subtle World Map and Global Shipping Route Graphics Overlay */}
+        <div className="hero-routes-layer" aria-hidden="true">
+          <svg className="hero-route-svg" viewBox="0 0 1440 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="heroRouteOrange" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#FF6B00" stopOpacity="0.75" />
+                <stop offset="60%" stopColor="#38BDF8" stopOpacity="0.45" />
+                <stop offset="100%" stopColor="#FF6B00" stopOpacity="0.1" />
+              </linearGradient>
+              <linearGradient id="heroRouteCyan" x1="0%" y1="100%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#38BDF8" stopOpacity="0.6" />
+                <stop offset="50%" stopColor="#FF6B00" stopOpacity="0.3" />
+                <stop offset="100%" stopColor="#38BDF8" stopOpacity="0.05" />
+              </linearGradient>
+            </defs>
+            {/* Global Route Arcs */}
+            <path d="M 60 480 Q 280 240 620 350 T 1280 280" stroke="url(#heroRouteOrange)" strokeWidth="2" strokeDasharray="6 4" opacity="0.4" />
+            <path d="M 120 620 Q 420 400 820 490 T 1380 420" stroke="url(#heroRouteCyan)" strokeWidth="1.8" strokeDasharray="4 4" opacity="0.35" />
+            <path d="M 240 320 Q 560 180 940 250" stroke="#38BDF8" strokeWidth="1.2" strokeDasharray="5 5" opacity="0.25" />
+            {/* Glowing Hub Nodes */}
+            <circle cx="240" cy="320" r="4.5" fill="#FF6B00" />
+            <circle cx="240" cy="320" r="12" stroke="#FF6B00" strokeWidth="1.2" opacity="0.4" />
+            <circle cx="620" cy="350" r="4" fill="#38BDF8" />
+            <circle cx="620" cy="350" r="10" stroke="#38BDF8" strokeWidth="1" opacity="0.35" />
+            <circle cx="940" cy="250" r="4.5" fill="#FF6B00" />
+          </svg>
+        </div>
 
-        <div className="ace-container" style={{ position: 'relative', zIndex: 2 }}>
-          {/* Two-Column Hero: Headline + CTAs (Left) & Container Ship Image Showcase (Right) */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'minmax(0, 1.15fr) minmax(0, 1fr)',
-            gap: '40px',
-            alignItems: 'center',
-            marginBottom: '48px'
-          }} className="hero-grid">
-            {/* Left Column: Headline, Supporting Text & CTAs */}
-            <div>
-              {/* Trust Pill */}
-              <div className="hero-trust-pill" style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                backgroundColor: 'rgba(255, 255, 255, 0.12)',
-                border: '1px solid rgba(255, 255, 255, 0.22)',
-                padding: '6px 14px',
-                borderRadius: '20px',
-                fontSize: '12.5px',
-                fontWeight: 600,
-                color: '#90CDF4',
-                marginBottom: '20px'
-              }}>
-                <ShieldCheck size={14} color="#38BDF8" style={{ flexShrink: 0 }} />
-                <span>Certified International Freight & Supply Chain Carrier</span>
-              </div>
-
-              {/* Main Headline (Section 7) */}
-              <h1 style={{
-                fontSize: 'clamp(1.75rem, 6.2vw, 3.2rem)',
-                fontWeight: 800,
-                color: '#FFFFFF',
-                lineHeight: 1.15,
-                letterSpacing: '-0.025em',
-                marginBottom: '18px'
-              }}>
-                Fast, Reliable & Secure Global Logistics
+        {/* Hero Content Aligned Toward the Left */}
+        <div className="hero-middle-content">
+          <div className="ace-container" style={{ width: '100%' }}>
+            <div className="hero-content-column">
+              {/* Main Headline */}
+              <h1 className="hero-headline-title">
+                Fast. Safe. Reliable.<br />
+                <span className="hero-headline-accent">Across Borders.</span>
               </h1>
 
-              {/* Supporting Text (Section 7) */}
-              <p style={{
-                fontSize: 'clamp(0.95rem, 1.6vw, 1.2rem)',
-                color: '#D9E7F0',
-                lineHeight: 1.6,
-                marginBottom: '28px'
-              }}>
-                Ship with confidence. Track every shipment from pickup to delivery.
+              {/* Supporting Text */}
+              <p className="hero-supporting-desc">
+                Ace Logistics delivers seamless shipping and freight solutions, connecting businesses and people to opportunities worldwide.
               </p>
 
-              {/* Single Hero Action Button: Send A Package */}
-              <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                marginBottom: '28px'
-              }} className="hero-action-buttons">
+              {/* CTAs */}
+              <div className="hero-cta-button-group">
                 <button
                   onClick={handleSendPackage}
-                  className="ace-btn ace-btn-action ace-btn-lg hero-send-package-btn"
-                  style={{
-                    padding: '15px 36px',
-                    fontSize: '16px',
-                    fontWeight: 800,
-                    letterSpacing: '0.04em',
-                    boxShadow: '0 10px 28px rgba(22, 131, 216, 0.45)',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '10px'
-                  }}
-                  title="Send a package (sign in or sign up required)"
+                  className="hero-get-started-btn"
+                  id="hero-primary-get-started-btn"
                 >
-                  <Package size={20} />
-                  <span>SEND A PACKAGE</span>
-                  <ArrowRight size={17} />
+                  <span>Get Started</span>
+                  <span className="cta-arrow-symbol">→</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    setView('services');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                  className="hero-explore-services-btn"
+                  id="hero-secondary-explore-services-btn"
+                >
+                  <span>Explore Services</span>
                 </button>
               </div>
-
-              {/* Operational Proof Bullets */}
-              <div className="hero-proof-bullets" style={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                gap: '16px',
-                fontSize: '12.5px',
-                color: 'rgba(255, 255, 255, 0.75)',
-                borderTop: '1px solid rgba(255, 255, 255, 0.12)',
-                paddingTop: '16px'
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <CheckCircle2 size={15} color="#10B981" style={{ flexShrink: 0 }} />
-                  <span>Real-Time Satellite Telemetry</span>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <CheckCircle2 size={15} color="#10B981" style={{ flexShrink: 0 }} />
-                  <span>99.8% On-Time Delivery SLA</span>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <CheckCircle2 size={15} color="#10B981" style={{ flexShrink: 0 }} />
-                  <span>Bonded Customs Clearance</span>
-                </div>
-              </div>
             </div>
+          </div>
+        </div>
 
-            {/* Right Column: Hero Image Showcase (ELBSPIRIT Container Ship) */}
-            <div style={{
-              position: 'relative',
-              borderRadius: '16px',
-              overflow: 'hidden',
-              boxShadow: '0 16px 40px rgba(0, 0, 0, 0.35)',
-              border: '1px solid rgba(255, 255, 255, 0.18)'
-            }}>
-              <img
-                src="/images/container-ship.jpg"
-                alt="ACE Logistics Container Vessel ELBSPIRIT"
-                style={{
-                  width: '100%',
-                  height: 'auto',
-                  display: 'block',
-                  objectFit: 'cover',
-                  maxHeight: '440px'
-                }}
-              />
-
-              {/* Floating Top Telemetry Pill */}
-              <div style={{
-                position: 'absolute',
-                top: '16px',
-                left: '16px',
-                backgroundColor: 'rgba(7, 59, 92, 0.88)',
-                color: '#FFFFFF',
-                backdropFilter: 'blur(6px)',
-                padding: '6px 12px',
-                borderRadius: '20px',
-                fontSize: '11.5px',
-                fontWeight: 600,
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                border: '1px solid rgba(255, 255, 255, 0.2)'
-              }}>
-                <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#10B981', boxShadow: '0 0 8px #10B981' }} />
-                <span>Live Telemetry • Vessel: ELBSPIRIT</span>
+        {/* Bottom: 4 Small Benefit Items with Clean Line Icons */}
+        <div className="hero-benefits-wrapper">
+          <div className="ace-container" style={{ width: '100%' }}>
+            <div className="hero-four-benefits-grid">
+              {/* 1. Global Shipping */}
+              <div className="hero-benefit-card">
+                <div className="hero-benefit-icon-box">
+                  <Globe2 size={19} />
+                </div>
+                <div>
+                  <div className="hero-benefit-name">Global Shipping</div>
+                  <div className="hero-benefit-desc">Global Shipping Solutions</div>
+                </div>
               </div>
 
-              {/* Floating Bottom Metadata Overlay */}
-              <div style={{
-                position: 'absolute',
-                bottom: 0,
-                left: 0,
-                right: 0,
-                background: 'linear-gradient(to top, rgba(7, 42, 66, 0.95) 0%, rgba(7, 59, 92, 0.75) 70%, transparent 100%)',
-                padding: '28px 20px 16px',
-                color: '#FFFFFF'
-              }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '8px' }}>
-                  <div>
-                    <div style={{ fontSize: '14px', fontWeight: 700, color: '#EAF5FC' }}>
-                      North Sea Deep-Water Transit Corridor
-                    </div>
-                    <div style={{ fontSize: '11.5px', color: '#90CDF4', marginTop: '2px' }}>
-                      IMO: 9483243 • Capacity: 4,200 TEU • Destination: Rotterdam Port
-                    </div>
-                  </div>
-                  <span style={{
-                    backgroundColor: 'var(--color-bright-action)',
-                    color: '#FFFFFF',
-                    fontSize: '11px',
-                    fontWeight: 700,
-                    padding: '3px 9px',
-                    borderRadius: '6px',
-                    textTransform: 'uppercase'
-                  }}>
-                    On Schedule
-                  </span>
+              {/* 2. Security */}
+              <div className="hero-benefit-card">
+                <div className="hero-benefit-icon-box">
+                  <ShieldCheck size={19} />
+                </div>
+                <div>
+                  <div className="hero-benefit-name">Security</div>
+                  <div className="hero-benefit-desc">Secure & Trusted</div>
+                </div>
+              </div>
+
+              {/* 3. Delivery */}
+              <div className="hero-benefit-card">
+                <div className="hero-benefit-icon-box">
+                  <Clock size={19} />
+                </div>
+                <div>
+                  <div className="hero-benefit-name">Delivery</div>
+                  <div className="hero-benefit-desc">On-Time Delivery</div>
+                </div>
+              </div>
+
+              {/* 4. Coverage */}
+              <div className="hero-benefit-card">
+                <div className="hero-benefit-icon-box">
+                  <Compass size={19} />
+                </div>
+                <div>
+                  <div className="hero-benefit-name">Coverage</div>
+                  <div className="hero-benefit-desc">Worldwide Coverage</div>
                 </div>
               </div>
             </div>
           </div>
+        </div>
+      </section>
 
-          {/* ===================================================
-              SECTION 8: TRACKING COMPONENT (Prominent Card)
-              =================================================== */}
+      {/* ===================================================
+          SECTION 8: TRACKING COMPONENT (Prominent Card)
+          =================================================== */}
+      <section className="home-quick-track-section" style={{
+        padding: '56px 0 32px',
+        backgroundColor: 'var(--color-very-light-blue)'
+      }}>
+        <div className="ace-container">
           <div style={{ maxWidth: '960px', margin: '0 auto' }}>
             <div className="ace-card home-tracking-card" style={{
-              backgroundColor: 'var(--color-white)',
-              boxShadow: 'var(--shadow-elevated)',
-              border: '1px solid var(--color-border)',
-              padding: '28px 24px',
-              borderRadius: '16px'
+              backgroundImage: "linear-gradient(145deg, rgba(5, 20, 36, 0.94) 0%, rgba(7, 38, 62, 0.90) 100%), url('/images/container-port.jpg')",
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              boxShadow: '0 20px 50px rgba(0, 0, 0, 0.35)',
+              border: '1px solid rgba(56, 189, 248, 0.35)',
+              padding: '24px 28px 20px',
+              borderRadius: '16px',
+              color: '#FFFFFF'
             }}>
-              <div style={{ textAlign: 'center', marginBottom: '18px' }}>
+              <div style={{ textAlign: 'center', marginBottom: '16px' }}>
                 <div style={{ 
                   display: 'inline-flex', 
                   alignItems: 'center', 
                   gap: '6px', 
-                  backgroundColor: 'var(--color-light-blue)', 
-                  padding: '4px 12px', 
+                  backgroundColor: 'rgba(56, 189, 248, 0.15)', 
+                  border: '1px solid rgba(56, 189, 248, 0.3)',
+                  padding: '3px 12px', 
                   borderRadius: '20px', 
                   fontSize: '11px', 
                   fontWeight: 700, 
-                  color: 'var(--color-primary-blue)', 
+                  color: '#38BDF8', 
                   textTransform: 'uppercase', 
                   letterSpacing: '0.06em',
-                  marginBottom: '8px'
+                  marginBottom: '6px'
                 }}>
-                  <Radio size={12} color="var(--color-bright-action)" className="animate-pulse" />
+                  <Radio size={12} color="#38BDF8" className="animate-pulse" />
                   <span>Real-Time Satellite Freight Telemetry</span>
                 </div>
-                <h3 style={{ fontSize: '22px', color: 'var(--color-primary-blue)', fontWeight: 800, marginBottom: '4px' }}>
+                <h3 style={{ fontSize: '24px', color: '#FFFFFF', fontWeight: 800, margin: '2px 0 4px', letterSpacing: '-0.01em' }}>
                   Track Your Shipment
                 </h3>
-                <p style={{ fontSize: '14px', color: 'var(--text-secondary)' }}>
+                <p style={{ fontSize: '13.5px', color: '#CBD5E1', margin: '0 auto', maxWidth: '640px', lineHeight: 1.45 }}>
                   Locate, enter your consignment or tracking number to get real-time GPS telemetry, waypoint logs, and estimated arrival.
                 </p>
               </div>
 
-              {/* Lively Logistics Telemetry Showcase Visual Banner */}
-              <div className="tracking-card-visual-banner">
-                <img 
-                  src="/images/cargo-tracking-banner.jpg" 
-                  alt="Live Global Air and Sea Freight Operations" 
-                />
-                <div className="tracking-card-visual-overlay">
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
-                    <span style={{
-                      backgroundColor: 'rgba(16, 185, 129, 0.92)',
-                      color: '#FFFFFF',
-                      fontSize: '10.5px',
-                      fontWeight: 700,
-                      padding: '3px 10px',
-                      borderRadius: '12px',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '5px',
-                      boxShadow: '0 2px 8px rgba(16, 185, 129, 0.4)'
-                    }}>
-                      <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#FFFFFF', display: 'inline-block' }} />
-                      LIVE TELEMETRY RADAR
-                    </span>
-                    <span style={{
-                      backgroundColor: 'rgba(7, 42, 66, 0.8)',
-                      color: '#90CDF4',
-                      fontSize: '11px',
-                      fontWeight: 600,
-                      padding: '3px 10px',
-                      borderRadius: '8px',
-                      backdropFilter: 'blur(6px)',
-                      border: '1px solid rgba(255, 255, 255, 0.2)'
-                    }}>
-                      Intermodal Corridors: Air • Ocean • Rail
-                    </span>
-                  </div>
-
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '8px' }}>
-                    <div>
-                      <div style={{ fontSize: '13.5px', fontWeight: 800, color: '#FFFFFF', letterSpacing: '0.01em' }}>
-                        Worldwide Carrier Dispatches in Motion
-                      </div>
-                      <div style={{ fontSize: '11px', color: '#E2E8F0', marginTop: '2px' }}>
-                        Live encrypted GPS monitoring across 140+ international hub terminals
-                      </div>
-                    </div>
-                    <span style={{ 
-                      fontSize: '11px', 
-                      color: '#FCD34D', 
-                      fontWeight: 700, 
-                      backgroundColor: 'rgba(7, 26, 43, 0.75)', 
-                      padding: '3px 8px', 
-                      borderRadius: '6px',
-                      border: '1px solid rgba(252, 211, 77, 0.3)' 
-                    }}>
-                      99.8% On-Time SLA
-                    </span>
-                  </div>
-                </div>
+              <div style={{ width: '100%', margin: '0 auto 10px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
+                <label 
+                  htmlFor="home-consignment-input" 
+                  style={{ 
+                    display: 'inline-flex', 
+                    alignItems: 'center', 
+                    gap: '7px', 
+                    fontSize: '14px', 
+                    fontWeight: 700, 
+                    color: '#FFFFFF',
+                    cursor: 'pointer'
+                  }}
+                  className="consignment-tracking-label"
+                >
+                  <MapPin size={16} color="#FF6B00" />
+                  <span>Enter your consignment tracking number:</span>
+                </label>
+                <span style={{ fontSize: '12px', color: '#90CDF4', fontWeight: 500 }}>
+                  Format: ACE-2026-XXXXXX or Master Waybill
+                </span>
               </div>
 
-              <form onSubmit={handleTrackSubmit} style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }} className="hero-track-form">
-                <div style={{ flex: '1 1 280px', position: 'relative' }}>
+              <form onSubmit={handleTrackSubmit} style={{ display: 'flex', gap: '10px', width: '100%', flexWrap: 'wrap' }} className="hero-track-form">
+                <div style={{ flex: '1 1 280px', minWidth: 0, position: 'relative' }}>
                   <div className="ace-input-icon">
-                    <Search size={18} color="var(--color-primary-blue)" />
+                    <Search size={18} color="#0284C7" />
                   </div>
                   <input
+                    id="home-consignment-input"
                     type="text"
                     className="ace-input ace-input-with-icon"
                     placeholder="Enter your consignment tracking number (e.g. ACE-2026-8F72K9)"
                     value={trackingInput}
                     onChange={(e) => setTrackingInput(e.target.value)}
-                    style={{ height: '48px', fontSize: '14.5px', fontWeight: 500 }}
+                    style={{ 
+                      height: '52px', 
+                      fontSize: 'clamp(13.5px, 1.1vw, 15px)', 
+                      fontWeight: 500, 
+                      width: '100%',
+                      backgroundColor: '#FFFFFF',
+                      border: '2px solid #38BDF8',
+                      color: '#0F172A',
+                      borderRadius: '10px',
+                      paddingLeft: '44px',
+                      paddingRight: '14px'
+                    }}
                   />
                 </div>
 
@@ -736,6 +639,322 @@ export default function HomeView({
       </section>
 
       <style>{`
+        /* ===================================================
+           PRIMARY FULL-SCREEN HERO STYLES (FIT VIEWPORT)
+           =================================================== */
+        .ace-fullscreen-hero {
+          position: relative;
+          width: 100%;
+          min-height: calc(100vh - 86px);
+          box-sizing: border-box;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          background-color: #030B16;
+          background-image: 
+            linear-gradient(
+              90deg, 
+              rgba(3, 11, 22, 0.95) 0%, 
+              rgba(4, 16, 32, 0.90) 36%, 
+              rgba(6, 24, 44, 0.68) 60%, 
+              rgba(7, 28, 50, 0.32) 80%, 
+              rgba(3, 11, 22, 0.12) 100%
+            ),
+            url('/images/hero-logistics-sunset.jpg');
+          background-size: cover;
+          background-position: center right;
+          background-repeat: no-repeat;
+          color: #FFFFFF;
+          padding: clamp(28px, 4.5vh, 48px) 0 clamp(20px, 3vh, 36px);
+          overflow: hidden;
+        }
+
+        .hero-routes-layer {
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+          z-index: 1;
+          overflow: hidden;
+          opacity: 0.85;
+        }
+        .hero-route-svg {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        .hero-middle-content {
+          position: relative;
+          z-index: 3;
+          margin: auto 0;
+          padding: 16px 0 24px;
+        }
+        .hero-content-column {
+          max-width: 680px;
+        }
+
+        .hero-headline-title {
+          font-size: clamp(2.6rem, 5.2vw, 4.3rem);
+          font-weight: 900;
+          color: #FFFFFF;
+          line-height: 1.08;
+          letter-spacing: -0.03em;
+          margin-bottom: 20px;
+        }
+        .hero-headline-accent {
+          color: #FF6B00;
+        }
+
+        .hero-supporting-desc {
+          font-size: clamp(1rem, 1.35vw, 1.25rem);
+          color: #E2E8F0;
+          line-height: 1.65;
+          margin-bottom: 32px;
+          max-width: 560px;
+        }
+
+        .hero-cta-button-group {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+          flex-wrap: wrap;
+        }
+        .hero-get-started-btn {
+          background-color: #FF6B00;
+          background-image: linear-gradient(135deg, #FF6B00 0%, #EA580C 100%);
+          color: #FFFFFF;
+          border: none;
+          padding: 16px 36px;
+          border-radius: 50px;
+          font-size: 16px;
+          font-weight: 800;
+          letter-spacing: 0.02em;
+          box-shadow: 0 10px 30px rgba(255, 107, 0, 0.45);
+          display: inline-flex;
+          align-items: center;
+          gap: 10px;
+          cursor: pointer;
+          transition: all 0.25s ease;
+        }
+        .hero-get-started-btn:hover {
+          background-color: #EA580C;
+          transform: translateY(-2px);
+          box-shadow: 0 14px 36px rgba(255, 107, 0, 0.58);
+        }
+        .hero-get-started-btn:hover .cta-arrow-symbol {
+          transform: translateX(4px);
+        }
+        .cta-arrow-symbol {
+          font-size: 18px;
+          transition: transform 0.2s ease;
+          display: inline-block;
+        }
+
+        .hero-explore-services-btn {
+          background-color: rgba(255, 255, 255, 0.08);
+          color: #FFFFFF;
+          border: 1.5px solid rgba(255, 255, 255, 0.35);
+          backdrop-filter: blur(8px);
+          padding: 15px 32px;
+          border-radius: 50px;
+          font-size: 15.5px;
+          font-weight: 700;
+          cursor: pointer;
+          transition: all 0.25s ease;
+        }
+        .hero-explore-services-btn:hover {
+          background-color: rgba(255, 255, 255, 0.18);
+          border-color: rgba(255, 255, 255, 0.6);
+          transform: translateY(-2px);
+        }
+
+        .hero-benefits-wrapper {
+          position: relative;
+          z-index: 3;
+          margin-top: auto;
+          padding-top: 24px;
+        }
+        .hero-four-benefits-grid {
+          display: grid;
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          gap: 18px;
+          max-width: 960px;
+        }
+        .hero-benefit-card {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          padding: 14px 16px;
+          border-radius: 12px;
+          background-color: rgba(5, 18, 34, 0.65);
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          backdrop-filter: blur(12px);
+          transition: transform 0.25s ease, border-color 0.25s ease, background-color 0.25s ease;
+        }
+        .hero-benefit-card:hover {
+          transform: translateY(-2px);
+          border-color: rgba(255, 107, 0, 0.45);
+          background-color: rgba(5, 18, 34, 0.82);
+        }
+        .hero-benefit-icon-box {
+          width: 38px;
+          height: 38px;
+          border-radius: 10px;
+          background-color: rgba(255, 107, 0, 0.15);
+          border: 1px solid rgba(255, 107, 0, 0.35);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: #FF6B00;
+          flex-shrink: 0;
+        }
+        .hero-benefit-name {
+          font-size: 13.5px;
+          font-weight: 800;
+          color: #FFFFFF;
+          line-height: 1.2;
+        }
+        .hero-benefit-desc {
+          font-size: 11.5px;
+          color: #CBD5E1;
+          margin-top: 3px;
+        }
+
+        /* Fullscreen Hero Responsive Breakpoints */
+        @media (max-width: 1024px) {
+          .ace-fullscreen-hero {
+            min-height: calc(100vh - 84px);
+            background-position: 68% center;
+            padding: 24px 0 24px;
+          }
+          .hero-headline-title {
+            font-size: clamp(2.3rem, 4.8vw, 3.4rem);
+          }
+          .hero-four-benefits-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+            max-width: 680px;
+          }
+        }
+
+        @media (max-width: 768px) {
+          .ace-fullscreen-hero {
+            min-height: calc(100vh - 76px);
+            min-height: calc(100dvh - 76px);
+            background-position: 72% center;
+            background-image: 
+              linear-gradient(
+                180deg, 
+                rgba(3, 11, 22, 0.94) 0%, 
+                rgba(4, 16, 32, 0.88) 42%, 
+                rgba(6, 24, 44, 0.60) 70%, 
+                rgba(3, 11, 22, 0.90) 100%
+              ),
+              url('/images/hero-logistics-sunset.jpg');
+            padding: 20px 0 20px;
+          }
+          .hero-middle-content {
+            padding: 12px 0 16px;
+          }
+          .hero-headline-title {
+            font-size: clamp(2rem, 7vw, 2.75rem);
+            margin-bottom: 14px;
+          }
+          .hero-supporting-desc {
+            font-size: 14.5px;
+            margin-bottom: 22px;
+            line-height: 1.55;
+            max-width: 100%;
+          }
+          .hero-cta-button-group {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 12px;
+            max-width: 380px;
+          }
+          .hero-get-started-btn,
+          .hero-explore-services-btn {
+            width: 100%;
+            justify-content: center;
+            padding: 14px 24px;
+            font-size: 15px;
+          }
+          .hero-benefits-wrapper {
+            padding-top: 14px;
+          }
+          .hero-four-benefits-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            max-width: 100%;
+          }
+          .hero-benefit-card {
+            padding: 10px 12px;
+            gap: 10px;
+          }
+          .hero-benefit-icon-box {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+          }
+          .hero-benefit-name {
+            font-size: 12.5px;
+          }
+          .hero-benefit-desc {
+            font-size: 10.5px;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .ace-fullscreen-hero {
+            background-position: 74% center;
+            padding: 16px 0 16px;
+          }
+          .hero-headline-title {
+            font-size: clamp(1.85rem, 8vw, 2.35rem);
+          }
+          .hero-supporting-desc {
+            font-size: 13.5px;
+            margin-bottom: 18px;
+          }
+          .hero-four-benefits-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+          }
+          .hero-benefit-card {
+            padding: 8px 10px;
+            gap: 8px;
+          }
+          .hero-benefit-icon-box {
+            width: 28px;
+            height: 28px;
+          }
+          .hero-benefit-name {
+            font-size: 11.5px;
+          }
+          .hero-benefit-desc {
+            font-size: 9.5px;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+          }
+        }
+
+        @media (max-width: 390px) {
+          .hero-headline-title {
+            font-size: 1.7rem;
+            line-height: 1.15;
+          }
+          .hero-supporting-desc {
+            font-size: 13px;
+          }
+          .hero-get-started-btn,
+          .hero-explore-services-btn {
+            font-size: 14px;
+            padding: 12px 18px;
+          }
+        }
+
         .tracking-card-visual-banner {
           position: relative;
           border-radius: 12px;
@@ -762,6 +981,20 @@ export default function HomeView({
           flex-direction: column;
           justify-content: space-between;
           padding: 16px 20px;
+        }
+        .consignment-tracking-label {
+          color: var(--color-primary-blue);
+          transition: color 0.2s ease;
+        }
+        body.dark-mode .consignment-tracking-label,
+        [data-theme="dark"] .consignment-tracking-label {
+          color: #90CDF4 !important;
+        }
+        .home-tracking-card .ace-input::placeholder {
+          font-size: clamp(12px, 1vw, 14px) !important;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
         .services-multi-grid {
           display: grid;
