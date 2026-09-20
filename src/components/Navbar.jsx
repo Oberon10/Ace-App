@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   Menu, 
   X, 
@@ -8,11 +8,11 @@ import {
   UserCheck, 
   LayoutDashboard, 
   Truck, 
-  ArrowRight,
-  LogOut,
-  User,
-  PhoneCall,
-  Lightbulb
+  ArrowRight, 
+  LogOut, 
+  User, 
+  PhoneCall, 
+  Lightbulb 
 } from 'lucide-react';
 
 export default function Navbar({ 
@@ -21,14 +21,71 @@ export default function Navbar({
   activeRole, 
   setActiveRole, 
   currentUser, 
-  onLogout,
-  theme = 'light',
-  toggleTheme,
-  setLoginPortal
+  onLogout, 
+  theme = 'light', 
+  toggleTheme, 
+  setLoginPortal 
 }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [roleDropdownOpen, setRoleDropdownOpen] = useState(false);
   const [portalDropdownOpen, setPortalDropdownOpen] = useState(false);
+
+  const portalDropdownRef = useRef(null);
+  const roleDropdownRef = useRef(null);
+
+  // Close Portal Login dropdown when clicking outside or pressing Escape
+  useEffect(() => {
+    if (!portalDropdownOpen) return;
+
+    const handleClickOutside = (event) => {
+      if (portalDropdownRef.current && !portalDropdownRef.current.contains(event.target)) {
+        setPortalDropdownOpen(false);
+      }
+    };
+
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        setPortalDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [portalDropdownOpen]);
+
+  // Close Role / Workspace dropdown when clicking outside or pressing Escape
+  useEffect(() => {
+    if (!roleDropdownOpen) return;
+
+    const handleClickOutside = (event) => {
+      if (roleDropdownRef.current && !roleDropdownRef.current.contains(event.target)) {
+        setRoleDropdownOpen(false);
+      }
+    };
+
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        setRoleDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [roleDropdownOpen]);
 
   const navLinks = [
     { id: 'home', label: 'Home' },
@@ -112,7 +169,7 @@ export default function Navbar({
                 <span style={{ color: '#D9E7F0', fontSize: '11.5px', display: 'none' }} className="desktop-nav">
                   Support: +233 24 555 0192
                 </span>
-                <div style={{ position: 'relative' }}>
+                <div style={{ position: 'relative' }} ref={portalDropdownRef}>
                   <button
                     onClick={() => setPortalDropdownOpen(!portalDropdownOpen)}
                     id="portal-login-nav-btn"
@@ -262,7 +319,7 @@ export default function Navbar({
             ) : (
               /* If LOGGED IN: Show role badge and accessible workspace switcher based on permissions */
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <div style={{ position: 'relative' }}>
+                <div style={{ position: 'relative' }} ref={roleDropdownRef}>
                   <button
                     onClick={() => setRoleDropdownOpen(!roleDropdownOpen)}
                     style={{
