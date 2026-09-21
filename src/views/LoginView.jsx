@@ -15,8 +15,10 @@ import {
   Building2,
   KeyRound,
   ShieldAlert,
-  Package
+  Package,
+  Globe2
 } from 'lucide-react';
+import { syncCustomerToSupabase, supabase } from '../lib/supabase';
 
 // Helper to retrieve all registered customers (merging pre-configured accounts with localStorage)
 export function getRegisteredCustomers() {
@@ -161,12 +163,15 @@ export default function LoginView({
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [signupEmail, setSignupEmail] = useState('');
+  const [country, setCountry] = useState('Ghana');
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [items, setItems] = useState('General Commercial Merchandise');
   const [signupPassword, setSignupPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showSignupPassword, setShowSignupPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [passwordError, setPasswordError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Auto-fill sensible default credentials only for Admin demo console; Customer and Staff portals start blank
   useEffect(() => {
@@ -185,7 +190,7 @@ export default function LoginView({
     setPasswordError('');
   };
 
-  const handleLoginSubmit = (e) => {
+  const handleLoginSubmit = async (e) => {
     e.preventDefault();
     const cleanEmail = (loginEmail || '').trim().toLowerCase();
     const cleanPassword = (loginPassword || '').trim();
@@ -203,7 +208,39 @@ export default function LoginView({
     // STRICT CUSTOMER VERIFICATION: Only registered customers can log in
     if (selectedPortal === 'customer') {
       const registeredCustomers = getRegisteredCustomers();
-      const matchedCustomer = registeredCustomers.find(c => c.email?.trim().toLowerCase() === cleanEmail);
+      let matchedCustomer = registeredCustomers.find(c => c.email?.trim().toLowerCase() === cleanEmail);
+
+      // If not found in local cache, query Supabase database
+      if (!matchedCustomer) {
+        try {
+          const { data, error } = await supabase
+            .from('customers')
+            .select('*')
+            .or(`email_address.eq.${cleanEmail},"email address".eq.${cleanEmail}`);
+
+          if (!error && data && data.length > 0) {
+            const dbCust = data[0];
+            matchedCustomer = {
+              id: dbCust.id,
+              supabaseId: dbCust.id,
+              name: `${dbCust.first_name || dbCust['first name'] || ''} ${dbCust.last_name || dbCust['last name'] || ''}`.trim() || 'Customer',
+              firstName: dbCust.first_name || dbCust['first name'],
+              lastName: dbCust.last_name || dbCust['last name'],
+              email: dbCust.email_address || dbCust['email address'],
+              loginPassword: dbCust.password,
+              country: dbCust.country || 'Ghana',
+              phone: dbCust.phone_number || dbCust['phone number'],
+              items: dbCust.items || 'General Cargo',
+              company: `${dbCust.first_name || 'Customer'}'s Enterprise`,
+              role: 'customer',
+              syncedToSupabase: true
+            };
+            saveRegisteredCustomer(matchedCustomer);
+          }
+        } catch (err) {
+          console.warn('Supabase customer login lookup warning:', err);
+        }
+      }
 
       if (!matchedCustomer) {
         setPasswordError('Account not found. Only registered customers can log in. Please create an account or verify your email.');
@@ -268,7 +305,7 @@ export default function LoginView({
     }
   };
 
-  const handleSignupSubmit = (e) => {
+  const handleSignupSubmit = async (e) => {
     e.preventDefault();
     if (signupPassword !== confirmPassword) {
       setPasswordError('Passwords do not match. Please ensure both passwords match.');
@@ -286,19 +323,41 @@ export default function LoginView({
       return;
     }
 
+    setIsSubmitting(true);
     setPasswordError('');
     const fullName = `${firstName.trim()} ${lastName.trim()}`.trim() || 'New Customer';
+
+    // 1. Sync to Supabase `customers` table with exact required fields:
+    // id, first name, last name, email address, country, phone number, password, items
+    const syncRes = await syncCustomerToSupabase({
+      firstName: firstName.trim(),
+      lastName: lastName.trim(),
+      emailAddress: cleanEmail,
+      country: country.trim() || 'Ghana',
+      phoneNumber: phoneNumber.trim(),
+      password: signupPassword,
+      items: items.trim() || 'General Commercial Merchandise'
+    });
+
     const newCustomer = { 
+      id: syncRes.data?.id || `CUST-${Math.floor(1000 + Math.random() * 9000)}`,
+      supabaseId: syncRes.data?.id,
       name: fullName, 
-      email: signupEmail.trim(), 
+      firstName: firstName.trim(),
+      lastName: lastName.trim(),
+      email: cleanEmail, 
       loginPassword: signupPassword,
+      country: country.trim() || 'Ghana',
       phone: phoneNumber.trim(),
+      items: items.trim() || 'General Commercial Merchandise',
       company: `${fullName}'s Trading Co`,
-      role: 'customer' 
+      role: 'customer',
+      syncedToSupabase: syncRes.success
     };
 
-    // Persist new registered customer
+    // 2. Persist new registered customer locally
     saveRegisteredCustomer(newCustomer);
+    setIsSubmitting(false);
     onLoginSuccess('customer', newCustomer);
   };
 
@@ -599,106 +658,185 @@ export default function LoginView({
                 </div>
               </div>
 
-              {/* Row 3: Phone Number */}
-              <div className="ace-form-group">
-                <label className="ace-label ace-label-required">Phone Number</label>
-                <div className="ace-input-wrapper">
-                  <div className="ace-input-icon">
-                    <Phone size={15} />
+              {/* Row 3: Country & Phone Number */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1.1fr 1fr', gap: '12px' }}>
+                <div className="ace-form-group">
+                  <label className="ace-label ace-label-required">Country</label>
+                  <div className="ace-input-wrapper">
+                    <div className="ace-input-icon">
+                      <Globe2 size={15} />
+                    </div>
+                    <select
+                      className="ace-select ace-input-with-icon"
+                      value={country}
+                      onChange={(e) => setCountry(e.target.value)}
+                      required
+                      style={{ height: '42px', appearance: 'auto' }}
+                    >
+                      <option value="Ghana">🇬🇭 Ghana</option>
+                      <option value="United Kingdom">🇬🇧 United Kingdom</option>
+                      <option value="Netherlands">🇳🇱 Netherlands</option>
+                      <option value="United States">🇺🇸 United States</option>
+                      <option value="Nigeria">🇳🇬 Nigeria</option>
+                      <option value="China">🇨🇳 China</option>
+                      <option value="Germany">🇩🇪 Germany</option>
+                      <option value="Canada">🇨🇦 Canada</option>
+                      <option value="South Africa">🇿🇦 South Africa</option>
+                      <option value="United Arab Emirates">🇦🇪 United Arab Emirates</option>
+                      <option value="International">🌐 Other / International</option>
+                    </select>
                   </div>
-                  <input
-                    type="tel"
-                    className="ace-input ace-input-with-icon"
-                    placeholder="+233 24 555 0192"
-                    value={phoneNumber}
-                    onChange={(e) => setPhoneNumber(e.target.value)}
-                    required
-                  />
+                </div>
+
+                <div className="ace-form-group">
+                  <label className="ace-label ace-label-required">Phone Number</label>
+                  <div className="ace-input-wrapper">
+                    <div className="ace-input-icon">
+                      <Phone size={15} />
+                    </div>
+                    <input
+                      type="tel"
+                      className="ace-input ace-input-with-icon"
+                      placeholder="+233 24 555 0192"
+                      value={phoneNumber}
+                      onChange={(e) => setPhoneNumber(e.target.value)}
+                      required
+                    />
+                  </div>
                 </div>
               </div>
 
-              {/* Row 4: Password with Eye toggle */}
+              {/* Row 4: Cargo Goods / Consignment Items */}
               <div className="ace-form-group">
-                <label className="ace-label ace-label-required">Password</label>
+                <label className="ace-label ace-label-required">Items / Consignment Cargo Goods</label>
                 <div className="ace-input-wrapper">
                   <div className="ace-input-icon">
-                    <Lock size={15} />
+                    <Package size={15} />
                   </div>
                   <input
-                    type={showSignupPassword ? 'text' : 'password'}
+                    type="text"
                     className="ace-input ace-input-with-icon"
-                    placeholder="Create a strong password"
-                    value={signupPassword}
-                    onChange={(e) => setSignupPassword(e.target.value)}
-                    style={{ paddingRight: '40px' }}
+                    placeholder="e.g. Commercial Electronics, Textiles, Cocoa & Agritech, Auto Parts"
+                    value={items}
+                    onChange={(e) => setItems(e.target.value)}
                     required
                   />
-                  <button
-                    type="button"
-                    onClick={() => setShowSignupPassword(!showSignupPassword)}
-                    style={{
-                      position: 'absolute',
-                      right: '12px',
-                      background: 'none',
-                      border: 'none',
-                      color: 'var(--text-muted)',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      padding: 0
-                    }}
-                    title={showSignupPassword ? 'Hide password' : 'View password'}
-                  >
-                    {showSignupPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                  </button>
+                </div>
+                <div style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '3px' }}>
+                  Specify your primary consignment cargo types or merchandise
                 </div>
               </div>
 
-              {/* Row 5: Confirm Password with Eye toggle */}
-              <div className="ace-form-group">
-                <label className="ace-label ace-label-required">Confirm Password</label>
-                <div className="ace-input-wrapper">
-                  <div className="ace-input-icon">
-                    <Lock size={15} />
+              {/* Row 5: Password & Confirm Password */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                <div className="ace-form-group">
+                  <label className="ace-label ace-label-required">Password</label>
+                  <div className="ace-input-wrapper">
+                    <div className="ace-input-icon">
+                      <Lock size={15} />
+                    </div>
+                    <input
+                      type={showSignupPassword ? 'text' : 'password'}
+                      className="ace-input ace-input-with-icon"
+                      placeholder="Password"
+                      value={signupPassword}
+                      onChange={(e) => setSignupPassword(e.target.value)}
+                      style={{ paddingRight: '36px' }}
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowSignupPassword(!showSignupPassword)}
+                      style={{
+                        position: 'absolute',
+                        right: '10px',
+                        background: 'none',
+                        border: 'none',
+                        color: 'var(--text-muted)',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        padding: 0
+                      }}
+                      title={showSignupPassword ? 'Hide password' : 'View password'}
+                    >
+                      {showSignupPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+                    </button>
                   </div>
-                  <input
-                    type={showConfirmPassword ? 'text' : 'password'}
-                    className="ace-input ace-input-with-icon"
-                    placeholder="Re-enter your password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    style={{ paddingRight: '40px' }}
-                    required
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    style={{
-                      position: 'absolute',
-                      right: '12px',
-                      background: 'none',
-                      border: 'none',
-                      color: 'var(--text-muted)',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      padding: 0
-                    }}
-                    title={showConfirmPassword ? 'Hide password' : 'View password'}
-                  >
-                    {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                  </button>
                 </div>
+
+                <div className="ace-form-group">
+                  <label className="ace-label ace-label-required">Confirm Password</label>
+                  <div className="ace-input-wrapper">
+                    <div className="ace-input-icon">
+                      <Lock size={15} />
+                    </div>
+                    <input
+                      type={showConfirmPassword ? 'text' : 'password'}
+                      className="ace-input ace-input-with-icon"
+                      placeholder="Confirm"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      style={{ paddingRight: '36px' }}
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      style={{
+                        position: 'absolute',
+                        right: '10px',
+                        background: 'none',
+                        border: 'none',
+                        color: 'var(--text-muted)',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        padding: 0
+                      }}
+                      title={showConfirmPassword ? 'Hide password' : 'View password'}
+                    >
+                      {showConfirmPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Supabase Realtime Sync Badge */}
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                backgroundColor: '#F0FDF4',
+                border: '1px solid #BBF7D0',
+                padding: '8px 12px',
+                borderRadius: '8px',
+                fontSize: '11.5px',
+                color: '#166534',
+                marginTop: '4px',
+                marginBottom: '16px'
+              }}>
+                <CheckCircle2 size={14} color="#16A34A" style={{ flexShrink: 0 }} />
+                <span>
+                  <strong>Real-time Supabase Sync:</strong> Account data directly syncs to cloud table <code>public.customers</code>.
+                </span>
               </div>
 
               {/* Submit Button */}
               <button
                 type="submit"
+                disabled={isSubmitting}
                 className="ace-btn ace-btn-action"
-                style={{ width: '100%', height: '46px', fontSize: '15px', marginTop: '8px', marginBottom: '16px' }}
+                style={{ width: '100%', height: '46px', fontSize: '15px', marginBottom: '16px', opacity: isSubmitting ? 0.8 : 1 }}
               >
-                <span>Create Customer Account</span>
-                <ArrowRight size={16} />
+                {isSubmitting ? (
+                  <span>Syncing with Supabase Database...</span>
+                ) : (
+                  <>
+                    <span>Create Customer Account</span>
+                    <ArrowRight size={16} />
+                  </>
+                )}
               </button>
             </form>
           ) : (
