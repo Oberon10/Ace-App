@@ -25,6 +25,7 @@ import {
   RefreshCw,
   Shield
 } from 'lucide-react';
+import { syncCustomerToSupabase } from '../lib/supabase';
 
 export default function UserManagementView({ 
   setView, 
@@ -158,8 +159,18 @@ export default function UserManagementView({
         const filtered = list.filter(c => c.email?.trim().toLowerCase() !== newUserEmail.trim().toLowerCase());
         filtered.push(created);
         localStorage.setItem('ace_registered_customers', JSON.stringify(filtered));
+
+        // Sync new customer directly to Supabase customers table
+        syncCustomerToSupabase({
+          name: newUserName,
+          emailAddress: newUserEmail,
+          phoneNumber: newUserPhone,
+          country: newUserLocation || 'Ghana',
+          password: newUserPassword,
+          items: 'General Commercial Cargo & Freight'
+        });
       } catch (err) {
-        console.error('Failed to sync customer to localStorage', err);
+        console.error('Failed to sync customer to localStorage or Supabase', err);
       }
     }
 
