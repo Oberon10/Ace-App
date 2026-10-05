@@ -716,6 +716,21 @@ body.dark-mode h4, body.dark-mode h5, body.dark-mode h6 {
   color: var(--text-secondary) !important;
 }
 
+/* Hero Section High Visibility in Dark Mode */
+[data-theme="dark"] .daylight-hero-desc,
+body.dark-mode .daylight-hero-desc {
+  color: #E2E8F0 !important;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7) !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+[data-theme="dark"] .title-navy,
+body.dark-mode .title-navy {
+  color: #FFFFFF !important;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6) !important;
+}
+
 [data-theme="dark"] strong, body.dark-mode strong {
   color: #FFFFFF !important;
 }
