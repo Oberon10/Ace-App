@@ -439,31 +439,35 @@ export default function Navbar({
         {/* ACE Logistics Logo */}
         <div
           onClick={() => handleNavClick('home')}
-          style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', minWidth: 0 }}
+          style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer', minWidth: 0 }}
+          title="ACE Logistics - Fast / Reliable / Secure"
         >
-          <div style={{
-            width: '40px',
-            height: '40px',
-            borderRadius: '10px',
-            backgroundColor: 'var(--color-primary-blue)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: '#FFFFFF',
-            boxShadow: '0 2px 6px rgba(11, 79, 124, 0.25)',
-            flexShrink: 0
-          }}>
-            <svg width="26" height="26" viewBox="0 0 64 64" fill="none">
-              <path d="M14 44L28 16H36L50 44H41L38 37H26L23 44H14ZM29 30H35L32 23L29 30Z" fill="#FFFFFF"/>
-              <circle cx="48" cy="18" r="4.5" fill="#1683D8"/>
-            </svg>
-          </div>
-          <div style={{ minWidth: 0, overflow: 'hidden' }}>
-            <div className="navbar-logo-text" style={{ fontSize: '19px', fontWeight: 800, color: 'var(--color-primary-blue)', letterSpacing: '-0.02em', lineHeight: 1.1, whiteSpace: 'nowrap' }}>
-              ACE <span style={{ color: 'var(--color-bright-action)' }}>LOGISTICS</span>
+          <img
+            src="/ace-emblem.png"
+            alt="ACE Logistics"
+            className="navbar-brand-logo"
+            style={{
+              height: '48px',
+              width: 'auto',
+              maxHeight: '100%',
+              objectFit: 'contain',
+              display: 'block',
+              flexShrink: 0,
+              borderRadius: theme === 'dark' ? '6px' : '0',
+              backgroundColor: theme === 'dark' ? '#FFFFFF' : 'transparent',
+              padding: theme === 'dark' ? '2px 6px' : '0'
+            }}
+          />
+          <div style={{ minWidth: 0, overflow: 'hidden', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <div className="navbar-logo-text" style={{ fontSize: '20px', fontWeight: 800, color: 'var(--color-primary-blue)', letterSpacing: '0.04em', lineHeight: 1.1, whiteSpace: 'nowrap' }}>
+              LOGISTICS
             </div>
-            <div className="navbar-logo-subtitle" style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', whiteSpace: 'nowrap' }}>
-              Global Freight Network
+            <div className="navbar-logo-subtitle" style={{ fontSize: '9.5px', color: 'var(--color-primary-blue)', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', whiteSpace: 'nowrap', marginTop: '3px', display: 'flex', alignItems: 'center', gap: '5px' }}>
+              <span>FAST</span>
+              <span style={{ color: '#F36F21', fontWeight: 900 }}>/</span>
+              <span>RELIABLE</span>
+              <span style={{ color: '#F36F21', fontWeight: 900 }}>/</span>
+              <span>SECURE</span>
             </div>
           </div>
         </div>
@@ -756,16 +760,30 @@ export default function Navbar({
           .navbar-main-container {
             height: 64px !important;
           }
+          .navbar-brand-logo {
+            height: 42px !important;
+          }
+          .navbar-logo-text {
+            font-size: 18px !important;
+          }
+          .navbar-logo-subtitle {
+            font-size: 8.5px !important;
+            letter-spacing: 0.08em !important;
+          }
         }
         @media (max-width: 380px) {
           .navbar-main-container {
             height: 60px !important;
           }
+          .navbar-brand-logo {
+            height: 36px !important;
+          }
           .navbar-logo-text {
-            font-size: 17px !important;
+            font-size: 16px !important;
           }
           .navbar-logo-subtitle {
-            display: none !important;
+            font-size: 7.5px !important;
+            letter-spacing: 0.05em !important;
           }
         }
       `}</style>
