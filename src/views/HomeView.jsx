@@ -93,127 +93,113 @@ export default function HomeView({
   return (
     <div style={{ backgroundColor: 'var(--color-very-light-blue)' }}>
       {/* ===================================================
-          HERO SECTION — FEATURING ELBSPIRIT CONTAINER SHIP
+          STREAMLINED DAYLIGHT HERO SECTION — CONNECTING BUSINESSES. MOVING THE WORLD.
           =================================================== */}
-      {/* ===================================================
-          PRIMARY FULL-SCREEN HERO SECTION (100vw x 100vh)
-          =================================================== */}
-      <section className="ace-fullscreen-hero" id="home-primary-hero">
-        {/* Subtle World Map and Global Shipping Route Graphics Overlay */}
-        <div className="hero-routes-layer" aria-hidden="true">
-          <svg className="hero-route-svg" viewBox="0 0 1440 900" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <linearGradient id="heroRouteOrange" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#FF6B00" stopOpacity="0.75" />
-                <stop offset="60%" stopColor="#38BDF8" stopOpacity="0.45" />
-                <stop offset="100%" stopColor="#FF6B00" stopOpacity="0.1" />
-              </linearGradient>
-              <linearGradient id="heroRouteCyan" x1="0%" y1="100%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#38BDF8" stopOpacity="0.6" />
-                <stop offset="50%" stopColor="#FF6B00" stopOpacity="0.3" />
-                <stop offset="100%" stopColor="#38BDF8" stopOpacity="0.05" />
-              </linearGradient>
-            </defs>
-            {/* Global Route Arcs */}
-            <path d="M 60 480 Q 280 240 620 350 T 1280 280" stroke="url(#heroRouteOrange)" strokeWidth="2" strokeDasharray="6 4" opacity="0.4" />
-            <path d="M 120 620 Q 420 400 820 490 T 1380 420" stroke="url(#heroRouteCyan)" strokeWidth="1.8" strokeDasharray="4 4" opacity="0.35" />
-            <path d="M 240 320 Q 560 180 940 250" stroke="#38BDF8" strokeWidth="1.2" strokeDasharray="5 5" opacity="0.25" />
-            {/* Glowing Hub Nodes */}
-            <circle cx="240" cy="320" r="4.5" fill="#FF6B00" />
-            <circle cx="240" cy="320" r="12" stroke="#FF6B00" strokeWidth="1.2" opacity="0.4" />
-            <circle cx="620" cy="350" r="4" fill="#38BDF8" />
-            <circle cx="620" cy="350" r="10" stroke="#38BDF8" strokeWidth="1" opacity="0.35" />
-            <circle cx="940" cy="250" r="4.5" fill="#FF6B00" />
-          </svg>
-        </div>
-
-        {/* Hero Content Aligned Toward the Left */}
-        <div className="hero-middle-content">
-          <div className="ace-container" style={{ width: '100%' }}>
-            <div className="hero-content-column">
-              {/* Main Headline */}
-              <h1 className="hero-headline-title">
-                Fast. Safe. Reliable.<br />
-                <span className="hero-headline-accent">Across Borders.</span>
-              </h1>
-
-              {/* Supporting Text */}
-              <p className="hero-supporting-desc">
-                Ace Logistics delivers seamless shipping and freight solutions, connecting businesses and people to opportunities worldwide.
-              </p>
-
-              {/* CTAs */}
-              <div className="hero-cta-button-group">
-                <button
-                  onClick={handleSendPackage}
-                  className="hero-get-started-btn"
-                  id="hero-primary-get-started-btn"
-                >
-                  <span>Get Started</span>
-                  <span className="cta-arrow-symbol">→</span>
-                </button>
-
-                <button
-                  onClick={() => {
-                    setView('services');
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                  }}
-                  className="hero-explore-services-btn"
-                  id="hero-secondary-explore-services-btn"
-                >
-                  <span>Explore Services</span>
-                </button>
-              </div>
+      <section className="ace-daylight-hero" id="home-primary-hero">
+        <div className="ace-container" style={{ width: '100%' }}>
+          <div className="daylight-hero-content">
+            {/* Kicker / Subtitle */}
+            <div className="daylight-hero-kicker">
+              <span>GLOBAL LOGISTICS</span>
+              <span className="kicker-dot">•</span>
+              <span>FREIGHT</span>
+              <span className="kicker-dot">•</span>
+              <span>DELIVERY</span>
             </div>
-          </div>
-        </div>
 
-        {/* Bottom: 4 Small Benefit Items with Clean Line Icons */}
-        <div className="hero-benefits-wrapper">
-          <div className="ace-container" style={{ width: '100%' }}>
-            <div className="hero-four-benefits-grid">
-              {/* 1. Global Shipping */}
-              <div className="hero-benefit-card">
-                <div className="hero-benefit-icon-box">
-                  <Globe2 size={19} />
+            {/* Main Headline (Razor-Sharp Vector Typography) */}
+            <h1 className="daylight-hero-title">
+              <span className="title-navy">Connecting Businesses.</span>
+              <br />
+              <span className="title-orange">Moving the World.</span>
+            </h1>
+
+            {/* Supporting Description */}
+            <p className="daylight-hero-desc">
+              Seamless logistics solutions built to move your cargo safely, efficiently, and on time—across cities, borders, and continents.
+            </p>
+
+            {/* Action Buttons (100% Native, Highly Responsive & Accessible) */}
+            <div className="daylight-hero-actions">
+              <button
+                onClick={() => {
+                  if (setView) {
+                    setView('quote');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  } else if (onSendPackageClick) {
+                    onSendPackageClick();
+                  }
+                }}
+                className="daylight-quote-btn"
+                id="hero-primary-quote-btn"
+                aria-label="Get an instant freight quote"
+              >
+                <span>Get a Quote</span>
+                <span className="btn-arrow">→</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  const trackEl = document.getElementById('home-consignment-input') || document.getElementById('shipment-telemetry-root');
+                  if (trackEl) {
+                    trackEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    setTimeout(() => trackEl.focus(), 320);
+                  } else if (setView) {
+                    setView('track');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }
+                }}
+                className="daylight-track-btn"
+                id="hero-secondary-track-btn"
+                aria-label="Track your shipment in real time"
+              >
+                <MapPin size={18} />
+                <span>Track Your Shipment</span>
+              </button>
+            </div>
+
+            {/* 3 Value Prop Feature Badges */}
+            <div className="daylight-hero-badges">
+              <div 
+                className="daylight-badge-item"
+                onClick={() => { setView('services'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                title="Priority Express Air & Fleet Delivery"
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => { if (e.key === 'Enter') { setView('services'); window.scrollTo({ top: 0, behavior: 'smooth' }); } }}
+              >
+                <div className="badge-icon-wrap">
+                  <Truck size={18} strokeWidth={2.2} />
                 </div>
-                <div>
-                  <div className="hero-benefit-name">Global Shipping</div>
-                  <div className="hero-benefit-desc">Global Shipping Solutions</div>
-                </div>
+                <span>Fast Delivery</span>
               </div>
 
-              {/* 2. Security */}
-              <div className="hero-benefit-card">
-                <div className="hero-benefit-icon-box">
-                  <ShieldCheck size={19} />
+              <div 
+                className="daylight-badge-item"
+                onClick={() => { setView('services'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                title="Worldwide Multimodal Corridors Across 190+ Countries"
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => { if (e.key === 'Enter') { setView('services'); window.scrollTo({ top: 0, behavior: 'smooth' }); } }}
+              >
+                <div className="badge-icon-wrap">
+                  <Globe2 size={18} strokeWidth={2.2} />
                 </div>
-                <div>
-                  <div className="hero-benefit-name">Security</div>
-                  <div className="hero-benefit-desc">Secure & Trusted</div>
-                </div>
+                <span>Global Reach</span>
               </div>
 
-              {/* 3. Delivery */}
-              <div className="hero-benefit-card">
-                <div className="hero-benefit-icon-box">
-                  <Clock size={19} />
+              <div 
+                className="daylight-badge-item"
+                onClick={() => { setView('services'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                title="Licensed Port Customs & Real-Time Satellite Telemetry"
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => { if (e.key === 'Enter') { setView('services'); window.scrollTo({ top: 0, behavior: 'smooth' }); } }}
+              >
+                <div className="badge-icon-wrap">
+                  <ShieldCheck size={18} strokeWidth={2.2} />
                 </div>
-                <div>
-                  <div className="hero-benefit-name">Delivery</div>
-                  <div className="hero-benefit-desc">On-Time Delivery</div>
-                </div>
-              </div>
-
-              {/* 4. Coverage */}
-              <div className="hero-benefit-card">
-                <div className="hero-benefit-icon-box">
-                  <Compass size={19} />
-                </div>
-                <div>
-                  <div className="hero-benefit-name">Coverage</div>
-                  <div className="hero-benefit-desc">Worldwide Coverage</div>
-                </div>
+                <span>Reliable Service</span>
               </div>
             </div>
           </div>
@@ -641,318 +627,357 @@ export default function HomeView({
 
       <style>{`
         /* ===================================================
-           PRIMARY FULL-SCREEN HERO STYLES (FIT VIEWPORT)
+           SWEET & CLEAR DAYLIGHT HERO SECTION (RAZOR-SHARP TEXT)
            =================================================== */
-        .ace-fullscreen-hero {
+        .ace-daylight-hero {
           position: relative;
           width: 100%;
           min-height: calc(100vh - 86px);
-          box-sizing: border-box;
           display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-          background-color: #030B16;
+          align-items: center;
+          background-color: #F8FAFC;
           background-image: 
             linear-gradient(
               90deg, 
-              rgba(3, 11, 22, 0.95) 0%, 
-              rgba(4, 16, 32, 0.90) 36%, 
-              rgba(6, 24, 44, 0.68) 60%, 
-              rgba(7, 28, 50, 0.32) 80%, 
-              rgba(3, 11, 22, 0.12) 100%
+              rgba(255, 255, 255, 0.98) 0%, 
+              rgba(255, 255, 255, 0.94) 36%, 
+              rgba(255, 255, 255, 0.72) 50%, 
+              rgba(255, 255, 255, 0.25) 66%, 
+              rgba(255, 255, 255, 0) 84%
             ),
-            url('/images/hero-logistics-sunset.jpg');
+            url('/images/hero-logistics-daylight.jpg');
           background-size: cover;
-          background-position: center right;
+          background-position: right center;
           background-repeat: no-repeat;
-          color: #FFFFFF;
-          padding: clamp(28px, 4.5vh, 48px) 0 clamp(20px, 3vh, 36px);
+          padding: clamp(48px, 7vh, 80px) 0;
+          box-sizing: border-box;
           overflow: hidden;
+          border-bottom: 1px solid var(--color-border);
         }
 
-        .hero-routes-layer {
-          position: absolute;
-          inset: 0;
-          pointer-events: none;
-          z-index: 1;
-          overflow: hidden;
-          opacity: 0.85;
-        }
-        .hero-route-svg {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-        }
-
-        .hero-middle-content {
+        .daylight-hero-content {
+          max-width: 660px;
           position: relative;
-          z-index: 3;
-          margin: auto 0;
-          padding: 16px 0 24px;
-        }
-        .hero-content-column {
-          max-width: 680px;
+          z-index: 5;
+          animation: daylightHeroFadeIn 0.45s ease-out;
         }
 
-        .hero-headline-title {
-          font-size: clamp(2.6rem, 5.2vw, 4.3rem);
-          font-weight: 900;
-          color: #FFFFFF;
-          line-height: 1.08;
-          letter-spacing: -0.03em;
+        @keyframes daylightHeroFadeIn {
+          from {
+            opacity: 0;
+            transform: translateY(8px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        /* 1. Kicker / Subtitle */
+        .daylight-hero-kicker {
+          display: inline-flex;
+          align-items: center;
+          gap: 10px;
+          font-size: 13.5px;
+          font-weight: 700;
+          color: #1E293B;
+          letter-spacing: 0.14em;
+          text-transform: uppercase;
           margin-bottom: 20px;
         }
-        .hero-headline-accent {
+        .kicker-dot {
           color: #FF6B00;
+          font-weight: 900;
+          font-size: 15px;
         }
 
-        .hero-supporting-desc {
-          font-size: clamp(1rem, 1.35vw, 1.25rem);
-          color: #E2E8F0;
-          line-height: 1.65;
-          margin-bottom: 32px;
-          max-width: 560px;
+        /* 2. Main Title (Crystal-Clear Typography) */
+        .daylight-hero-title {
+          font-size: clamp(2.5rem, 5.2vw, 4.3rem);
+          font-weight: 900;
+          line-height: 1.08;
+          letter-spacing: -0.035em;
+          margin: 0 0 20px 0;
+        }
+        .title-navy {
+          color: #0A2540;
+        }
+        .title-orange {
+          color: #FF6B00;
+          background: linear-gradient(135deg, #FF6B00 0%, #EA580C 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          display: inline-block;
         }
 
-        .hero-cta-button-group {
+        /* 3. Supporting Description */
+        .daylight-hero-desc {
+          font-size: clamp(15.5px, 1.25vw, 18px);
+          color: #334155;
+          line-height: 1.62;
+          margin: 0 0 34px 0;
+          max-width: 580px;
+          font-weight: 450;
+        }
+
+        /* 4. Action Buttons (Native, Generous Click Targets) */
+        .daylight-hero-actions {
           display: flex;
           align-items: center;
           gap: 16px;
+          margin-bottom: 38px;
           flex-wrap: wrap;
         }
-        .hero-get-started-btn {
+
+        .daylight-quote-btn {
           background-color: #FF6B00;
           background-image: linear-gradient(135deg, #FF6B00 0%, #EA580C 100%);
           color: #FFFFFF;
           border: none;
-          padding: 16px 36px;
+          padding: 15px 36px;
           border-radius: 50px;
           font-size: 16px;
           font-weight: 800;
-          letter-spacing: 0.02em;
-          box-shadow: 0 10px 30px rgba(255, 107, 0, 0.45);
+          letter-spacing: 0.01em;
+          box-shadow: 0 10px 28px rgba(255, 107, 0, 0.42);
           display: inline-flex;
           align-items: center;
           gap: 10px;
           cursor: pointer;
-          transition: all 0.25s ease;
+          transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .hero-get-started-btn:hover {
-          background-color: #EA580C;
+        .daylight-quote-btn:hover {
           transform: translateY(-2px);
-          box-shadow: 0 14px 36px rgba(255, 107, 0, 0.58);
+          box-shadow: 0 14px 34px rgba(255, 107, 0, 0.55);
+          background-image: linear-gradient(135deg, #FF7817 0%, #F06010 100%);
         }
-        .hero-get-started-btn:hover .cta-arrow-symbol {
-          transform: translateX(4px);
+        .daylight-quote-btn:active {
+          transform: translateY(0);
         }
-        .cta-arrow-symbol {
+        .daylight-quote-btn .btn-arrow {
           font-size: 18px;
           transition: transform 0.2s ease;
           display: inline-block;
         }
+        .daylight-quote-btn:hover .btn-arrow {
+          transform: translateX(4px);
+        }
 
-        .hero-explore-services-btn {
-          background-color: rgba(255, 255, 255, 0.08);
-          color: #FFFFFF;
-          border: 1.5px solid rgba(255, 255, 255, 0.35);
-          backdrop-filter: blur(8px);
-          padding: 15px 32px;
+        .daylight-track-btn {
+          background-color: #FFFFFF;
+          color: #0A2540;
+          border: 1.5px solid #0A2540;
+          padding: 14.5px 32px;
           border-radius: 50px;
           font-size: 15.5px;
           font-weight: 700;
+          display: inline-flex;
+          align-items: center;
+          gap: 10px;
           cursor: pointer;
-          transition: all 0.25s ease;
+          transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+          box-shadow: 0 4px 14px rgba(10, 37, 64, 0.08);
         }
-        .hero-explore-services-btn:hover {
-          background-color: rgba(255, 255, 255, 0.18);
-          border-color: rgba(255, 255, 255, 0.6);
+        .daylight-track-btn:hover {
+          background-color: #0A2540;
+          color: #FFFFFF;
           transform: translateY(-2px);
+          box-shadow: 0 10px 24px rgba(10, 37, 64, 0.18);
+        }
+        .daylight-track-btn:active {
+          transform: translateY(0);
         }
 
-        .hero-benefits-wrapper {
-          position: relative;
-          z-index: 3;
-          margin-top: auto;
-          padding-top: 24px;
-        }
-        .hero-four-benefits-grid {
-          display: grid;
-          grid-template-columns: repeat(4, minmax(0, 1fr));
-          gap: 18px;
-          max-width: 960px;
-        }
-        .hero-benefit-card {
+        /* 5. Feature Badges */
+        .daylight-hero-badges {
           display: flex;
           align-items: center;
-          gap: 12px;
-          padding: 14px 16px;
-          border-radius: 12px;
-          background-color: rgba(5, 18, 34, 0.65);
-          border: 1px solid rgba(255, 255, 255, 0.12);
-          backdrop-filter: blur(12px);
-          transition: transform 0.25s ease, border-color 0.25s ease, background-color 0.25s ease;
+          gap: 28px;
+          flex-wrap: wrap;
         }
-        .hero-benefit-card:hover {
-          transform: translateY(-2px);
-          border-color: rgba(255, 107, 0, 0.45);
-          background-color: rgba(5, 18, 34, 0.82);
+
+        .daylight-badge-item {
+          display: inline-flex;
+          align-items: center;
+          gap: 9px;
+          font-size: 14px;
+          font-weight: 700;
+          color: #1E293B;
+          cursor: pointer;
+          transition: color 0.18s ease, transform 0.18s ease;
+          user-select: none;
         }
-        .hero-benefit-icon-box {
-          width: 38px;
-          height: 38px;
-          border-radius: 10px;
-          background-color: rgba(255, 107, 0, 0.15);
-          border: 1px solid rgba(255, 107, 0, 0.35);
+        .daylight-badge-item:hover {
+          color: #FF6B00;
+          transform: translateY(-1px);
+        }
+        .badge-icon-wrap {
+          color: #0B4F7C;
           display: flex;
           align-items: center;
           justify-content: center;
+          transition: color 0.18s ease;
+        }
+        .daylight-badge-item:hover .badge-icon-wrap {
           color: #FF6B00;
-          flex-shrink: 0;
-        }
-        .hero-benefit-name {
-          font-size: 13.5px;
-          font-weight: 800;
-          color: #FFFFFF;
-          line-height: 1.2;
-        }
-        .hero-benefit-desc {
-          font-size: 11.5px;
-          color: #CBD5E1;
-          margin-top: 3px;
         }
 
-        /* Fullscreen Hero Responsive Breakpoints */
+        /* Responsive Breakpoints */
         @media (max-width: 1024px) {
-          .ace-fullscreen-hero {
-            min-height: calc(100vh - 84px);
-            background-position: 68% center;
-            padding: 24px 0 24px;
+          .ace-daylight-hero {
+            background-image: 
+              linear-gradient(
+                90deg, 
+                rgba(255, 255, 255, 0.98) 0%, 
+                rgba(255, 255, 255, 0.95) 50%, 
+                rgba(255, 255, 255, 0.75) 70%, 
+                rgba(255, 255, 255, 0.20) 100%
+              ),
+              url('/images/hero-logistics-daylight.jpg');
+            background-position: 72% center;
+            padding: 48px 0;
+            min-height: auto;
           }
-          .hero-headline-title {
-            font-size: clamp(2.3rem, 4.8vw, 3.4rem);
-          }
-          .hero-four-benefits-grid {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 14px;
-            max-width: 680px;
+          .daylight-hero-content {
+            max-width: 580px;
           }
         }
 
         @media (max-width: 768px) {
-          .ace-fullscreen-hero {
-            min-height: calc(100vh - 76px);
-            min-height: calc(100dvh - 76px);
-            background-position: 72% center;
+          .ace-daylight-hero {
             background-image: 
               linear-gradient(
                 180deg, 
-                rgba(3, 11, 22, 0.94) 0%, 
-                rgba(4, 16, 32, 0.88) 42%, 
-                rgba(6, 24, 44, 0.60) 70%, 
-                rgba(3, 11, 22, 0.90) 100%
+                rgba(255, 255, 255, 0.98) 0%, 
+                rgba(255, 255, 255, 0.95) 60%, 
+                rgba(255, 255, 255, 0.88) 100%
               ),
-              url('/images/hero-logistics-sunset.jpg');
-            padding: 20px 0 20px;
+              url('/images/hero-logistics-daylight.jpg');
+            background-position: center;
+            padding: 40px 0 36px;
           }
-          .hero-middle-content {
-            padding: 12px 0 16px;
-          }
-          .hero-headline-title {
-            font-size: clamp(2rem, 7vw, 2.75rem);
-            margin-bottom: 14px;
-          }
-          .hero-supporting-desc {
-            font-size: 14.5px;
-            margin-bottom: 22px;
-            line-height: 1.55;
+          .daylight-hero-content {
             max-width: 100%;
           }
-          .hero-cta-button-group {
+          .daylight-hero-title {
+            font-size: clamp(2.1rem, 7.5vw, 3rem);
+          }
+          .daylight-hero-actions {
             flex-direction: column;
             align-items: stretch;
             gap: 12px;
-            max-width: 380px;
+            max-width: 360px;
           }
-          .hero-get-started-btn,
-          .hero-explore-services-btn {
+          .daylight-quote-btn,
+          .daylight-track-btn {
             width: 100%;
             justify-content: center;
             padding: 14px 24px;
-            font-size: 15px;
           }
-          .hero-benefits-wrapper {
-            padding-top: 14px;
-          }
-          .hero-four-benefits-grid {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            max-width: 100%;
-          }
-          .hero-benefit-card {
-            padding: 10px 12px;
-            gap: 10px;
-          }
-          .hero-benefit-icon-box {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-          }
-          .hero-benefit-name {
-            font-size: 12.5px;
-          }
-          .hero-benefit-desc {
-            font-size: 10.5px;
+          .daylight-hero-badges {
+            gap: 16px;
           }
         }
 
-        @media (max-width: 480px) {
-          .ace-fullscreen-hero {
-            background-position: 74% center;
-            padding: 16px 0 16px;
-          }
-          .hero-headline-title {
-            font-size: clamp(1.85rem, 8vw, 2.35rem);
-          }
-          .hero-supporting-desc {
-            font-size: 13.5px;
-            margin-bottom: 18px;
-          }
-          .hero-four-benefits-grid {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
-          }
-          .hero-benefit-card {
-            padding: 8px 10px;
-            gap: 8px;
-          }
-          .hero-benefit-icon-box {
-            width: 28px;
-            height: 28px;
-          }
-          .hero-benefit-name {
-            font-size: 11.5px;
-          }
-          .hero-benefit-desc {
-            font-size: 9.5px;
-            display: -webkit-box;
-            -webkit-line-clamp: 1;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
+        /* ===================================================
+           DARK MODE SUPPORT FOR HERO SECTION
+           =================================================== */
+        [data-theme="dark"] .ace-daylight-hero,
+        body.dark-mode .ace-daylight-hero {
+          background-color: #06111D;
+          background-image: 
+            linear-gradient(
+              90deg, 
+              rgba(6, 17, 29, 0.97) 0%, 
+              rgba(7, 22, 38, 0.93) 38%, 
+              rgba(8, 28, 48, 0.72) 54%, 
+              rgba(9, 34, 58, 0.35) 70%, 
+              rgba(6, 17, 29, 0.15) 86%
+            ),
+            url('/images/hero-logistics-daylight.jpg');
+          border-bottom-color: #1E3851;
+        }
+
+        [data-theme="dark"] .daylight-hero-desc,
+        body.dark-mode .daylight-hero-desc {
+          color: #E2E8F0 !important;
+          text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
+          font-weight: 450;
+        }
+
+        [data-theme="dark"] .title-navy,
+        body.dark-mode .title-navy {
+          color: #FFFFFF !important;
+          text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
+        }
+
+        [data-theme="dark"] .daylight-hero-kicker,
+        body.dark-mode .daylight-hero-kicker {
+          color: #94A3B8 !important;
+        }
+
+        [data-theme="dark"] .daylight-track-btn,
+        body.dark-mode .daylight-track-btn {
+          background-color: rgba(255, 255, 255, 0.08);
+          border-color: rgba(255, 255, 255, 0.45);
+          color: #FFFFFF !important;
+          backdrop-filter: blur(8px);
+        }
+
+        [data-theme="dark"] .daylight-track-btn:hover,
+        body.dark-mode .daylight-track-btn:hover {
+          background-color: rgba(255, 255, 255, 0.22);
+          border-color: #FFFFFF;
+          color: #FFFFFF !important;
+          box-shadow: 0 10px 24px rgba(0, 0, 0, 0.45);
+        }
+
+        [data-theme="dark"] .daylight-badge-item,
+        body.dark-mode .daylight-badge-item {
+          color: #E2E8F0 !important;
+        }
+
+        [data-theme="dark"] .daylight-badge-item .badge-icon-wrap,
+        body.dark-mode .daylight-badge-item .badge-icon-wrap {
+          color: #38BDF8 !important;
+        }
+
+        [data-theme="dark"] .daylight-badge-item:hover,
+        body.dark-mode .daylight-badge-item:hover {
+          color: #FF6B00 !important;
+        }
+
+        [data-theme="dark"] .daylight-badge-item:hover .badge-icon-wrap,
+        body.dark-mode .daylight-badge-item:hover .badge-icon-wrap {
+          color: #FF6B00 !important;
+        }
+
+        @media (max-width: 1024px) {
+          [data-theme="dark"] .ace-daylight-hero,
+          body.dark-mode .ace-daylight-hero {
+            background-image: 
+              linear-gradient(
+                90deg, 
+                rgba(6, 17, 29, 0.98) 0%, 
+                rgba(7, 22, 38, 0.94) 50%, 
+                rgba(8, 28, 48, 0.75) 70%, 
+                rgba(9, 34, 58, 0.30) 100%
+              ),
+              url('/images/hero-logistics-daylight.jpg');
           }
         }
 
-        @media (max-width: 390px) {
-          .hero-headline-title {
-            font-size: 1.7rem;
-            line-height: 1.15;
-          }
-          .hero-supporting-desc {
-            font-size: 13px;
-          }
-          .hero-get-started-btn,
-          .hero-explore-services-btn {
-            font-size: 14px;
-            padding: 12px 18px;
+        @media (max-width: 768px) {
+          [data-theme="dark"] .ace-daylight-hero,
+          body.dark-mode .ace-daylight-hero {
+            background-image: 
+              linear-gradient(
+                180deg, 
+                rgba(6, 17, 29, 0.98) 0%, 
+                rgba(7, 22, 38, 0.95) 60%, 
+                rgba(8, 28, 48, 0.90) 100%
+              ),
+              url('/images/hero-logistics-daylight.jpg');
           }
         }
 
