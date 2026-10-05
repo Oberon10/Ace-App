@@ -23,10 +23,24 @@ import UserManagementView from './views/UserManagementView';
 import { INITIAL_SHIPMENTS } from './data/shipments';
 
 export default function App() {
-  const [currentView, setCurrentView] = useState('home');
+  const [currentView, setCurrentView] = useState(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('view') || 'home';
+    } catch {
+      return 'home';
+    }
+  });
   const [activeRole, setActiveRole] = useState('guest'); // 'guest', 'customer', 'staff', 'admin'
   const [currentUser, setCurrentUser] = useState(null);
-  const [loginPortal, setLoginPortal] = useState('customer'); // 'customer', 'staff', 'admin'
+  const [loginPortal, setLoginPortal] = useState(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('portal') || 'customer';
+    } catch {
+      return 'customer';
+    }
+  });
 
   // Theme Mode State: Default mode is 'light' as specified
   const [theme, setTheme] = useState(() => {

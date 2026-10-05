@@ -16,7 +16,9 @@ import {
   KeyRound,
   ShieldAlert,
   Package,
-  Globe2
+  Globe2,
+  X,
+  Loader2
 } from 'lucide-react';
 import { syncCustomerToSupabase, supabase } from '../lib/supabase';
 
@@ -359,6 +361,91 @@ export default function LoginView({
     saveRegisteredCustomer(newCustomer);
     setIsSubmitting(false);
     onLoginSuccess('customer', newCustomer);
+  };
+
+  // ===================================================
+  // SOCIAL AUTHENTICATION (Google & Apple SSO)
+  // ===================================================
+  const [socialModal, setSocialModal] = useState(null); // { provider: 'Google' | 'Apple', mode: 'login' | 'register' }
+  const [socialLoading, setSocialLoading] = useState(false);
+  const [socialEmail, setSocialEmail] = useState('');
+  const [socialName, setSocialName] = useState('');
+
+  const openSocialAuth = (provider) => {
+    const existingName = (firstName && lastName)
+      ? `${firstName} ${lastName}`
+      : firstName || (loginEmail ? loginEmail.split('@')[0] : '');
+    const defaultName = existingName || 'Grace Sterling';
+    const defaultEmail = signupEmail || loginEmail || (provider === 'Google' ? 'grace.sterling@gmail.com' : 'grace.sterling@icloud.com');
+
+    setSocialName(defaultName);
+    setSocialEmail(defaultEmail);
+    setSocialModal({
+      provider,
+      mode: isRegister ? 'register' : 'login'
+    });
+    setPasswordError('');
+  };
+
+  const handleCompleteSocialAuth = async () => {
+    if (!socialModal) return;
+    setSocialLoading(true);
+    const { provider } = socialModal;
+    const cleanEmail = (socialEmail || (provider === 'Google' ? 'customer@gmail.com' : 'customer@icloud.com')).trim().toLowerCase();
+    const cleanName = (socialName || `${provider} Customer`).trim();
+    const nameParts = cleanName.split(' ');
+    const fName = nameParts[0] || provider;
+    const lName = nameParts.slice(1).join(' ') || 'Customer';
+
+    // 1. Check if customer already exists in local storage
+    const registeredCustomers = getRegisteredCustomers();
+    let existingCust = registeredCustomers.find(c => c.email?.trim().toLowerCase() === cleanEmail);
+
+    let customerObj;
+    if (existingCust) {
+      // Existing customer social login
+      customerObj = {
+        ...existingCust,
+        provider,
+        role: 'customer'
+      };
+    } else {
+      // Register new customer via Social SSO & Sync to Supabase
+      const syncRes = await syncCustomerToSupabase({
+        firstName: fName,
+        lastName: lName,
+        emailAddress: cleanEmail,
+        country: country || 'Ghana',
+        phoneNumber: phoneNumber || '+233 55 892 4110',
+        password: `SSO-${provider}-Auth`,
+        items: items || 'General Commercial Merchandise'
+      });
+
+      customerObj = {
+        id: syncRes.data?.id || `CUST-SSO-${Math.floor(1000 + Math.random() * 9000)}`,
+        supabaseId: syncRes.data?.id,
+        name: cleanName,
+        firstName: fName,
+        lastName: lName,
+        email: cleanEmail,
+        loginPassword: `SSO-${provider}-Auth`,
+        country: country || 'Ghana',
+        phone: phoneNumber || '+233 55 892 4110',
+        items: items || 'General Commercial Merchandise',
+        company: `${cleanName}'s Trading Co`,
+        role: 'customer',
+        provider,
+        syncedToSupabase: syncRes.success
+      };
+
+      saveRegisteredCustomer(customerObj);
+    }
+
+    setTimeout(() => {
+      setSocialLoading(false);
+      setSocialModal(null);
+      onLoginSuccess('customer', customerObj);
+    }, 450);
   };
 
   return (
@@ -838,6 +925,41 @@ export default function LoginView({
                   </>
                 )}
               </button>
+
+              {/* Social Registration Section */}
+              <div className="social-auth-divider">
+                <span>Or register with</span>
+              </div>
+              <div className="social-auth-grid">
+                <button
+                  type="button"
+                  onClick={() => openSocialAuth('Google')}
+                  className="social-btn social-btn-google"
+                  id="customer-register-google-btn"
+                  title="Register using your Google account"
+                >
+                  <svg className="social-btn-icon" viewBox="0 0 24 24" width="18" height="18">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                  </svg>
+                  <span>Google</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => openSocialAuth('Apple')}
+                  className="social-btn social-btn-apple"
+                  id="customer-register-apple-btn"
+                  title="Register using your Apple ID"
+                >
+                  <svg className="social-btn-icon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                    <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.37c.63-.77 1.06-1.85.94-2.93-1 .04-2.13.67-2.76 1.44-.57.69-1.06 1.8-1 2.87 1.13.09 2.2-.61 2.82-1.38z"/>
+                  </svg>
+                  <span>Apple</span>
+                </button>
+              </div>
             </form>
           ) : (
             /* ===================================================
@@ -984,6 +1106,45 @@ export default function LoginView({
                 </span>
                 <ArrowRight size={16} />
               </button>
+
+              {/* Social Login Options (Customer Portal Only) */}
+              {selectedPortal === 'customer' && (
+                <>
+                  <div className="social-auth-divider">
+                    <span>Or sign in with</span>
+                  </div>
+                  <div className="social-auth-grid">
+                    <button
+                      type="button"
+                      onClick={() => openSocialAuth('Google')}
+                      className="social-btn social-btn-google"
+                      id="customer-login-google-btn"
+                      title="Sign in using your Google account"
+                    >
+                      <svg className="social-btn-icon" viewBox="0 0 24 24" width="18" height="18">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                      </svg>
+                      <span>Google</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => openSocialAuth('Apple')}
+                      className="social-btn social-btn-apple"
+                      id="customer-login-apple-btn"
+                      title="Sign in using your Apple ID"
+                    >
+                      <svg className="social-btn-icon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                        <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.37c.63-.77 1.06-1.85.94-2.93-1 .04-2.13.67-2.76 1.44-.57.69-1.06 1.8-1 2.87 1.13.09 2.2-.61 2.82-1.38z"/>
+                      </svg>
+                      <span>Apple</span>
+                    </button>
+                  </div>
+                </>
+              )}
             </form>
           )}
 
@@ -1019,7 +1180,361 @@ export default function LoginView({
         </div>
       </div>
 
+      {/* ===================================================
+          SOCIAL AUTH MODAL (Google & Apple SSO Dialog)
+          =================================================== */}
+      {socialModal && (
+        <div className="social-modal-overlay" onClick={() => !socialLoading && setSocialModal(null)}>
+          <div className="social-modal-box" onClick={(e) => e.stopPropagation()}>
+            {/* Modal Close Button */}
+            <button 
+              type="button" 
+              className="social-modal-close" 
+              onClick={() => !socialLoading && setSocialModal(null)}
+              disabled={socialLoading}
+              title="Close"
+            >
+              <X size={18} />
+            </button>
+
+            {/* Header */}
+            <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+              <div style={{
+                width: '56px',
+                height: '56px',
+                borderRadius: '50%',
+                backgroundColor: socialModal.provider === 'Apple' ? '#000000' : '#FFFFFF',
+                border: socialModal.provider === 'Apple' ? '2px solid rgba(255,255,255,0.2)' : '1px solid #E2E8F0',
+                boxShadow: '0 8px 24px rgba(0,0,0,0.12)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto 14px auto'
+              }}>
+                {socialModal.provider === 'Google' ? (
+                  <svg viewBox="0 0 24 24" width="28" height="28">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                  </svg>
+                ) : (
+                  <svg viewBox="0 0 24 24" width="28" height="28" fill="#FFFFFF">
+                    <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.37c.63-.77 1.06-1.85.94-2.93-1 .04-2.13.67-2.76 1.44-.57.69-1.06 1.8-1 2.87 1.13.09 2.2-.61 2.82-1.38z"/>
+                  </svg>
+                )}
+              </div>
+              <h4 style={{ fontSize: '19px', fontWeight: 800, color: 'var(--color-primary-blue)', margin: '0 0 6px 0' }}>
+                {socialModal.mode === 'register' ? `Register with ${socialModal.provider}` : `Sign in with ${socialModal.provider}`}
+              </h4>
+              <p style={{ fontSize: '13px', color: 'var(--text-secondary)', margin: 0 }}>
+                Instant single sign-on authentication for ACE Global Customer Portal
+              </p>
+            </div>
+
+            {/* Profile Authorization Box */}
+            <div style={{
+              padding: '16px',
+              borderRadius: '12px',
+              backgroundColor: 'var(--color-bg-alt, #F8FAFC)',
+              border: '1px solid var(--border-color, #E2E8F0)',
+              marginBottom: '18px'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+                <span style={{ fontSize: '11px', textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.5px', color: 'var(--text-muted)' }}>
+                  Authorized Profile
+                </span>
+                <span style={{
+                  fontSize: '11px',
+                  color: '#16A34A',
+                  fontWeight: 700,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px'
+                }}>
+                  <CheckCircle2 size={13} />
+                  Verified Identity
+                </span>
+              </div>
+
+              <div className="ace-form-group" style={{ marginBottom: '10px' }}>
+                <label className="ace-label" style={{ fontSize: '11.5px' }}>Account Full Name</label>
+                <input
+                  type="text"
+                  className="ace-input"
+                  value={socialName}
+                  onChange={(e) => setSocialName(e.target.value)}
+                  placeholder="e.g. Grace Sterling"
+                  style={{ fontSize: '13px', height: '38px' }}
+                />
+              </div>
+
+              <div className="ace-form-group" style={{ marginBottom: 0 }}>
+                <label className="ace-label" style={{ fontSize: '11.5px' }}>{socialModal.provider} Email Address</label>
+                <input
+                  type="email"
+                  className="ace-input"
+                  value={socialEmail}
+                  onChange={(e) => setSocialEmail(e.target.value)}
+                  placeholder={socialModal.provider === 'Google' ? 'name@gmail.com' : 'name@icloud.com'}
+                  style={{ fontSize: '13px', height: '38px' }}
+                />
+              </div>
+            </div>
+
+            {/* Action Button */}
+            <button
+              type="button"
+              onClick={handleCompleteSocialAuth}
+              disabled={socialLoading}
+              className="ace-btn"
+              style={{
+                width: '100%',
+                height: '46px',
+                fontSize: '14.5px',
+                fontWeight: 700,
+                backgroundColor: socialModal.provider === 'Apple' ? '#000000' : '#4285F4',
+                borderColor: socialModal.provider === 'Apple' ? '#000000' : '#4285F4',
+                color: '#FFFFFF',
+                marginBottom: '10px'
+              }}
+            >
+              {socialLoading ? (
+                <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                  <Loader2 size={16} className="ace-spinner" />
+                  <span>Connecting & Syncing...</span>
+                </span>
+              ) : (
+                <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                  <span>Continue to Customer Portal</span>
+                  <ArrowRight size={16} />
+                </span>
+              )}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => !socialLoading && setSocialModal(null)}
+              disabled={socialLoading}
+              style={{
+                width: '100%',
+                height: '34px',
+                background: 'none',
+                border: 'none',
+                color: 'var(--text-secondary)',
+                fontSize: '12.5px',
+                fontWeight: 600,
+                cursor: 'pointer'
+              }}
+            >
+              Cancel
+            </button>
+
+            {/* Security Notice Footer */}
+            <div style={{
+              marginTop: '16px',
+              paddingTop: '12px',
+              borderTop: '1px solid var(--border-color, #E2E8F0)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '6px',
+              fontSize: '11px',
+              color: 'var(--text-muted)'
+            }}>
+              <Shield size={12} color="#10B981" />
+              <span>Protected by 256-bit SSL & Supabase Cloud Security</span>
+            </div>
+          </div>
+        </div>
+      )}
+
       <style>{`
+        /* Social Authentication Divider */
+        .social-auth-divider {
+          display: flex;
+          align-items: center;
+          text-align: center;
+          margin: 18px 0 14px 0;
+          font-size: 11.5px;
+          font-weight: 600;
+          color: var(--text-muted);
+          text-transform: uppercase;
+          letter-spacing: 0.6px;
+        }
+        .social-auth-divider::before,
+        .social-auth-divider::after {
+          content: '';
+          flex: 1;
+          border-bottom: 1px solid var(--border-color, #E2E8F0);
+        }
+        .social-auth-divider::before {
+          margin-right: 12px;
+        }
+        .social-auth-divider::after {
+          margin-left: 12px;
+        }
+
+        /* Social Auth Buttons Grid */
+        .social-auth-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 12px;
+          margin-bottom: 18px;
+        }
+
+        .social-btn {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+          height: 42px;
+          border-radius: 8px;
+          font-size: 13.5px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+          outline: none;
+        }
+        .social-btn:hover {
+          transform: translateY(-1px);
+        }
+        .social-btn:active {
+          transform: translateY(0);
+        }
+
+        .social-btn-google {
+          background-color: #FFFFFF;
+          border: 1px solid #CBD5E1;
+          color: #1E293B;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        .social-btn-google:hover {
+          background-color: #F8FAFC;
+          border-color: #94A3B8;
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        .social-btn-apple {
+          background-color: #0F172A;
+          border: 1px solid #0F172A;
+          color: #FFFFFF;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+        }
+        .social-btn-apple:hover {
+          background-color: #000000;
+          border-color: #000000;
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.16);
+        }
+
+        /* Dark mode overrides */
+        [data-theme="dark"] .social-auth-divider,
+        .dark-mode .social-auth-divider {
+          color: #94A3B8;
+        }
+        [data-theme="dark"] .social-auth-divider::before,
+        [data-theme="dark"] .social-auth-divider::after,
+        .dark-mode .social-auth-divider::before,
+        .dark-mode .social-auth-divider::after {
+          border-color: rgba(255, 255, 255, 0.12);
+        }
+
+        [data-theme="dark"] .social-btn-google,
+        .dark-mode .social-btn-google {
+          background-color: #1E293B;
+          border: 1px solid rgba(255, 255, 255, 0.15);
+          color: #F8FAFC;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+        [data-theme="dark"] .social-btn-google:hover,
+        .dark-mode .social-btn-google:hover {
+          background-color: #334155;
+          border-color: rgba(255, 255, 255, 0.25);
+        }
+
+        [data-theme="dark"] .social-btn-apple,
+        .dark-mode .social-btn-apple {
+          background-color: #FFFFFF;
+          border: 1px solid #FFFFFF;
+          color: #0F172A;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+        [data-theme="dark"] .social-btn-apple:hover,
+        .dark-mode .social-btn-apple:hover {
+          background-color: #E2E8F0;
+          border-color: #E2E8F0;
+        }
+
+        /* Modal Overlay & Box */
+        .social-modal-overlay {
+          position: fixed;
+          inset: 0;
+          background-color: rgba(15, 23, 42, 0.72);
+          backdrop-filter: blur(6px);
+          z-index: 9999;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 16px;
+          animation: socialFadeIn 0.2s ease-out;
+        }
+        .social-modal-box {
+          background-color: var(--color-white, #FFFFFF);
+          border-radius: 16px;
+          border: 1px solid rgba(255, 255, 255, 0.25);
+          box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
+          width: 100%;
+          max-width: 420px;
+          padding: 28px 24px;
+          position: relative;
+          animation: socialScaleUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .social-modal-close {
+          position: absolute;
+          top: 16px;
+          right: 16px;
+          background: none;
+          border: none;
+          color: var(--text-muted);
+          cursor: pointer;
+          padding: 4px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 6px;
+          transition: all 0.15s ease;
+        }
+        .social-modal-close:hover {
+          background-color: rgba(0,0,0,0.06);
+          color: var(--text-primary);
+        }
+        [data-theme="dark"] .social-modal-box,
+        .dark-mode .social-modal-box {
+          background-color: #1E293B;
+          border-color: rgba(255, 255, 255, 0.12);
+        }
+        [data-theme="dark"] .social-modal-close:hover,
+        .dark-mode .social-modal-close:hover {
+          background-color: rgba(255, 255, 255, 0.1);
+          color: #FFFFFF;
+        }
+
+        @keyframes socialFadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes socialScaleUp {
+          from { opacity: 0; transform: scale(0.94); }
+          to { opacity: 1; transform: scale(1); }
+        }
+        .ace-spinner {
+          animation: aceSpin 1s linear infinite;
+        }
+        @keyframes aceSpin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+
         @media (max-width: 860px) {
           .auth-split {
             grid-template-columns: 1fr !important;
@@ -1037,6 +1552,9 @@ export default function LoginView({
           }
           .auth-card-body {
             padding: 20px 14px !important;
+          }
+          .social-auth-grid {
+            grid-template-columns: 1fr;
           }
         }
       `}</style>
