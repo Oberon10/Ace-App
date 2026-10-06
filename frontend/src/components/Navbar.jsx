@@ -777,6 +777,7 @@ export default function Navbar({
           }
         }
         @media (max-width: 959px) {
+          .desktop-nav { display: none !important; }
           .mobile-only { display: flex !important; }
           .navbar-main-container {
             height: 64px !important;

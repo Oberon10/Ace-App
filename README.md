@@ -30,3 +30,5 @@ The application follows a decoupled client-server architecture built using the *
    │ MongoDB Atlas         │ (Cloud Database)
    │ Collections & GeoJSON │
    └───────────────────────┘
+
+   

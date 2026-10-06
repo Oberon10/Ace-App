@@ -339,10 +339,10 @@ export default function ContactView({ setView, currentUser, activeRole }) {
           {/* ===================================================
               LEFT COLUMN: WORLDWIDE STATIONS & TELEMETRY
               =================================================== */}
-          <div>
+          <div style={{ minWidth: 0 }}>
             {/* Visual Operations Center Showcase Card */}
             <div className="ace-card" style={{ padding: 0, overflow: 'hidden', marginBottom: '24px', border: '1px solid var(--color-border)' }}>
-              <div style={{ position: 'relative', width: '100%', height: 'clamp(190px, 24vw, 240px)', overflow: 'hidden' }}>
+              <div style={{ position: 'relative', width: '100%', height: 'clamp(180px, 24vw, 240px)', overflow: 'hidden' }}>
                 <img
                   src="/images/contact-operations-center.jpg"
                   alt="ACE Logistics Global Operations Command Center"
@@ -356,7 +356,7 @@ export default function ContactView({ setView, currentUser, activeRole }) {
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '6px',
-                  backgroundColor: 'rgba(7, 42, 66, 0.88)',
+                  backgroundColor: 'rgba(7, 42, 66, 0.90)',
                   backdropFilter: 'blur(6px)',
                   border: '1px solid rgba(56, 189, 248, 0.35)',
                   borderRadius: '20px',
@@ -364,38 +364,39 @@ export default function ContactView({ setView, currentUser, activeRole }) {
                   fontSize: '11px',
                   fontWeight: 700,
                   color: '#38BDF8',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.25)'
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.25)',
+                  maxWidth: 'calc(100% - 24px)',
+                  boxSizing: 'border-box'
                 }}>
-                  <span style={{ width: '7px', height: '7px', borderRadius: '50%', backgroundColor: '#10B981', display: 'inline-block', boxShadow: '0 0 8px #10B981' }} />
-                  <span>Command Hub • 24/7 Radar</span>
+                  <span style={{ width: '7px', height: '7px', borderRadius: '50%', backgroundColor: '#10B981', display: 'inline-block', boxShadow: '0 0 8px #10B981', flexShrink: 0 }} />
+                  <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Command Hub • 24/7 Radar</span>
                 </div>
               </div>
 
               <div style={{ padding: '18px 20px', backgroundColor: 'var(--color-surface)' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '8px', marginBottom: '8px' }}>
-                  <div style={{ minWidth: 0, flex: 1 }}>
-                    <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--color-bright-action)', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', marginBottom: '2px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '8px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '6px' }}>
+                    <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--color-bright-action)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
                       Operational Command Hub
                     </span>
-                    <h3 style={{ fontSize: '16.5px', color: 'var(--color-primary-blue)', fontWeight: 700, margin: 0, wordBreak: 'break-word', overflowWrap: 'break-word' }}>
-                      24/7 Global Telemetry & Flight Dispatch Control Desk
-                    </h3>
+                    <span style={{
+                      fontSize: '11px',
+                      fontWeight: 700,
+                      color: '#10B981',
+                      backgroundColor: '#ECFDF5',
+                      border: '1px solid #A7F3D0',
+                      padding: '3px 8px',
+                      borderRadius: '12px',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '5px'
+                    }}>
+                      <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#10B981', display: 'inline-block' }} /> Live System Active
+                    </span>
                   </div>
-                  <span style={{
-                    fontSize: '11px',
-                    fontWeight: 700,
-                    color: '#10B981',
-                    backgroundColor: '#ECFDF5',
-                    border: '1px solid #A7F3D0',
-                    padding: '3px 8px',
-                    borderRadius: '12px',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '5px',
-                    flexShrink: 0
-                  }}>
-                    <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#10B981', display: 'inline-block' }} /> Live System Active
-                  </span>
+                  <h3 style={{ fontSize: '16.5px', color: 'var(--color-primary-blue)', fontWeight: 700, margin: 0, wordBreak: 'break-word', overflowWrap: 'break-word', lineHeight: 1.35 }}>
+                    24/7 Global Telemetry & Flight Dispatch Control Desk
+                  </h3>
                 </div>
                 <p style={{ fontSize: '13px', color: 'var(--text-secondary)', margin: 0, lineHeight: 1.5, wordBreak: 'break-word', overflowWrap: 'break-word' }}>
                   Real-time flight tracking, container vessel monitoring, and automated EDI customs clearance across all continental gateway hubs.
@@ -411,7 +412,7 @@ export default function ContactView({ setView, currentUser, activeRole }) {
               {hubs.map((hub) => (
                 <div 
                   key={hub.id} 
-                  className={`ace-card ${selectedHubId === hub.id ? 'active-hub-card' : ''}`}
+                  className={`ace-card contact-hub-card ${selectedHubId === hub.id ? 'active-hub-card' : ''}`}
                   onClick={() => setSelectedHubId(hub.id)}
                   style={{ 
                     cursor: 'pointer',
@@ -423,15 +424,15 @@ export default function ContactView({ setView, currentUser, activeRole }) {
                     padding: '20px'
                   }}
                 >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', flexWrap: 'wrap', gap: '8px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px', flexWrap: 'wrap', gap: '8px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0, flex: '1 1 auto' }}>
                       <span style={{ fontSize: '20px', flexShrink: 0 }}>{hub.flag}</span>
                       <h3 style={{ fontSize: '17px', color: 'var(--color-primary-blue)', fontWeight: 700, margin: 0, wordBreak: 'break-word', overflowWrap: 'break-word' }}>
                         {hub.city}
                       </h3>
                     </div>
                     <span style={{ 
-                      fontSize: '11.5px', 
+                      fontSize: '11px', 
                       fontWeight: 700, 
                       padding: '3px 8px', 
                       borderRadius: '12px',
@@ -449,23 +450,27 @@ export default function ContactView({ setView, currentUser, activeRole }) {
                   </div>
 
                   <div style={{ 
-                    display: 'grid', 
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 150px), 1fr))', 
-                    gap: '8px', 
-                    fontSize: '12px', 
+                    display: 'flex', 
+                    flexDirection: 'column', 
+                    gap: '6px', 
+                    fontSize: '12.5px', 
                     color: 'var(--text-muted)', 
                     borderTop: '1px solid var(--color-border-subtle)', 
                     paddingTop: '10px' 
                   }}>
                     <div style={{ minWidth: 0, wordBreak: 'break-word', overflowWrap: 'break-word' }}>
-                      <strong style={{ color: 'var(--text-primary)' }}>Direct Tel:</strong>{' '}
-                      <span style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}>{hub.phoneDisplay}</span>
+                      <strong style={{ color: 'var(--text-primary)' }}>Direct Tel: </strong>
+                      <a href={`tel:${hub.phone}`} style={{ color: 'var(--color-bright-action)', textDecoration: 'none', fontWeight: 600, wordBreak: 'break-word' }}>
+                        {hub.phoneDisplay}
+                      </a>
                     </div>
                     <div style={{ minWidth: 0, wordBreak: 'break-word', overflowWrap: 'break-word' }}>
-                      <strong style={{ color: 'var(--text-primary)' }}>Email:</strong>{' '}
-                      <span style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}>{hub.email}</span>
+                      <strong style={{ color: 'var(--text-primary)' }}>Email: </strong>
+                      <a href={`mailto:${hub.email}`} style={{ color: 'var(--color-bright-action)', textDecoration: 'none', wordBreak: 'break-all' }}>
+                        {hub.email}
+                      </a>
                     </div>
-                    <div style={{ gridColumn: '1 / -1', color: 'var(--color-primary-blue)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px', minWidth: 0 }}>
+                    <div style={{ color: 'var(--color-primary-blue)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px', minWidth: 0, marginTop: '2px' }}>
                       <CheckCircle2 size={13} color="#10B981" style={{ flexShrink: 0 }} />
                       <span style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}>{hub.clearance}</span>
                     </div>
@@ -479,7 +484,7 @@ export default function ContactView({ setView, currentUser, activeRole }) {
               RIGHT COLUMN: "SOMETHING FANTASTIC"
               24/7 PRIORITY OPERATIONS COMMAND DESK & APPOINTMENT HUB
               =================================================== */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+          <div style={{ minWidth: 0, display: 'flex', flexDirection: 'column', gap: '24px' }}>
             
             {/* CARD 1: REAL-TIME HUB TELEMETRY & LIVE DISPATCH COMMAND CONSOLE */}
             <div className="ace-card contact-station-card" style={{
@@ -487,11 +492,11 @@ export default function ContactView({ setView, currentUser, activeRole }) {
               color: '#FFFFFF',
               border: '1px solid rgba(56, 189, 248, 0.25)',
               boxShadow: '0 12px 36px rgba(7, 42, 66, 0.25)',
-              padding: '26px'
+              padding: '24px'
             }}>
               {/* Header Badge */}
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px', marginBottom: '16px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
                   <span style={{ 
                     display: 'inline-flex', 
                     alignItems: 'center', 
@@ -503,16 +508,18 @@ export default function ContactView({ setView, currentUser, activeRole }) {
                     borderRadius: '20px', 
                     fontSize: '11px', 
                     fontWeight: 700,
-                    letterSpacing: '0.04em'
+                    letterSpacing: '0.04em',
+                    maxWidth: '100%',
+                    boxSizing: 'border-box'
                   }}>
-                    <span style={{ width: '7px', height: '7px', borderRadius: '50%', backgroundColor: '#10B981', display: 'inline-block' }} />
-                    LIVE TELEMETRY RADAR
+                    <span style={{ width: '7px', height: '7px', borderRadius: '50%', backgroundColor: '#10B981', display: 'inline-block', flexShrink: 0 }} />
+                    <span style={{ wordBreak: 'break-word' }}>LIVE TELEMETRY RADAR</span>
                   </span>
-                  <span style={{ fontSize: '11px', color: '#94A3B8' }}>24/7 Station Uplink</span>
+                  <span style={{ fontSize: '11px', color: '#94A3B8' }}>24/7 Uplink</span>
                 </div>
 
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: '#38BDF8', fontWeight: 600, fontFamily: 'monospace' }}>
-                  <Clock size={13} color="#38BDF8" />
+                  <Clock size={13} color="#38BDF8" style={{ flexShrink: 0 }} />
                   <span>{getHubTime(currentHub.timeZone)} {currentHub.tzLabel}</span>
                 </div>
               </div>
@@ -565,30 +572,42 @@ export default function ContactView({ setView, currentUser, activeRole }) {
                 padding: '18px',
                 marginBottom: '18px'
               }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px', flexWrap: 'wrap', gap: '8px' }}>
-                  <div style={{ minWidth: 0, flex: 1 }}>
-                    <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#FFFFFF', margin: 0, wordBreak: 'break-word', overflowWrap: 'break-word' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '14px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+                    <span style={{
+                      fontSize: '11px',
+                      fontWeight: 600,
+                      padding: '3px 8px',
+                      borderRadius: '6px',
+                      backgroundColor: 'rgba(56, 189, 248, 0.15)',
+                      color: '#38BDF8',
+                      border: '1px solid rgba(56, 189, 248, 0.3)',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '5px',
+                      maxWidth: '100%',
+                      boxSizing: 'border-box'
+                    }}>
+                      <span style={{ width: '5px', height: '5px', borderRadius: '50%', backgroundColor: '#38BDF8', display: 'inline-block', flexShrink: 0 }} />
+                      <span style={{ wordBreak: 'break-word' }}>{currentHub.status}</span>
+                    </span>
+
+                    <span style={{ fontSize: '11px', color: '#94A3B8', fontFamily: 'monospace' }}>
+                      {currentHub.code} GATEWAY
+                    </span>
+                  </div>
+
+                  <div>
+                    <h3 style={{ fontSize: '18px', fontWeight: 800, color: '#FFFFFF', margin: 0, wordBreak: 'break-word', overflowWrap: 'break-word', lineHeight: 1.3 }}>
                       {currentHub.city}
                     </h3>
-                    <div style={{ fontSize: '12px', color: '#94A3B8', marginTop: '2px', wordBreak: 'break-word', overflowWrap: 'break-word' }}>
+                    <div style={{ fontSize: '12px', color: '#94A3B8', marginTop: '3px', wordBreak: 'break-word', overflowWrap: 'break-word' }}>
                       {currentHub.country} • Local Time: <strong style={{ color: '#E2E8F0' }}>{getHubTime(currentHub.timeZone)} ({currentHub.tzLabel})</strong>
                     </div>
                   </div>
-                  <span style={{
-                    fontSize: '11px',
-                    fontWeight: 600,
-                    padding: '3px 8px',
-                    borderRadius: '6px',
-                    backgroundColor: 'rgba(56, 189, 248, 0.15)',
-                    color: '#38BDF8',
-                    border: '1px solid rgba(56, 189, 248, 0.3)',
-                    flexShrink: 0
-                  }}>
-                    {currentHub.status}
-                  </span>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 150px), 1fr))', gap: '12px', fontSize: '12px', marginTop: '14px' }}>
+                <div className="contact-telemetry-metrics" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px', fontSize: '12px', marginTop: '14px' }}>
                   <div style={{ backgroundColor: 'rgba(0, 0, 0, 0.25)', padding: '10px 12px', borderRadius: '8px', minWidth: 0 }}>
                     <div style={{ color: '#94A3B8', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Duty Watch Controller</div>
                     <div style={{ color: '#F1F5F9', fontWeight: 700, marginTop: '2px', wordBreak: 'break-word', overflowWrap: 'break-word' }}>{currentHub.officer}</div>
@@ -624,7 +643,7 @@ export default function ContactView({ setView, currentUser, activeRole }) {
                 )}
 
                 {/* Quick Interactive Station Action Buttons */}
-                <div className="contact-station-actions" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 140px), 1fr))', gap: '8px', marginTop: '14px' }}>
+                <div className="contact-station-actions" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '8px', marginTop: '14px' }}>
                   <a
                     href={`tel:${currentHub.phone}`}
                     className="ace-btn"
@@ -727,7 +746,9 @@ export default function ContactView({ setView, currentUser, activeRole }) {
                             cursor: 'pointer',
                             border: callbackUrgency === urgency ? '1px solid #38BDF8' : '1px solid rgba(255, 255, 255, 0.15)',
                             backgroundColor: callbackUrgency === urgency ? 'rgba(56, 189, 248, 0.25)' : 'rgba(255, 255, 255, 0.05)',
-                            color: callbackUrgency === urgency ? '#38BDF8' : '#CBD5E1'
+                            color: callbackUrgency === urgency ? '#38BDF8' : '#CBD5E1',
+                            flex: '1 1 auto',
+                            textAlign: 'center'
                           }}
                         >
                           {urgency}
@@ -743,8 +764,9 @@ export default function ContactView({ setView, currentUser, activeRole }) {
                         onChange={(e) => setCallbackPhone(e.target.value)}
                         required
                         style={{
-                          flex: '1 1 min(100%, 200px)',
+                          flex: '1 1 200px',
                           minWidth: 0,
+                          width: '100%',
                           height: '40px',
                           backgroundColor: 'rgba(0, 0, 0, 0.35)',
                           border: '1px solid rgba(255, 255, 255, 0.2)',
@@ -832,18 +854,35 @@ export default function ContactView({ setView, currentUser, activeRole }) {
             </div>
 
             {/* CARD 2: BOOK IN-PERSON APPOINTMENT & CUSTOMER PORTAL FAST-TRACK */}
-            <div className="ace-card" style={{
+            <div className="ace-card contact-appointment-card" style={{
               border: '1px solid var(--color-border)',
               backgroundColor: 'var(--color-surface)',
               boxShadow: 'var(--shadow-card)',
-              padding: '26px'
+              padding: '24px'
             }}>
-              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '12px', marginBottom: '14px', flexWrap: 'wrap' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0, flex: 1 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '14px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+                  <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--color-bright-action)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+                    Customer Services & Facility Access
+                  </span>
+                  <span style={{
+                    fontSize: '11px',
+                    fontWeight: 700,
+                    backgroundColor: '#ECFDF5',
+                    color: '#065F46',
+                    border: '1px solid #A7F3D0',
+                    padding: '3px 8px',
+                    borderRadius: '12px'
+                  }}>
+                    Slots Open Today
+                  </span>
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                   <div style={{
-                    width: '42px',
-                    height: '42px',
-                    minWidth: '42px',
+                    width: '40px',
+                    height: '40px',
+                    minWidth: '40px',
                     borderRadius: '10px',
                     backgroundColor: '#EFF6FF',
                     color: '#2563EB',
@@ -852,37 +891,19 @@ export default function ContactView({ setView, currentUser, activeRole }) {
                     justifyContent: 'center',
                     flexShrink: 0
                   }}>
-                    <Calendar size={22} />
+                    <Calendar size={20} />
                   </div>
-                  <div style={{ minWidth: 0 }}>
-                    <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--color-bright-action)', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', wordBreak: 'break-word', overflowWrap: 'break-word' }}>
-                      Customer Services & Facility Access
-                    </span>
-                    <h3 style={{ fontSize: '18px', color: 'var(--color-primary-blue)', fontWeight: 800, margin: '2px 0 0', wordBreak: 'break-word', overflowWrap: 'break-word' }}>
-                      Schedule Hub Appointment
-                    </h3>
-                  </div>
+                  <h3 style={{ fontSize: '18px', color: 'var(--color-primary-blue)', fontWeight: 800, margin: 0, wordBreak: 'break-word', overflowWrap: 'break-word' }}>
+                    Schedule Hub Appointment
+                  </h3>
                 </div>
-
-                <span style={{
-                  fontSize: '11px',
-                  fontWeight: 700,
-                  backgroundColor: '#ECFDF5',
-                  color: '#065F46',
-                  border: '1px solid #A7F3D0',
-                  padding: '3px 8px',
-                  borderRadius: '12px',
-                  flexShrink: 0
-                }}>
-                  Slots Open Today
-                </span>
               </div>
 
               <p style={{ fontSize: '13.5px', color: 'var(--text-secondary)', lineHeight: 1.5, marginBottom: '18px', wordBreak: 'break-word', overflowWrap: 'break-word' }}>
                 Skip the inquiry waiting queue. Customers can reserve a guaranteed 1-on-1 operational appointment for customs clearance documents, bonded warehouse cargo inspection, or air charter manifests.
               </p>
 
-              <div style={{
+              <div className="contact-appointment-specs" style={{
                 display: 'grid',
                 gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 170px), 1fr))',
                 gap: '10px',
@@ -1376,7 +1397,13 @@ export default function ContactView({ setView, currentUser, activeRole }) {
         }
         @media (max-width: 640px) {
           .contact-station-card {
-            padding: 20px 16px !important;
+            padding: 18px 14px !important;
+          }
+          .contact-hub-card {
+            padding: 16px 14px !important;
+          }
+          .contact-telemetry-metrics {
+            grid-template-columns: 1fr !important;
           }
           .contact-station-actions {
             grid-template-columns: 1fr !important;
@@ -1388,6 +1415,12 @@ export default function ContactView({ setView, currentUser, activeRole }) {
             width: 100% !important;
             justify-content: center !important;
           }
+          .contact-appointment-card {
+            padding: 18px 14px !important;
+          }
+          .contact-appointment-specs {
+            grid-template-columns: 1fr !important;
+          }
           .contact-appointment-actions {
             flex-direction: column !important;
           }
@@ -1397,7 +1430,7 @@ export default function ContactView({ setView, currentUser, activeRole }) {
         }
         @media (max-width: 500px) {
           .appointment-modal-card {
-            padding: 20px 16px !important;
+            padding: 18px 14px !important;
           }
           .appointment-form-grid {
             grid-template-columns: 1fr !important;
