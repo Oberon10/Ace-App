@@ -742,6 +742,15 @@ export default function ReceiptModal({ shipment, isOpen, onClose }) {
             grid-template-columns: 1fr !important;
           }
         }
+
+        @media screen and (max-width: 380px) {
+          #printable-receipt {
+            padding: 12px 10px !important;
+          }
+          .receipt-routing-grid {
+            gap: 6px !important;
+          }
+        }
       `}</style>
     </div>
   );
