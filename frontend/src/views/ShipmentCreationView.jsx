@@ -1099,6 +1099,18 @@ export default function ShipmentCreationView({
             grid-template-columns: 1fr !important;
           }
         }
+        @media (max-width: 380px) {
+          .ace-wizard-card {
+            padding: 14px 10px !important;
+          }
+          .wizard-nav-actions {
+            flex-direction: column !important;
+            gap: 8px !important;
+          }
+          .wizard-nav-actions button {
+            width: 100% !important;
+          }
+        }
       `}</style>
     </div>
   );
