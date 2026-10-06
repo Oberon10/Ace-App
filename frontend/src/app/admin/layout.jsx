@@ -244,7 +244,7 @@ export default function AdminLayout({ children }) {
               <span style={{ fontSize: '16px', fontWeight: 800, color: '#FFFFFF', letterSpacing: '-0.01em' }}>
                 ACE <span style={{ color: '#38BDF8' }}>LOGISTICS</span>
               </span>
-              <span style={{
+              <span className="admin-console-badge" style={{
                 marginLeft: '8px',
                 fontSize: '10.5px',
                 fontWeight: 800,
@@ -262,7 +262,7 @@ export default function AdminLayout({ children }) {
         </div>
 
         {/* Right: Prominent "Back to Website" and Profile actions */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
           {/* CLEAR PROMINENT "BACK TO WEBSITE" BUTTON */}
           <Link
             href="/"
@@ -271,24 +271,25 @@ export default function AdminLayout({ children }) {
             style={{
               display: 'inline-flex',
               alignItems: 'center',
-              gap: '8px',
-              padding: '7px 14px',
+              gap: '6px',
+              padding: '7px 12px',
               borderRadius: '8px',
               backgroundColor: 'rgba(255, 255, 255, 0.08)',
               border: '1px solid rgba(255, 255, 255, 0.2)',
               color: '#FFFFFF',
-              fontSize: '13px',
+              fontSize: '12.5px',
               fontWeight: 600,
               textDecoration: 'none',
-              transition: 'all 0.2s ease'
+              transition: 'all 0.2s ease',
+              whiteSpace: 'nowrap'
             }}
           >
-            <ArrowLeft size={15} />
+            <ArrowLeft size={14} />
             <span>Back to Website</span>
           </Link>
 
           {/* Admin User Chip */}
-          <div style={{
+          <div className="admin-user-chip" style={{
             display: 'flex',
             alignItems: 'center',
             gap: '8px',
@@ -323,7 +324,7 @@ export default function AdminLayout({ children }) {
               fontSize: '13px',
               fontWeight: 600,
               cursor: 'pointer',
-              padding: '6px 10px'
+              padding: '6px 8px'
             }}
             title="Sign out of Admin Console"
           >
@@ -339,6 +340,26 @@ export default function AdminLayout({ children }) {
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', width: '100%', maxWidth: '100%', minWidth: 0, overflowX: 'hidden' }}>
         {children}
       </div>
+
+      <style>{`
+        @media (max-width: 640px) {
+          .ace-admin-topbar {
+            padding: 10px 14px !important;
+          }
+          .admin-user-chip {
+            display: none !important;
+          }
+          .admin-back-website-btn {
+            padding: 6px 10px !important;
+            font-size: 12px !important;
+          }
+        }
+        @media (max-width: 440px) {
+          .admin-console-badge {
+            display: none !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }
