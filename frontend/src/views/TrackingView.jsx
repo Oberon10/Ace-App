@@ -1182,6 +1182,15 @@ export default function TrackingView({
             grid-template-columns: 1fr !important;
           }
         }
+        @media (max-width: 380px) {
+          .tracking-search-card {
+            padding: 16px 12px 14px !important;
+          }
+          .tracking-number-input {
+            padding: 12px 14px !important;
+            font-size: 14.5px !important;
+          }
+        }
       `}</style>
     </div>
   );
