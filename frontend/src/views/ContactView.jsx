@@ -1439,6 +1439,18 @@ export default function ContactView({ setView, currentUser, activeRole }) {
             grid-template-columns: 1fr !important;
           }
         }
+        @media (max-width: 380px) {
+          .contact-station-card,
+          .contact-hub-card,
+          .contact-appointment-card {
+            padding: 14px 10px !important;
+          }
+          .contact-station-actions button,
+          .contact-appointment-actions button {
+            font-size: 12px !important;
+            padding: 8px 10px !important;
+          }
+        }
         .hover-lift {
           transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
