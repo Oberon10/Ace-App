@@ -565,7 +565,7 @@ export default function Navbar({
         </div>
 
         {/* Mobile Right Controls: Bulb Switch + Hamburger */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }} className="mobile-only">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }} className="mobile-only mobile-only-flex">
           <button
             type="button"
             onClick={toggleTheme}
@@ -764,6 +764,7 @@ export default function Navbar({
           .desktop-nav { display: flex !important; }
           .mobile-hamburger { display: none !important; }
           .mobile-only { display: none !important; }
+          .mobile-only-flex { display: none !important; }
         }
         @media (min-width: 960px) and (max-width: 1120px) {
           .desktop-nav {
@@ -778,7 +779,8 @@ export default function Navbar({
         }
         @media (max-width: 959px) {
           .desktop-nav { display: none !important; }
-          .mobile-only { display: flex !important; }
+          .mobile-only { display: inline-block !important; }
+          .mobile-only-flex { display: flex !important; }
           .navbar-main-container {
             height: 64px !important;
           }
@@ -806,6 +808,17 @@ export default function Navbar({
           .navbar-logo-subtitle {
             font-size: 7px !important;
             letter-spacing: 0.04em !important;
+          }
+        }
+        @media (max-width: 340px) {
+          .navbar-brand-logo {
+            height: 32px !important;
+          }
+          .navbar-logo-text {
+            font-size: 13.5px !important;
+          }
+          .navbar-logo-subtitle {
+            display: none !important;
           }
         }
       `}</style>
