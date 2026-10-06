@@ -33,7 +33,7 @@ export default function AboutContactView({ tab = 'about', setView }) {
     <div style={{ backgroundColor: 'var(--color-very-light-blue)', padding: '48px 0 80px' }}>
       <div className="ace-container">
         {/* Sub-navigation Tabs */}
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginBottom: '40px' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginBottom: '40px', flexWrap: 'wrap' }}>
           <button
             onClick={() => setActiveTab('about')}
             className={`ace-btn ${activeTab === 'about' ? 'ace-btn-primary' : 'ace-btn-secondary'}`}
@@ -214,6 +214,15 @@ export default function AboutContactView({ tab = 'about', setView }) {
         @media (max-width: 640px) {
           .ace-card {
             padding: 16px 14px !important;
+          }
+        }
+        @media (max-width: 480px) {
+          .ace-card {
+            padding: 14px 12px !important;
+          }
+          .ace-btn {
+            width: 100% !important;
+            justify-content: center !important;
           }
         }
       `}</style>
