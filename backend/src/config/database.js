@@ -1,6 +1,20 @@
 // Import the Mongoose ODM library to interact with MongoDB
 import mongoose from "mongoose";
 
+// Disable command buffering so operations fail fast if DB is disconnected rather than hanging
+mongoose.set("bufferCommands", false);
+
+/**
+ * Check if the MongoDB connection is currently ready and active.
+ * readyState: 0 = disconnected, 1 = connected, 2 = connecting, 3 = disconnecting
+ * @returns {boolean}
+ */
+export const isDatabaseConnected = () => {
+    return mongoose.connection.readyState === 1;
+};
+
+let retryTimer = null;
+
 /**
  * Asynchronous function to establish a connection to the MongoDB database.
  * Uses Mongoose connect method wrapped inside a try/catch block for resilient error handling.
@@ -12,31 +26,55 @@ const connectDB = async () => {
 
         // Validate that the connection string is provided before attempting to connect
         if (!mongoUri) {
-            // Throw an explicit configuration error if the connection string is missing
-            throw new Error("MONGODB_URI environment variable is not defined in .env file.");
+            console.warn("⚠️ MONGODB_URI environment variable is not defined in .env file. Running with local fallback store.");
+            return null;
         }
 
-        // Establish the connection using Mongoose with a 5000ms server selection timeout
+        // Establish the connection using Mongoose with a fast 3000ms server selection timeout
         const connectionInstance = await mongoose.connect(mongoUri, {
-            // How long Mongoose will wait to connect before failing
-            serverSelectionTimeoutMS: 5000
+            serverSelectionTimeoutMS: 3000,
+            socketTimeoutMS: 5000,
+            family: 4
         });
 
         // Log a helpful confirmation message containing the connected database host name
         console.log(`\n✅ MongoDB connected successfully! Host: ${connectionInstance.connection.host}`);
 
-        // Return the active connection instance for potential downstream access
+        if (retryTimer) {
+            clearInterval(retryTimer);
+            retryTimer = null;
+        }
+
         return connectionInstance;
     } catch (error) {
         // Output detailed connection failure details to the server console for debugging
-        console.error("❌ MongoDB connection error:", error.message || error);
-        // Print helpful reminder regarding Atlas credentials or IP whitelist
-        console.warn("💡 Tip: Ensure your MongoDB Atlas username, password, and IP access list (0.0.0.0/0) are correctly configured in backend/.env.");
+        console.warn("⚠️ MongoDB connection notice:", error.message || error);
+        console.warn("💡 Tip: Ensure your MongoDB Atlas IP access list includes your IP (or 0.0.0.0/0).");
+        console.log("ℹ️ ACE Logistics backend is running in resilient high-availability mode with in-memory persistence fallback.");
 
-        // Return null instead of terminating process so Express server continues running
+        // Schedule periodic background retry without blocking server execution
+        if (!retryTimer) {
+            retryTimer = setInterval(async () => {
+                if (!isDatabaseConnected() && process.env.MONGODB_URI) {
+                    try {
+                        await mongoose.connect(process.env.MONGODB_URI, {
+                            serverSelectionTimeoutMS: 3000,
+                            socketTimeoutMS: 5000,
+                            family: 4
+                        });
+                        console.log("\n✅ Reconnected to MongoDB Atlas in background!");
+                        clearInterval(retryTimer);
+                        retryTimer = null;
+                    } catch {
+                        // Silent retry in background
+                    }
+                }
+            }, 60000);
+        }
+
         return null;
     }
 };
 
-// Export the connectDB function as default export so it can be imported in app.js
+// Export the connectDB function as default export
 export default connectDB;

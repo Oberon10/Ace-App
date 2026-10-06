@@ -51,9 +51,9 @@ const userSchema = new mongoose.Schema(
             // Restricts role to one of the four predefined platform roles
             enum: {
                 // Array of allowed role values
-                values: ["CUSTOMER", "DRIVER", "DISPATCHER", "ADMIN"],
+                values: ["CUSTOMER", "DRIVER", "DISPATCHER", "STAFF", "ADMIN"],
                 // Error message displayed when an invalid role is provided
-                message: "Role must be either CUSTOMER, DRIVER, DISPATCHER, or ADMIN"
+                message: "Role must be either CUSTOMER, DRIVER, DISPATCHER, STAFF, or ADMIN"
             },
             // Defaults to standard customer role if not explicitly provided during registration
             default: "CUSTOMER"

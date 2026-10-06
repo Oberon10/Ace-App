@@ -269,14 +269,121 @@ export default function LoginView({
       return;
     }
 
+    setIsSubmitting(true);
+    setPasswordError('');
+
     // Handle Remember Me storage
     if (rememberMe) {
-      localStorage.setItem('ace_remembered_email', cleanEmail);
+      try { localStorage.setItem('ace_remembered_email', cleanEmail); } catch {}
     } else {
-      localStorage.removeItem('ace_remembered_email');
+      try { localStorage.removeItem('ace_remembered_email'); } catch {}
     }
 
-    // STRICT CUSTOMER VERIFICATION: Only registered customers can log in
+    // Attempt 1: Authenticate against Backend Express API (port 5000)
+    try {
+      const backendUrl = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+        ? 'http://localhost:5000/api/auth/login'
+        : '/api/auth/login';
+
+      const res = await fetch(backendUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: cleanEmail, password: cleanPassword })
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && data.user) {
+          const rawRole = (data.user.role || '').toLowerCase();
+          const targetRole = (rawRole === 'dispatcher' || rawRole === 'driver' || rawRole === 'staff')
+            ? 'staff'
+            : (rawRole === 'admin')
+            ? 'admin'
+            : 'customer';
+
+          if (data.token) {
+            try { localStorage.setItem('ace_auth_token', data.token); } catch {}
+          }
+
+          setIsSubmitting(false);
+          onLoginSuccess(targetRole, {
+            ...data.user,
+            role: targetRole,
+            token: data.token,
+            station: selectedPortal === 'staff' ? staffStation : undefined
+          });
+          return;
+        }
+      }
+    } catch {
+      // Backend unavailable or network error: seamlessly proceed to local verification below
+    }
+
+    // Attempt 2: High-Availability Fallback Verification (Supabase / USERS_LIST / KNOWN_ACCOUNTS / Local Storage)
+    if (selectedPortal === 'admin') {
+      if (cleanEmail === 'd.sterling@acelogistics.com') {
+        if (cleanPassword !== 'AdminSecurePass#2026') {
+          setIsSubmitting(false);
+          setPasswordError('Incorrect Administrator Passkey. Access rejected.');
+          return;
+        }
+        if (adminToken.trim() !== 'ACE-SEC-2026') {
+          setIsSubmitting(false);
+          setPasswordError('Invalid Hardware Security Token. Security clearance failed.');
+          return;
+        }
+        setIsSubmitting(false);
+        onLoginSuccess('admin', {
+          name: 'Derek Sterling',
+          email: 'd.sterling@acelogistics.com',
+          role: 'admin',
+          title: 'Executive Vice President of Operations',
+          clearanceLevel: 'Level 5 (Full Authority)'
+        });
+        return;
+      }
+
+      const matchedAdmin = USERS_LIST.find(u => u.email?.trim().toLowerCase() === cleanEmail && u.role?.toLowerCase() === 'admin');
+      if (matchedAdmin) {
+        if (matchedAdmin.loginPassword && matchedAdmin.loginPassword !== cleanPassword) {
+          setIsSubmitting(false);
+          setPasswordError('Incorrect Administrator Passkey.');
+          return;
+        }
+        setIsSubmitting(false);
+        onLoginSuccess('admin', { ...matchedAdmin, role: 'admin' });
+        return;
+      }
+
+      setIsSubmitting(false);
+      setPasswordError('Unauthorized Administrator Email. Please sign in as Derek Sterling or click Quick Demo Fill.');
+      return;
+    }
+
+    if (selectedPortal === 'staff') {
+      const registeredStaff = getRegisteredStaff();
+      const matchedStaff = registeredStaff.find(s => s.email?.trim().toLowerCase() === cleanEmail);
+
+      if (!matchedStaff) {
+        setIsSubmitting(false);
+        setPasswordError('Access Denied: Unrecognized staff account. Only authorized operations personnel can access the Dispatch Console. Try clicking a Quick Demo Fill button.');
+        return;
+      }
+
+      if (matchedStaff.loginPassword && matchedStaff.loginPassword !== cleanPassword) {
+        setIsSubmitting(false);
+        setPasswordError('Incorrect operational passkey assigned to your staff profile.');
+        return;
+      }
+
+      setIsSubmitting(false);
+      onLoginSuccess('staff', {
+        ...matchedStaff,
+        station: staffStation
+      });
+      return;
+    }
+
     if (selectedPortal === 'customer') {
       const registeredCustomers = getRegisteredCustomers();
       let matchedCustomer = registeredCustomers.find(c => c.email?.trim().toLowerCase() === cleanEmail);
@@ -309,70 +416,25 @@ export default function LoginView({
             saveRegisteredCustomer(matchedCustomer);
           }
         } catch (err) {
-          console.warn('Supabase customer login lookup warning:', err);
+          console.warn('Supabase customer login lookup notice:', err);
         }
       }
 
       if (!matchedCustomer) {
-        setPasswordError('Account not found. Only registered customers can log in. Please create an account or verify your email.');
+        setIsSubmitting(false);
+        setPasswordError('Account not found. Click "Create Account" below to register or click a Quick Demo Fill account above.');
         return;
       }
 
       if (matchedCustomer.loginPassword && matchedCustomer.loginPassword !== cleanPassword) {
+        setIsSubmitting(false);
         setPasswordError('Incorrect password. Please verify your credentials and try again.');
         return;
       }
 
+      setIsSubmitting(false);
       onLoginSuccess('customer', matchedCustomer);
       return;
-    }
-
-    // STRICT STAFF VERIFICATION: Only staff members registered by the system/admin can log in
-    if (selectedPortal === 'staff') {
-      const registeredStaff = getRegisteredStaff();
-      const matchedStaff = registeredStaff.find(s => s.email?.trim().toLowerCase() === cleanEmail);
-
-      if (!matchedStaff) {
-        setPasswordError('Access Denied: Unrecognized staff account. Only authorized operations personnel registered by an Administrator can access the Dispatch Console.');
-        return;
-      }
-
-      if (matchedStaff.loginPassword && matchedStaff.loginPassword !== cleanPassword) {
-        setPasswordError('Incorrect password. Please enter the operational passkey assigned to your staff profile.');
-        return;
-      }
-
-      onLoginSuccess('staff', {
-        ...matchedStaff,
-        station: staffStation
-      });
-      return;
-    }
-
-    // ADMIN VERIFICATION: Pre-authorized system administrator
-    if (selectedPortal === 'admin') {
-      if (cleanEmail !== 'd.sterling@acelogistics.com') {
-        setPasswordError('Unauthorized Administrator Email. Only authorized executives may access the Executive Admin Console.');
-        return;
-      }
-
-      if (cleanPassword !== 'AdminSecurePass#2026') {
-        setPasswordError('Incorrect Administrator Passkey. Access rejected.');
-        return;
-      }
-
-      if (adminToken.trim() !== 'ACE-SEC-2026') {
-        setPasswordError('Invalid Hardware Security Token. Security clearance failed.');
-        return;
-      }
-
-      onLoginSuccess('admin', {
-        name: 'Derek Sterling',
-        email: 'd.sterling@acelogistics.com',
-        role: 'admin',
-        title: 'Executive Vice President of Operations',
-        clearanceLevel: 'Level 5 (Full Authority)'
-      });
     }
   };
 
@@ -394,7 +456,31 @@ export default function LoginView({
     const fullName = `${firstName.trim()} ${lastName.trim()}`;
     const cleanEmail = signupEmail.trim().toLowerCase();
 
-    // Sync to Supabase Cloud Database
+    // 1. Register with Backend API
+    try {
+      const backendUrl = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+        ? 'http://localhost:5000/api/auth/register'
+        : '/api/auth/register';
+
+      fetch(backendUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: fullName,
+          email: cleanEmail,
+          password: signupPassword,
+          role: 'CUSTOMER'
+        })
+      }).then(r => r.json()).then(data => {
+        if (data.token) {
+          try { localStorage.setItem('ace_auth_token', data.token); } catch {}
+        }
+      }).catch(() => {});
+    } catch {
+      // ignore
+    }
+
+    // 2. Sync to Supabase Cloud Database
     const syncResult = await syncCustomerToSupabase({
       firstName: firstName.trim(),
       lastName: lastName.trim(),
@@ -426,7 +512,7 @@ export default function LoginView({
     saveRegisteredCustomer(newCustomer);
 
     if (rememberMe) {
-      localStorage.setItem('ace_remembered_email', cleanEmail);
+      try { localStorage.setItem('ace_remembered_email', cleanEmail); } catch {}
     }
 
     setTimeout(() => {
@@ -762,6 +848,179 @@ export default function LoginView({
               <div className="auth-alert-error">
                 <AlertCircle size={16} color="#EF4444" style={{ flexShrink: 0 }} />
                 <span>{passwordError}</span>
+              </div>
+            )}
+
+            {/* Quick Demo Credentials Pill Bar */}
+            {!isRegister && (
+              <div className="demo-credentials-banner" style={{
+                margin: '14px 0 16px',
+                padding: '10px 14px',
+                borderRadius: '10px',
+                background: selectedPortal === 'admin' 
+                  ? 'rgba(245, 158, 11, 0.08)' 
+                  : selectedPortal === 'staff' 
+                  ? 'rgba(13, 148, 136, 0.08)' 
+                  : 'rgba(22, 131, 216, 0.08)',
+                border: `1px solid ${
+                  selectedPortal === 'admin' 
+                    ? 'rgba(245, 158, 11, 0.25)' 
+                    : selectedPortal === 'staff' 
+                    ? 'rgba(13, 148, 136, 0.25)' 
+                    : 'rgba(22, 131, 216, 0.22)'
+                }`,
+                fontSize: '12.5px'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                  <span style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: '6px', 
+                    fontWeight: 700, 
+                    color: selectedPortal === 'admin' ? '#D97706' : selectedPortal === 'staff' ? '#0F766E' : 'var(--color-primary-blue)',
+                    fontSize: '11.5px',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.04em'
+                  }}>
+                    <Sparkles size={13} />
+                    <span>Quick Demo Credentials</span>
+                  </span>
+                  <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Click to auto-fill</span>
+                </div>
+
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                  {selectedPortal === 'customer' && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setLoginEmail('k.mensah@goldcoasttrading.com');
+                          setLoginPassword('KwameTrading#Accra24');
+                          setPasswordError('');
+                        }}
+                        style={{
+                          background: 'var(--color-white)',
+                          border: '1px solid var(--color-border)',
+                          borderRadius: '6px',
+                          padding: '5px 10px',
+                          fontSize: '11.5px',
+                          fontWeight: 600,
+                          color: 'var(--color-primary-blue)',
+                          cursor: 'pointer',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '5px'
+                        }}
+                      >
+                        <span>🇬🇭 Kwame Mensah</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setLoginEmail('j.devries@maersklog.nl');
+                          setLoginPassword('MaerskRotterdamPass@82');
+                          setPasswordError('');
+                        }}
+                        style={{
+                          background: 'var(--color-white)',
+                          border: '1px solid var(--color-border)',
+                          borderRadius: '6px',
+                          padding: '5px 10px',
+                          fontSize: '11.5px',
+                          fontWeight: 600,
+                          color: 'var(--color-primary-blue)',
+                          cursor: 'pointer',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '5px'
+                        }}
+                      >
+                        <span>🇳🇱 Jan De Vries</span>
+                      </button>
+                    </>
+                  )}
+
+                  {selectedPortal === 'staff' && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setLoginEmail('s.oconnor@acelogistics.com');
+                          setLoginPassword('StaffDispatchKey@99');
+                          setStaffStation('LHR-T4 (Heathrow Cargo Village)');
+                          setPasswordError('');
+                        }}
+                        style={{
+                          background: 'var(--color-white)',
+                          border: '1px solid var(--color-border)',
+                          borderRadius: '6px',
+                          padding: '5px 10px',
+                          fontSize: '11.5px',
+                          fontWeight: 600,
+                          color: '#0F766E',
+                          cursor: 'pointer',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '5px'
+                        }}
+                      >
+                        <span>🇬🇧 Sarah O'Connor (LHR)</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setLoginEmail('r.mensah@acelogistics.com');
+                          setLoginPassword('KotokaDispatcher#44');
+                          setStaffStation('ACC-T1 (Accra Central Air Hub)');
+                          setPasswordError('');
+                        }}
+                        style={{
+                          background: 'var(--color-white)',
+                          border: '1px solid var(--color-border)',
+                          borderRadius: '6px',
+                          padding: '5px 10px',
+                          fontSize: '11.5px',
+                          fontWeight: 600,
+                          color: '#0F766E',
+                          cursor: 'pointer',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '5px'
+                        }}
+                      >
+                        <span>🇬🇭 Robert Mensah (Accra)</span>
+                      </button>
+                    </>
+                  )}
+
+                  {selectedPortal === 'admin' && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setLoginEmail('d.sterling@acelogistics.com');
+                        setLoginPassword('AdminSecurePass#2026');
+                        setAdminToken('ACE-SEC-2026');
+                        setPasswordError('');
+                      }}
+                      style={{
+                        background: 'var(--color-white)',
+                        border: '1px solid #FCD34D',
+                        borderRadius: '6px',
+                        padding: '5px 12px',
+                        fontSize: '11.5px',
+                        fontWeight: 700,
+                        color: '#B45309',
+                        cursor: 'pointer',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px'
+                      }}
+                    >
+                      <Shield size={12} />
+                      <span>Derek Sterling (Executive Admin)</span>
+                    </button>
+                  )}
+                </div>
               </div>
             )}
 
@@ -1127,18 +1386,32 @@ export default function LoginView({
                 {/* Sign In Primary Button */}
                 <button
                   type="submit"
+                  disabled={isSubmitting}
                   className={`auth-primary-submit-btn ${
                     selectedPortal === 'staff' ? 'staff-theme-btn' : 
                     selectedPortal === 'admin' ? 'admin-theme-btn' : ''
                   }`}
                   id="auth-sign-in-submit-btn"
+                  style={{
+                    opacity: isSubmitting ? 0.75 : 1,
+                    cursor: isSubmitting ? 'not-allowed' : 'pointer'
+                  }}
                 >
                   <span className="flex-center-gap">
-                    <span>
-                      {selectedPortal === 'customer' ? 'Sign In' :
-                       selectedPortal === 'staff' ? 'Sign In to Terminal' : 'Sign In as Administrator'}
-                    </span>
-                    <ArrowRight size={16} />
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 size={16} className="ace-spin" />
+                        <span>Authenticating...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>
+                          {selectedPortal === 'customer' ? 'Sign In' :
+                           selectedPortal === 'staff' ? 'Sign In to Terminal' : 'Sign In as Administrator'}
+                        </span>
+                        <ArrowRight size={16} />
+                      </>
+                    )}
                   </span>
                 </button>
 

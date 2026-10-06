@@ -9,6 +9,8 @@ export const ROLES = {
     DRIVER: "DRIVER",
     // Dispatch manager role
     DISPATCHER: "DISPATCHER",
+    // Operations staff role
+    STAFF: "STAFF",
     // System administrator role
     ADMIN: "ADMIN"
 };
