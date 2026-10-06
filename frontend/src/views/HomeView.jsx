@@ -867,7 +867,7 @@ export default function HomeView({
             align-items: stretch;
             gap: 12px;
             width: 100%;
-            max-width: 360px;
+            max-width: min(100%, 360px);
           }
           .daylight-quote-btn,
           .daylight-track-btn {
