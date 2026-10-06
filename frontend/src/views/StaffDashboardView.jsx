@@ -335,6 +335,12 @@ export default function StaffDashboardView({
             justify-content: center;
           }
         }
+        @media (max-width: 480px) {
+          .staff-header-btn {
+            font-size: 13px !important;
+            padding: 10px 14px !important;
+          }
+        }
       `}</style>
     </div>
   );
