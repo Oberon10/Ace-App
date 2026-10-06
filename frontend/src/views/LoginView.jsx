@@ -5,7 +5,7 @@ import {
   Lock, 
   Mail, 
   ArrowRight, 
-  ArrowLeft,
+  ArrowLeft, 
   CheckCircle2, 
   User, 
   Phone, 
@@ -15,7 +15,6 @@ import {
   Truck,
   Building2,
   KeyRound,
-  ShieldAlert,
   Package,
   Globe2,
   X,
@@ -23,8 +22,10 @@ import {
   Sun,
   Moon,
   Sparkles,
-  Layers,
-  Send
+  Send,
+  Fingerprint,
+  Smartphone,
+  Wallet
 } from 'lucide-react';
 import { syncCustomerToSupabase, supabase } from '../lib/supabase';
 
@@ -117,7 +118,7 @@ export function getRegisteredStaff() {
     }
   });
 
-  // Stored staff registrations (e.g. added by Admin in User Management) override or append
+  // Stored staff registrations override or append
   stored.forEach(s => {
     if (s.email) {
       staffMap.set(s.email.trim().toLowerCase(), s);
@@ -148,7 +149,7 @@ export default function LoginView({
   toggleTheme
 }) {
   const [selectedPortal, setSelectedPortal] = useState(initialPortal); // 'customer', 'staff', 'admin'
-  const [isRegister, setIsRegister] = useState(false);
+  const [isRegister, setIsRegister] = useState(false); // false = Log In, true = Sign Up
 
   // Sync if initialPortal prop changes
   useEffect(() => {
@@ -158,7 +159,7 @@ export default function LoginView({
     }
   }, [initialPortal]);
 
-  // Login Fields - customer & staff inputs start blank or from saved remember-me
+  // Login Fields
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
   const [showLoginPassword, setShowLoginPassword] = useState(false);
@@ -179,7 +180,7 @@ export default function LoginView({
   // Admin specific fields
   const [adminToken, setAdminToken] = useState('ACE-SEC-2026');
 
-  // Signup Fields (Customer only)
+  // Signup Fields (Customer)
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [signupEmail, setSignupEmail] = useState('');
@@ -189,7 +190,7 @@ export default function LoginView({
   const [signupPassword, setSignupPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showSignupPassword, setShowSignupPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [agreeTerms, setAgreeTerms] = useState(true);
   const [passwordError, setPasswordError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -199,13 +200,13 @@ export default function LoginView({
   const [forgotSubmitted, setForgotSubmitted] = useState(false);
 
   // Social Auth SSO Modal State
-  const [socialModal, setSocialModal] = useState(null); // null | { provider: 'Google'|'Apple', mode: 'login'|'register' }
+  const [socialModal, setSocialModal] = useState(null);
   const [socialEmail, setSocialEmail] = useState('');
   const [socialName, setSocialName] = useState('');
   const [socialLoading, setSocialLoading] = useState(false);
 
-  // Illustration selection (Default is user's uploaded warehouse photo)
-  const [activeIllustration, setActiveIllustration] = useState('uploaded'); // 'uploaded' | 'air-cargo' | 'fleet'
+  // Left card illustration (for desktop system view)
+  const [activeIllustration, setActiveIllustration] = useState('uploaded');
 
   const illustrations = {
     'uploaded': {
@@ -233,27 +234,26 @@ export default function LoginView({
 
   const currentIllustration = illustrations[activeIllustration] || illustrations['uploaded'];
 
-  // Auto-fill sensible default credentials only for Admin demo console; Customer and Staff portals start blank
-  useEffect(() => {
-    if (selectedPortal === 'customer') {
-      const saved = localStorage.getItem('ace_remembered_email');
-      setLoginEmail(saved || '');
-      setLoginPassword('');
-    } else if (selectedPortal === 'staff') {
-      setLoginEmail('');
-      setLoginPassword('');
-    } else if (selectedPortal === 'admin') {
-      setLoginEmail('d.sterling@acelogistics.com');
-      setLoginPassword('AdminSecurePass#2026');
-    }
-  }, [selectedPortal]);
-
+  // Handle portal switch
   const handlePortalSwitch = (portal) => {
     setSelectedPortal(portal);
     setIsRegister(false);
     setPasswordError('');
+    if (portal === 'admin') {
+      setLoginEmail('d.sterling@acelogistics.com');
+      setLoginPassword('AdminSecurePass#2026');
+      setAdminToken('ACE-SEC-2026');
+    } else if (portal === 'staff') {
+      setLoginEmail('');
+      setLoginPassword('');
+    } else {
+      const saved = localStorage.getItem('ace_remembered_email');
+      setLoginEmail(saved || '');
+      setLoginPassword('');
+    }
   };
 
+  // Handle Log In Submit
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     const cleanEmail = (loginEmail || '').trim().toLowerCase();
@@ -279,7 +279,7 @@ export default function LoginView({
       try { localStorage.removeItem('ace_remembered_email'); } catch {}
     }
 
-    // Attempt 1: Authenticate against Backend Express API (port 5000)
+    // 1. Attempt Backend Express API (port 5000)
     try {
       const backendUrl = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
         ? 'http://localhost:5000/api/auth/login'
@@ -319,7 +319,7 @@ export default function LoginView({
       // Backend unavailable or network error: seamlessly proceed to local verification below
     }
 
-    // Attempt 2: High-Availability Fallback Verification (Supabase / USERS_LIST / KNOWN_ACCOUNTS / Local Storage)
+    // 2. High-Availability Fallback Verification
     if (selectedPortal === 'admin') {
       if (cleanEmail === 'd.sterling@acelogistics.com') {
         if (cleanPassword !== 'AdminSecurePass#2026') {
@@ -388,7 +388,7 @@ export default function LoginView({
       const registeredCustomers = getRegisteredCustomers();
       let matchedCustomer = registeredCustomers.find(c => c.email?.trim().toLowerCase() === cleanEmail);
 
-      // If not found in local cache, query Supabase database
+      // Query Supabase database if not in cache
       if (!matchedCustomer) {
         try {
           const { data, error } = await supabase
@@ -422,7 +422,7 @@ export default function LoginView({
 
       if (!matchedCustomer) {
         setIsSubmitting(false);
-        setPasswordError('Account not found. Click "Create Account" below to register or click a Quick Demo Fill account above.');
+        setPasswordError('Account not found. Click "Sign Up" above to register or click a Quick Demo Fill account.');
         return;
       }
 
@@ -438,6 +438,7 @@ export default function LoginView({
     }
   };
 
+  // Handle Sign Up Submit
   const handleSignupSubmit = async (e) => {
     e.preventDefault();
     setPasswordError('');
@@ -452,8 +453,13 @@ export default function LoginView({
       return;
     }
 
+    if (!agreeTerms) {
+      setPasswordError('Please agree to the Terms of Service & Privacy Policy.');
+      return;
+    }
+
     setIsSubmitting(true);
-    const fullName = `${firstName.trim()} ${lastName.trim()}`;
+    const fullName = `${firstName.trim()} ${lastName.trim()}`.trim() || 'Valued Customer';
     const cleanEmail = signupEmail.trim().toLowerCase();
 
     // 1. Register with Backend API
@@ -499,7 +505,7 @@ export default function LoginView({
       lastName: lastName.trim(),
       email: cleanEmail,
       loginPassword: signupPassword,
-      company: `${firstName.trim()}'s Commercial Enterprise`,
+      company: `${firstName.trim() || 'Customer'}'s Commercial Enterprise`,
       country,
       phone: phoneNumber.trim(),
       items: items.trim(),
@@ -521,17 +527,32 @@ export default function LoginView({
     }, 400);
   };
 
+  // Biometric Instant Auth
+  const handleBiometricAuth = () => {
+    setIsSubmitting(true);
+    setPasswordError('');
+    setTimeout(() => {
+      const registeredCustomers = getRegisteredCustomers();
+      const remembered = localStorage.getItem('ace_remembered_email');
+      const target = registeredCustomers.find(c => c.email?.toLowerCase() === remembered?.toLowerCase()) || registeredCustomers[0];
+      if (target) {
+        setIsSubmitting(false);
+        onLoginSuccess('customer', target);
+      } else {
+        setIsSubmitting(false);
+        setPasswordError('No biometric profile registered yet. Please sign in with password first.');
+      }
+    }, 600);
+  };
+
+  // Social Auth SSO Modal Handlers
   const openSocialAuth = (provider) => {
     let defaultName = 'Enterprise Customer';
     let defaultEmail = provider === 'Google' ? 'customer@gmail.com' : 'customer@icloud.com';
 
     if (isRegister) {
-      if (firstName || lastName) {
-        defaultName = `${firstName} ${lastName}`.trim();
-      }
-      if (signupEmail) {
-        defaultEmail = signupEmail;
-      }
+      if (firstName || lastName) defaultName = `${firstName} ${lastName}`.trim();
+      if (signupEmail) defaultEmail = signupEmail;
     } else if (loginEmail) {
       defaultEmail = loginEmail;
     }
@@ -597,7 +618,7 @@ export default function LoginView({
     }
 
     if (rememberMe) {
-      localStorage.setItem('ace_remembered_email', cleanEmail);
+      try { localStorage.setItem('ace_remembered_email', cleanEmail); } catch {}
     }
 
     setTimeout(() => {
@@ -610,9 +631,6 @@ export default function LoginView({
   const handleForgotSubmit = (e) => {
     e.preventDefault();
     setForgotSubmitted(true);
-    setTimeout(() => {
-      // Keep state showing success
-    }, 1000);
   };
 
   const handleBackToWebsite = () => {
@@ -626,7 +644,7 @@ export default function LoginView({
   return (
     <div className="ace-auth-page-root">
       {/* ===================================================
-          TOP BAR: ACE LOGISTICS ← Back to Website
+          TOP BAR (Always visible with return action)
           =================================================== */}
       <header className="ace-auth-topbar">
         <div className="ace-auth-topbar-inner">
@@ -637,15 +655,20 @@ export default function LoginView({
             title="Return to ACE Logistics Home"
           >
             <div className="ace-auth-logo-icon">
-              <svg width="22" height="22" viewBox="0 0 64 64" fill="none">
-                <path d="M14 44L28 16H36L50 44H41L38 37H26L23 44H14ZM29 30H35L32 23L29 30Z" fill="#FFFFFF"/>
-              </svg>
+              <img 
+                src="/ace-emblem.png" 
+                alt="ACE" 
+                style={{ width: '24px', height: '24px', objectFit: 'contain' }}
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                }}
+              />
             </div>
             <div className="ace-auth-brand-text">
               <span className="brand-main">
                 ACE <span className="brand-highlight">LOGISTICS</span>
               </span>
-              <span className="brand-sub">GLOBAL FREIGHT PORTAL</span>
+              <span className="brand-sub">GLOBAL FREIGHT WALLET</span>
             </div>
           </div>
 
@@ -676,22 +699,19 @@ export default function LoginView({
       </header>
 
       {/* ===================================================
-          MAIN CONTENT: DUAL CARD WIREFRAME LAYOUT
+          MAIN CONTENT: SYSTEM (DESKTOP) + NATIVE MOBILE VIEW
           =================================================== */}
       <main className="ace-auth-main">
         <div className="ace-auth-cards-container">
 
           {/* ===============================================
-              LEFT CARD: ACE LOGISTICS & LOGISTICS IMAGE
+              LEFT CARD: LOGISTICS TERMINAL (DESKTOP SYSTEM VIEW)
               =============================================== */}
           <div className="ace-auth-card ace-auth-left-card">
-            {/* Left Card Top Header */}
             <div className="left-card-header">
               <div className="left-card-badge">
                 <div className="left-card-emblem">
-                  <svg width="16" height="16" viewBox="0 0 64 64" fill="none">
-                    <path d="M14 44L28 16H36L50 44H41L38 37H26L23 44H14ZM29 30H35L32 23L29 30Z" fill="#FFFFFF"/>
-                  </svg>
+                  <img src="/ace-emblem.png" alt="ACE" style={{ width: '18px', height: '18px', objectFit: 'contain' }} />
                 </div>
                 <span className="left-card-badge-title">ACE LOGISTICS</span>
               </div>
@@ -701,31 +721,24 @@ export default function LoginView({
               </span>
             </div>
 
-            {/* Logistics Image Container (Worker Photo) */}
             <div className="left-card-image-box">
               <img 
                 src={currentIllustration.src} 
                 alt="ACE Logistics Warehouse Operations" 
                 className="left-card-img"
               />
-              
-              {/* Image Gradient Overlay */}
               <div className="left-card-img-overlay"></div>
-
-              {/* Floating Status Tag on image */}
               <div className="left-card-floating-badge">
                 <Package size={14} color="#38BDF8" />
                 <span>{currentIllustration.badge}</span>
               </div>
             </div>
 
-            {/* Quick Image Preview Switcher */}
             <div className="illustration-switcher-strip">
               <button
                 type="button"
                 className={`ill-btn ${activeIllustration === 'uploaded' ? 'active' : ''}`}
                 onClick={() => setActiveIllustration('uploaded')}
-                title="Warehouse Worker Dispatch (Uploaded Photo)"
               >
                 Warehouse
               </button>
@@ -733,7 +746,6 @@ export default function LoginView({
                 type="button"
                 className={`ill-btn ${activeIllustration === 'air-cargo' ? 'active' : ''}`}
                 onClick={() => setActiveIllustration('air-cargo')}
-                title="Air Cargo Logistics Terminal"
               >
                 Air Cargo
               </button>
@@ -741,13 +753,11 @@ export default function LoginView({
                 type="button"
                 className={`ill-btn ${activeIllustration === 'fleet' ? 'active' : ''}`}
                 onClick={() => setActiveIllustration('fleet')}
-                title="Freight Transit Fleet"
               >
                 Fleet
               </button>
             </div>
 
-            {/* Left Card Tagline & Description */}
             <div className="left-card-footer">
               <h2 className="left-card-tagline">
                 Track. Manage. <span className="deliver-highlight">Deliver.</span>
@@ -756,7 +766,6 @@ export default function LoginView({
                 {currentIllustration.caption}
               </p>
 
-              {/* Security & Reliability Feature Highlights */}
               <div className="left-card-features">
                 <div className="feature-chip">
                   <CheckCircle2 size={13} color="#10B981" />
@@ -768,77 +777,134 @@ export default function LoginView({
                 </div>
                 <div className="feature-chip">
                   <CheckCircle2 size={13} color="#10B981" />
-                  <span>256-bit Encrypted Manifests</span>
+                  <span>Integrated Digital Freight Wallet</span>
                 </div>
               </div>
             </div>
           </div>
 
           {/* ===============================================
-              RIGHT CARD: WELCOME BACK & SIGN IN FORM
+              RIGHT CARD: DRIBBLE WALLET MOBILE APP WORKFLOW
+              Exact design from https://dribbble.com/shots/26413366
               =============================================== */}
-          <div className="ace-auth-card ace-auth-right-card">
+          <div className="ace-auth-card ace-auth-right-card wallet-screen-card">
 
-            {/* Portal Tabs: Customer | Staff | Admin */}
-            <div className="portal-tabs-row" role="tablist">
+            {/* Mobile Top App Bar (Native App Style on Mobile) */}
+            <div className="wallet-mobile-status-bar">
+              <button 
+                type="button" 
+                onClick={handleBackToWebsite}
+                className="wallet-mobile-back-icon-btn"
+                title="Back"
+              >
+                <ArrowLeft size={18} />
+              </button>
+              <span className="wallet-mobile-title">
+                {isRegister ? 'Sign Up' : 'Log In'}
+              </span>
+              <div style={{ width: '32px' }} />
+            </div>
+
+            {/* 1. OFFICIAL COMPANY LOGO INSIDE LOGIN & SIGNUP */}
+            <div className="wallet-company-logo-section">
+              <div className="wallet-logo-lockup">
+                <img 
+                  src="/ace-logo.png" 
+                  alt="ACE Logistics" 
+                  className="wallet-company-logo-img"
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = '/ace-emblem.png';
+                  }}
+                />
+              </div>
+              <div className="wallet-brand-meta">
+                <span className="wallet-brand-title">ACE LOGISTICS</span>
+                <span className="wallet-brand-badge">FREIGHT WALLET & DISPATCH</span>
+              </div>
+            </div>
+
+            {/* 2. SIGNATURE DRIBBBLE SEGMENTED TAB SWITCHER: [ Log In | Sign Up ] */}
+            <div className="wallet-segmented-toggle" role="tablist">
               <button
                 type="button"
-                className={`portal-tab ${selectedPortal === 'customer' ? 'active' : ''}`}
-                onClick={() => handlePortalSwitch('customer')}
+                className={`wallet-segment-btn ${!isRegister ? 'active' : ''}`}
+                onClick={() => { setIsRegister(false); setPasswordError(''); }}
+                id="tab-btn-login"
                 role="tab"
-                aria-selected={selectedPortal === 'customer'}
+                aria-selected={!isRegister}
               >
-                <User size={14} />
+                Log In
+              </button>
+              <button
+                type="button"
+                className={`wallet-segment-btn ${isRegister ? 'active' : ''}`}
+                onClick={() => { setIsRegister(true); setPasswordError(''); }}
+                id="tab-btn-signup"
+                role="tab"
+                aria-selected={isRegister}
+              >
+                Sign Up
+              </button>
+            </div>
+
+            {/* 3. Secondary Portal Selector (Customer | Staff | Admin) */}
+            <div className="wallet-portal-pills" role="tablist">
+              <button
+                type="button"
+                className={`wallet-portal-pill ${selectedPortal === 'customer' ? 'active' : ''}`}
+                onClick={() => handlePortalSwitch('customer')}
+                title="Customer Consignment & Wallet Portal"
+              >
+                <User size={13} />
                 <span>Customer</span>
               </button>
               <button
                 type="button"
-                className={`portal-tab ${selectedPortal === 'staff' ? 'active' : ''}`}
+                className={`wallet-portal-pill ${selectedPortal === 'staff' ? 'active' : ''}`}
                 onClick={() => handlePortalSwitch('staff')}
-                role="tab"
-                aria-selected={selectedPortal === 'staff'}
+                title="Staff Operations & Terminal Dispatch"
               >
-                <Truck size={14} />
-                <span>Staff</span>
+                <Truck size={13} />
+                <span>Staff Dispatch</span>
               </button>
               <button
                 type="button"
-                className={`portal-tab ${selectedPortal === 'admin' ? 'active' : ''}`}
+                className={`wallet-portal-pill ${selectedPortal === 'admin' ? 'active' : ''}`}
                 onClick={() => handlePortalSwitch('admin')}
-                role="tab"
-                aria-selected={selectedPortal === 'admin'}
+                title="Executive System Administrator"
               >
-                <Shield size={14} />
+                <Shield size={13} />
                 <span>Admin</span>
               </button>
             </div>
 
-            {/* Heading & Subtitle */}
-            <div className="auth-form-heading">
-              <h1 className="auth-main-title">
+            {/* 4. Greeting Headline & Subtitle */}
+            <div className="wallet-heading-area">
+              <h1 className="wallet-main-title">
                 {isRegister 
-                  ? 'Create Customer Account' 
+                  ? 'Create Account 🚀' 
                   : selectedPortal === 'customer' 
-                  ? 'Welcome back' 
+                  ? 'Welcome Back 👋' 
                   : selectedPortal === 'staff' 
                   ? 'Staff Dispatch Console' 
-                  : 'Welcome back'}
+                  : 'Executive Console'}
               </h1>
-              <p className="auth-main-subtitle">
+              <p className="wallet-main-subtitle">
                 {isRegister 
-                  ? 'Sign up to create shipments, manage bookings, and access tracking.'
+                  ? 'Sign up to fund shipments, track cargo & manage your digital wallet.'
                   : selectedPortal === 'customer' 
-                  ? 'Sign in to your ACE Logistics account' 
+                  ? 'Hello there, sign in to continue managing your consignments.'
                   : selectedPortal === 'staff' 
-                  ? 'Enter dispatch credentials to access the terminal intake console.' 
-                  : 'Sign in to your administrative executive console.'}
+                  ? 'Enter assigned operational dispatch passkey to access terminal.' 
+                  : 'Sign in to access global executive oversight & security settings.'}
               </p>
             </div>
 
             {/* Action Notice (e.g. from Send A Package) */}
             {authNotice && (
               <div className="auth-alert-notice">
-                <Package size={17} color="var(--color-bright-action)" style={{ flexShrink: 0 }} />
+                <Package size={16} color="var(--color-bright-action)" style={{ flexShrink: 0 }} />
                 <span>{authNotice}</span>
               </div>
             )}
@@ -853,42 +919,16 @@ export default function LoginView({
 
             {/* Quick Demo Credentials Pill Bar */}
             {!isRegister && (
-              <div className="demo-credentials-banner" style={{
-                margin: '14px 0 16px',
-                padding: '10px 14px',
-                borderRadius: '10px',
-                background: selectedPortal === 'admin' 
-                  ? 'rgba(245, 158, 11, 0.08)' 
-                  : selectedPortal === 'staff' 
-                  ? 'rgba(13, 148, 136, 0.08)' 
-                  : 'rgba(22, 131, 216, 0.08)',
-                border: `1px solid ${
-                  selectedPortal === 'admin' 
-                    ? 'rgba(245, 158, 11, 0.25)' 
-                    : selectedPortal === 'staff' 
-                    ? 'rgba(13, 148, 136, 0.25)' 
-                    : 'rgba(22, 131, 216, 0.22)'
-                }`,
-                fontSize: '12.5px'
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
-                  <span style={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    gap: '6px', 
-                    fontWeight: 700, 
-                    color: selectedPortal === 'admin' ? '#D97706' : selectedPortal === 'staff' ? '#0F766E' : 'var(--color-primary-blue)',
-                    fontSize: '11.5px',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.04em'
-                  }}>
+              <div className="demo-credentials-banner">
+                <div className="demo-banner-header">
+                  <span className="demo-banner-title">
                     <Sparkles size={13} />
                     <span>Quick Demo Credentials</span>
                   </span>
-                  <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Click to auto-fill</span>
+                  <span className="demo-banner-hint">1-click fill</span>
                 </div>
 
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                <div className="demo-chips-grid">
                   {selectedPortal === 'customer' && (
                     <>
                       <button
@@ -898,21 +938,9 @@ export default function LoginView({
                           setLoginPassword('KwameTrading#Accra24');
                           setPasswordError('');
                         }}
-                        style={{
-                          background: 'var(--color-white)',
-                          border: '1px solid var(--color-border)',
-                          borderRadius: '6px',
-                          padding: '5px 10px',
-                          fontSize: '11.5px',
-                          fontWeight: 600,
-                          color: 'var(--color-primary-blue)',
-                          cursor: 'pointer',
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: '5px'
-                        }}
+                        className="demo-chip-btn"
                       >
-                        <span>🇬🇭 Kwame Mensah</span>
+                        <span>🇬🇭 Kwame Mensah (Customer)</span>
                       </button>
                       <button
                         type="button"
@@ -921,21 +949,9 @@ export default function LoginView({
                           setLoginPassword('MaerskRotterdamPass@82');
                           setPasswordError('');
                         }}
-                        style={{
-                          background: 'var(--color-white)',
-                          border: '1px solid var(--color-border)',
-                          borderRadius: '6px',
-                          padding: '5px 10px',
-                          fontSize: '11.5px',
-                          fontWeight: 600,
-                          color: 'var(--color-primary-blue)',
-                          cursor: 'pointer',
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: '5px'
-                        }}
+                        className="demo-chip-btn"
                       >
-                        <span>🇳🇱 Jan De Vries</span>
+                        <span>🇳🇱 Jan De Vries (Customer)</span>
                       </button>
                     </>
                   )}
@@ -950,19 +966,7 @@ export default function LoginView({
                           setStaffStation('LHR-T4 (Heathrow Cargo Village)');
                           setPasswordError('');
                         }}
-                        style={{
-                          background: 'var(--color-white)',
-                          border: '1px solid var(--color-border)',
-                          borderRadius: '6px',
-                          padding: '5px 10px',
-                          fontSize: '11.5px',
-                          fontWeight: 600,
-                          color: '#0F766E',
-                          cursor: 'pointer',
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: '5px'
-                        }}
+                        className="demo-chip-btn staff"
                       >
                         <span>🇬🇧 Sarah O'Connor (LHR)</span>
                       </button>
@@ -974,19 +978,7 @@ export default function LoginView({
                           setStaffStation('ACC-T1 (Accra Central Air Hub)');
                           setPasswordError('');
                         }}
-                        style={{
-                          background: 'var(--color-white)',
-                          border: '1px solid var(--color-border)',
-                          borderRadius: '6px',
-                          padding: '5px 10px',
-                          fontSize: '11.5px',
-                          fontWeight: 600,
-                          color: '#0F766E',
-                          cursor: 'pointer',
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: '5px'
-                        }}
+                        className="demo-chip-btn staff"
                       >
                         <span>🇬🇭 Robert Mensah (Accra)</span>
                       </button>
@@ -1002,19 +994,7 @@ export default function LoginView({
                         setAdminToken('ACE-SEC-2026');
                         setPasswordError('');
                       }}
-                      style={{
-                        background: 'var(--color-white)',
-                        border: '1px solid #FCD34D',
-                        borderRadius: '6px',
-                        padding: '5px 12px',
-                        fontSize: '11.5px',
-                        fontWeight: 700,
-                        color: '#B45309',
-                        cursor: 'pointer',
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '6px'
-                      }}
+                      className="demo-chip-btn admin"
                     >
                       <Shield size={12} />
                       <span>Derek Sterling (Executive Admin)</span>
@@ -1025,20 +1005,20 @@ export default function LoginView({
             )}
 
             {/* ===============================================
-                CUSTOMER SIGNUP FORM (WHEN isRegister IS TRUE)
+                SIGN UP FORM (DRIBBBLE WORKFLOW)
                 =============================================== */}
             {isRegister ? (
-              <form onSubmit={handleSignupSubmit} className="auth-form">
-                {/* Row: First Name & Last Name */}
+              <form onSubmit={handleSignupSubmit} className="wallet-form">
+                {/* Full Name / First & Last */}
                 <div className="form-grid-2">
-                  <div className="ace-form-group">
-                    <label className="ace-label ace-label-required">First Name</label>
-                    <div className="ace-input-wrapper">
-                      <div className="ace-input-icon"><User size={15} /></div>
+                  <div className="wallet-field-group">
+                    <label className="wallet-field-label">First Name</label>
+                    <div className="wallet-input-container">
+                      <div className="wallet-input-icon"><User size={16} /></div>
                       <input
                         type="text"
-                        className="ace-input ace-input-with-icon"
-                        placeholder="e.g. Kwame"
+                        className="wallet-input"
+                        placeholder="Kwame"
                         value={firstName}
                         onChange={(e) => setFirstName(e.target.value)}
                         required
@@ -1046,14 +1026,14 @@ export default function LoginView({
                     </div>
                   </div>
 
-                  <div className="ace-form-group">
-                    <label className="ace-label ace-label-required">Last Name</label>
-                    <div className="ace-input-wrapper">
-                      <div className="ace-input-icon"><User size={15} /></div>
+                  <div className="wallet-field-group">
+                    <label className="wallet-field-label">Last Name</label>
+                    <div className="wallet-input-container">
+                      <div className="wallet-input-icon"><User size={16} /></div>
                       <input
                         type="text"
-                        className="ace-input ace-input-with-icon"
-                        placeholder="e.g. Mensah"
+                        className="wallet-input"
+                        placeholder="Mensah"
                         value={lastName}
                         onChange={(e) => setLastName(e.target.value)}
                         required
@@ -1063,13 +1043,13 @@ export default function LoginView({
                 </div>
 
                 {/* Email Address */}
-                <div className="ace-form-group">
-                  <label className="ace-label ace-label-required">Email</label>
-                  <div className="ace-input-wrapper">
-                    <div className="ace-input-icon"><Mail size={15} /></div>
+                <div className="wallet-field-group">
+                  <label className="wallet-field-label">Email Address</label>
+                  <div className="wallet-input-container">
+                    <div className="wallet-input-icon"><Mail size={16} /></div>
                     <input
                       type="email"
-                      className="ace-input ace-input-with-icon"
+                      className="wallet-input"
                       placeholder="k.mensah@enterprise.com"
                       value={signupEmail}
                       onChange={(e) => setSignupEmail(e.target.value)}
@@ -1078,18 +1058,17 @@ export default function LoginView({
                   </div>
                 </div>
 
-                {/* Row: Country & Phone */}
+                {/* Country & Phone */}
                 <div className="form-grid-2">
-                  <div className="ace-form-group">
-                    <label className="ace-label ace-label-required">Country</label>
-                    <div className="ace-input-wrapper">
-                      <div className="ace-input-icon"><Globe2 size={15} /></div>
+                  <div className="wallet-field-group">
+                    <label className="wallet-field-label">Country</label>
+                    <div className="wallet-input-container">
+                      <div className="wallet-input-icon"><Globe2 size={16} /></div>
                       <select
-                        className="ace-select ace-input-with-icon"
+                        className="wallet-select"
                         value={country}
                         onChange={(e) => setCountry(e.target.value)}
                         required
-                        style={{ height: '42px', appearance: 'auto' }}
                       >
                         <option value="Ghana">🇬🇭 Ghana</option>
                         <option value="United Kingdom">🇬🇧 United Kingdom</option>
@@ -1106,13 +1085,13 @@ export default function LoginView({
                     </div>
                   </div>
 
-                  <div className="ace-form-group">
-                    <label className="ace-label ace-label-required">Phone</label>
-                    <div className="ace-input-wrapper">
-                      <div className="ace-input-icon"><Phone size={15} /></div>
+                  <div className="wallet-field-group">
+                    <label className="wallet-field-label">Phone Number</label>
+                    <div className="wallet-input-container">
+                      <div className="wallet-input-icon"><Phone size={16} /></div>
                       <input
                         type="tel"
-                        className="ace-input ace-input-with-icon"
+                        className="wallet-input"
                         placeholder="+233 24 555 0192"
                         value={phoneNumber}
                         onChange={(e) => setPhoneNumber(e.target.value)}
@@ -1122,15 +1101,15 @@ export default function LoginView({
                   </div>
                 </div>
 
-                {/* Cargo Items */}
-                <div className="ace-form-group">
-                  <label className="ace-label ace-label-required">Consignment / Cargo Goods</label>
-                  <div className="ace-input-wrapper">
-                    <div className="ace-input-icon"><Package size={15} /></div>
+                {/* Cargo Goods */}
+                <div className="wallet-field-group">
+                  <label className="wallet-field-label">Consignment / Business Goods</label>
+                  <div className="wallet-input-container">
+                    <div className="wallet-input-icon"><Package size={16} /></div>
                     <input
                       type="text"
-                      className="ace-input ace-input-with-icon"
-                      placeholder="e.g. Commercial Electronics, Cocoa & Agritech, Auto Parts"
+                      className="wallet-input"
+                      placeholder="e.g. Commercial Electronics, Cocoa, Auto Parts"
                       value={items}
                       onChange={(e) => setItems(e.target.value)}
                       required
@@ -1138,96 +1117,93 @@ export default function LoginView({
                   </div>
                 </div>
 
-                {/* Row: Password & Confirm */}
+                {/* Password & Confirm */}
                 <div className="form-grid-2">
-                  <div className="ace-form-group">
-                    <label className="ace-label ace-label-required">Password</label>
-                    <div className="ace-input-wrapper">
-                      <div className="ace-input-icon"><Lock size={15} /></div>
+                  <div className="wallet-field-group">
+                    <label className="wallet-field-label">Password</label>
+                    <div className="wallet-input-container">
+                      <div className="wallet-input-icon"><Lock size={16} /></div>
                       <input
                         type={showSignupPassword ? 'text' : 'password'}
-                        className="ace-input ace-input-with-icon"
+                        className="wallet-input"
                         placeholder="••••••••••••"
                         value={signupPassword}
                         onChange={(e) => setSignupPassword(e.target.value)}
-                        style={{ paddingRight: '36px' }}
                         required
                       />
                       <button
                         type="button"
                         onClick={() => setShowSignupPassword(!showSignupPassword)}
-                        className="pwd-toggle"
-                        title={showSignupPassword ? 'Hide password' : 'View password'}
+                        className="wallet-pwd-toggle"
                       >
-                        {showSignupPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+                        {showSignupPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                       </button>
                     </div>
                   </div>
 
-                  <div className="ace-form-group">
-                    <label className="ace-label ace-label-required">Confirm</label>
-                    <div className="ace-input-wrapper">
-                      <div className="ace-input-icon"><Lock size={15} /></div>
+                  <div className="wallet-field-group">
+                    <label className="wallet-field-label">Confirm Password</label>
+                    <div className="wallet-input-container">
+                      <div className="wallet-input-icon"><Lock size={16} /></div>
                       <input
-                        type={showConfirmPassword ? 'text' : 'password'}
-                        className="ace-input ace-input-with-icon"
+                        type={showSignupPassword ? 'text' : 'password'}
+                        className="wallet-input"
                         placeholder="••••••••••••"
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
-                        style={{ paddingRight: '36px' }}
                         required
                       />
-                      <button
-                        type="button"
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        className="pwd-toggle"
-                        title={showConfirmPassword ? 'Hide password' : 'View password'}
-                      >
-                        {showConfirmPassword ? <EyeOff size={15} /> : <Eye size={15} />}
-                      </button>
                     </div>
                   </div>
                 </div>
 
-                {/* Cloud Database Sync indicator */}
-                <div className="supabase-sync-tag">
-                  <CheckCircle2 size={14} color="#16A34A" />
-                  <span>Real-time cloud database sync enabled</span>
-                </div>
+                {/* Terms & Privacy checkbox */}
+                <label className="wallet-checkbox-label">
+                  <input
+                    type="checkbox"
+                    checked={agreeTerms}
+                    onChange={(e) => setAgreeTerms(e.target.checked)}
+                    className="wallet-checkbox"
+                  />
+                  <span>I agree to the <strong style={{ color: 'var(--color-primary-blue)' }}>Terms of Service</strong> and <strong style={{ color: 'var(--color-primary-blue)' }}>Privacy Policy</strong></span>
+                </label>
 
-                {/* Create Account Submit */}
+                {/* Primary Sign Up Button */}
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="auth-primary-submit-btn"
-                  id="create-account-submit-btn"
+                  className="wallet-primary-btn"
+                  id="wallet-signup-btn"
                 >
-                  {isSubmitting ? (
-                    <span className="flex-center-gap">
-                      <Loader2 size={16} className="ace-spinner" />
-                      <span>Creating Account...</span>
-                    </span>
-                  ) : (
-                    <span className="flex-center-gap">
-                      <span>Create Account</span>
-                      <ArrowRight size={16} />
-                    </span>
-                  )}
+                  <span className="btn-content">
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 size={18} className="ace-spin" />
+                        <span>Creating Account...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>Create Account</span>
+                        <ArrowRight size={18} />
+                      </>
+                    )}
+                  </span>
                 </button>
 
                 {/* Social Sign up options */}
-                <div className="social-auth-divider">
-                  <span>OR register with</span>
+                <div className="wallet-divider">
+                  <span>Or continue with</span>
                 </div>
 
-                <div className="social-auth-grid">
+                <div className="wallet-social-grid">
                   <button
                     type="button"
                     onClick={() => openSocialAuth('Google')}
-                    className="social-btn social-btn-google"
+                    className="wallet-social-btn"
                     id="register-google-btn"
+                    title="Sign up with Google"
                   >
-                    <svg className="social-btn-icon" viewBox="0 0 24 24" width="18" height="18">
+                    <svg viewBox="0 0 24 24" width="18" height="18">
                       <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                       <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
                       <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
@@ -1239,43 +1215,44 @@ export default function LoginView({
                   <button
                     type="button"
                     onClick={() => openSocialAuth('Apple')}
-                    className="social-btn social-btn-apple"
+                    className="wallet-social-btn"
                     id="register-apple-btn"
+                    title="Sign up with Apple ID"
                   >
-                    <svg className="social-btn-icon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
                       <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.37c.63-.77 1.06-1.85.94-2.93-1 .04-2.13.67-2.76 1.44-.57.69-1.06 1.8-1 2.87 1.13.09 2.2-.61 2.82-1.38z"/>
                     </svg>
                     <span>Apple</span>
                   </button>
                 </div>
 
-                {/* Back to sign in */}
-                <div className="auth-toggle-link-row">
+                {/* Bottom Switch Link */}
+                <div className="wallet-bottom-switch">
                   <span>Already have an account? </span>
                   <button
                     type="button"
                     onClick={() => { setIsRegister(false); setPasswordError(''); }}
-                    className="auth-link-btn"
+                    className="wallet-switch-btn"
                   >
-                    Sign In
+                    Log In
                   </button>
                 </div>
               </form>
             ) : (
               /* ===============================================
-                  SIGN IN FORM (CUSTOMER, STAFF, ADMIN)
+                  LOG IN FORM (DRIBBBLE WORKFLOW)
                   =============================================== */
-              <form onSubmit={handleLoginSubmit} className="auth-form">
-                {/* Email Field */}
-                <div className="ace-form-group">
-                  <label className="ace-label ace-label-required">
-                    {selectedPortal === 'admin' ? 'Administrator Corporate Email' : 'Email'}
+              <form onSubmit={handleLoginSubmit} className="wallet-form">
+                {/* Email / Username Field */}
+                <div className="wallet-field-group">
+                  <label className="wallet-field-label">
+                    {selectedPortal === 'admin' ? 'Administrator Corporate Email' : 'Email Address'}
                   </label>
-                  <div className="ace-input-wrapper">
-                    <div className="ace-input-icon"><Mail size={15} /></div>
+                  <div className="wallet-input-container">
+                    <div className="wallet-input-icon"><Mail size={16} /></div>
                     <input
                       type="email"
-                      className="ace-input ace-input-with-icon"
+                      className="wallet-input"
                       placeholder={
                         selectedPortal === 'admin' ? 'd.sterling@acelogistics.com' : 'Enter your email'
                       }
@@ -1290,28 +1267,27 @@ export default function LoginView({
                 </div>
 
                 {/* Password Field */}
-                <div className="ace-form-group">
-                  <label className="ace-label ace-label-required">
+                <div className="wallet-field-group">
+                  <label className="wallet-field-label">
                     {selectedPortal === 'admin' ? 'Administrative Passkey' : 'Password'}
                   </label>
-                  <div className="ace-input-wrapper">
-                    <div className="ace-input-icon"><Lock size={15} /></div>
+                  <div className="wallet-input-container">
+                    <div className="wallet-input-icon"><Lock size={16} /></div>
                     <input
                       type={showLoginPassword ? 'text' : 'password'}
-                      className="ace-input ace-input-with-icon"
+                      className="wallet-input"
                       value={loginPassword}
                       onChange={(e) => {
                         setLoginPassword(e.target.value);
                         if (passwordError) setPasswordError('');
                       }}
-                      style={{ paddingRight: '40px' }}
-                      placeholder={selectedPortal === 'admin' ? '••••••••••••' : 'Enter your password'}
+                      placeholder="••••••••••••"
                       required
                     />
                     <button
                       type="button"
                       onClick={() => setShowLoginPassword(!showLoginPassword)}
-                      className="pwd-toggle"
+                      className="wallet-pwd-toggle"
                       title={showLoginPassword ? 'Hide password' : 'View password'}
                     >
                       {showLoginPassword ? <EyeOff size={16} /> : <Eye size={16} />}
@@ -1319,17 +1295,16 @@ export default function LoginView({
                   </div>
                 </div>
 
-                {/* Staff specific Operating Hub Station */}
+                {/* Staff Operating Station */}
                 {selectedPortal === 'staff' && (
-                  <div className="ace-form-group">
-                    <label className="ace-label ace-label-required">Operating Station / Terminal</label>
-                    <div className="ace-input-wrapper">
-                      <div className="ace-input-icon"><Building2 size={15} /></div>
+                  <div className="wallet-field-group">
+                    <label className="wallet-field-label">Operating Station / Terminal</label>
+                    <div className="wallet-input-container">
+                      <div className="wallet-input-icon"><Building2 size={16} /></div>
                       <select
-                        className="ace-select ace-input-with-icon"
+                        className="wallet-select"
                         value={staffStation}
                         onChange={(e) => setStaffStation(e.target.value)}
-                        style={{ height: '42px', appearance: 'auto' }}
                       >
                         <option value="ACC-T1 (Accra Central Air Hub)">ACC-T1 (Accra Central Air Cargo Hub)</option>
                         <option value="LHR-T4 (Heathrow Cargo Village)">LHR-T4 (Heathrow Cargo Village, London)</option>
@@ -1340,15 +1315,15 @@ export default function LoginView({
                   </div>
                 )}
 
-                {/* Admin specific Hardware Token */}
+                {/* Admin Hardware Token */}
                 {selectedPortal === 'admin' && (
-                  <div className="ace-form-group">
-                    <label className="ace-label ace-label-required">Hardware Security Token / Key</label>
-                    <div className="ace-input-wrapper">
-                      <div className="ace-input-icon"><KeyRound size={15} /></div>
+                  <div className="wallet-field-group">
+                    <label className="wallet-field-label">Hardware Security Token</label>
+                    <div className="wallet-input-container">
+                      <div className="wallet-input-icon"><KeyRound size={16} /></div>
                       <input
                         type="text"
-                        className="ace-input ace-input-with-icon"
+                        className="wallet-input"
                         value={adminToken}
                         onChange={(e) => setAdminToken(e.target.value)}
                         placeholder="ACE-SEC-2026"
@@ -1359,13 +1334,13 @@ export default function LoginView({
                 )}
 
                 {/* Remember Me and Forgot Password Row */}
-                <div className="auth-options-row">
-                  <label className="remember-me-checkbox-label">
+                <div className="wallet-options-row">
+                  <label className="wallet-checkbox-label">
                     <input
                       type="checkbox"
                       checked={rememberMe}
                       onChange={(e) => setRememberMe(e.target.checked)}
-                      className="remember-me-checkbox"
+                      className="wallet-checkbox"
                     />
                     <span>Remember me</span>
                   </label>
@@ -1377,102 +1352,103 @@ export default function LoginView({
                       setForgotEmail(loginEmail || '');
                       setShowForgotModal(true);
                     }}
-                    className="forgot-password-link-btn"
+                    className="wallet-forgot-btn"
                   >
                     Forgot password?
                   </button>
                 </div>
 
-                {/* Sign In Primary Button */}
+                {/* Primary Log In Button (Pill Action Button) */}
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className={`auth-primary-submit-btn ${
-                    selectedPortal === 'staff' ? 'staff-theme-btn' : 
-                    selectedPortal === 'admin' ? 'admin-theme-btn' : ''
+                  className={`wallet-primary-btn ${
+                    selectedPortal === 'staff' ? 'staff-theme' : 
+                    selectedPortal === 'admin' ? 'admin-theme' : ''
                   }`}
                   id="auth-sign-in-submit-btn"
-                  style={{
-                    opacity: isSubmitting ? 0.75 : 1,
-                    cursor: isSubmitting ? 'not-allowed' : 'pointer'
-                  }}
                 >
-                  <span className="flex-center-gap">
+                  <span className="btn-content">
                     {isSubmitting ? (
                       <>
-                        <Loader2 size={16} className="ace-spin" />
+                        <Loader2 size={18} className="ace-spin" />
                         <span>Authenticating...</span>
                       </>
                     ) : (
                       <>
                         <span>
-                          {selectedPortal === 'customer' ? 'Sign In' :
-                           selectedPortal === 'staff' ? 'Sign In to Terminal' : 'Sign In as Administrator'}
+                          {selectedPortal === 'customer' ? 'Log In' :
+                           selectedPortal === 'staff' ? 'Log In to Dispatch' : 'Log In as Administrator'}
                         </span>
-                        <ArrowRight size={16} />
+                        <ArrowRight size={18} />
                       </>
                     )}
                   </span>
                 </button>
 
-                {/* Social Sign-in Options (Customer Portal) */}
+                {/* Social Sign-in & Biometric Options */}
                 {selectedPortal === 'customer' && (
                   <>
-                    <div className="social-auth-divider">
-                      <span>OR sign in with</span>
+                    <div className="wallet-divider">
+                      <span>Or continue with</span>
                     </div>
 
-                    <div className="social-auth-grid">
+                    <div className="wallet-social-grid-three">
                       <button
                         type="button"
                         onClick={() => openSocialAuth('Google')}
-                        className="social-btn social-btn-google"
+                        className="wallet-social-circle-btn"
                         id="login-google-btn"
-                        title="Sign in with your Google account"
+                        title="Sign in with Google"
                       >
-                        <svg className="social-btn-icon" viewBox="0 0 24 24" width="18" height="18">
+                        <svg viewBox="0 0 24 24" width="20" height="20">
                           <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                           <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
                           <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
                           <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
                         </svg>
-                        <span>Google</span>
                       </button>
 
                       <button
                         type="button"
                         onClick={() => openSocialAuth('Apple')}
-                        className="social-btn social-btn-apple"
+                        className="wallet-social-circle-btn"
                         id="login-apple-btn"
-                        title="Sign in with your Apple ID"
+                        title="Sign in with Apple"
                       >
-                        <svg className="social-btn-icon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
                           <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.37c.63-.77 1.06-1.85.94-2.93-1 .04-2.13.67-2.76 1.44-.57.69-1.06 1.8-1 2.87 1.13.09 2.2-.61 2.82-1.38z"/>
                         </svg>
-                        <span>Apple</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={handleBiometricAuth}
+                        className="wallet-social-circle-btn biometric"
+                        id="login-biometric-btn"
+                        title="Quick Sign In with Biometrics (Touch ID / Face ID)"
+                      >
+                        <Fingerprint size={20} color="var(--color-primary-blue)" />
                       </button>
                     </div>
                   </>
                 )}
 
-                {/* Bottom Toggle Link: Don't have an account? Create an account */}
-                {selectedPortal === 'customer' && (
-                  <div className="auth-toggle-link-row">
-                    <span>Don't have an account? </span>
-                    <button
-                      type="button"
-                      onClick={() => { setIsRegister(true); setPasswordError(''); }}
-                      className="auth-link-btn"
-                    >
-                      Create an account
-                    </button>
-                  </div>
-                )}
+                {/* Bottom Switch Link */}
+                <div className="wallet-bottom-switch">
+                  <span>Don't have an account? </span>
+                  <button
+                    type="button"
+                    onClick={() => { setIsRegister(true); setPasswordError(''); }}
+                    className="wallet-switch-btn"
+                  >
+                    Sign Up
+                  </button>
+                </div>
               </form>
             )}
 
           </div>
-
         </div>
       </main>
 
@@ -1486,16 +1462,15 @@ export default function LoginView({
               type="button" 
               className="auth-modal-close" 
               onClick={() => setShowForgotModal(false)}
-              title="Close dialog"
             >
               <X size={18} />
             </button>
 
             <div className="modal-icon-wrap">
-              <KeyRound size={26} color="var(--color-bright-action)" />
+              <Mail size={24} color="#1683D8" />
             </div>
 
-            <h3 className="modal-title">Reset your password</h3>
+            <h3 className="modal-title">Reset Your Password</h3>
             <p className="modal-desc">
               Enter your registered email address and we'll send you instructions to recover access to your ACE Logistics account.
             </p>
@@ -1512,21 +1487,21 @@ export default function LoginView({
                 <button
                   type="button"
                   onClick={() => setShowForgotModal(false)}
-                  className="ace-btn auth-primary-submit-btn"
+                  className="wallet-primary-btn"
                   style={{ width: '100%', marginTop: '16px' }}
                 >
-                  Return to Sign In
+                  Return to Log In
                 </button>
               </div>
             ) : (
               <form onSubmit={handleForgotSubmit} style={{ marginTop: '16px' }}>
-                <div className="ace-form-group">
-                  <label className="ace-label ace-label-required">Registered Email</label>
-                  <div className="ace-input-wrapper">
-                    <div className="ace-input-icon"><Mail size={15} /></div>
+                <div className="wallet-field-group">
+                  <label className="wallet-field-label">Registered Email</label>
+                  <div className="wallet-input-container">
+                    <div className="wallet-input-icon"><Mail size={16} /></div>
                     <input
                       type="email"
-                      className="ace-input ace-input-with-icon"
+                      className="wallet-input"
                       placeholder="name@example.com"
                       value={forgotEmail}
                       onChange={(e) => setForgotEmail(e.target.value)}
@@ -1538,10 +1513,10 @@ export default function LoginView({
 
                 <button
                   type="submit"
-                  className="auth-primary-submit-btn"
-                  style={{ width: '100%', marginTop: '8px' }}
+                  className="wallet-primary-btn"
+                  style={{ width: '100%', marginTop: '12px' }}
                 >
-                  <span className="flex-center-gap">
+                  <span className="btn-content">
                     <span>Send Reset Instructions</span>
                     <Send size={15} />
                   </span>
@@ -1552,7 +1527,7 @@ export default function LoginView({
                   onClick={() => setShowForgotModal(false)}
                   className="modal-cancel-btn"
                 >
-                  Back to Sign In
+                  Back to Log In
                 </button>
               </form>
             )}
@@ -1571,7 +1546,6 @@ export default function LoginView({
               className="auth-modal-close" 
               onClick={() => !socialLoading && setSocialModal(null)}
               disabled={socialLoading}
-              title="Close"
             >
               <X size={18} />
             </button>
@@ -1610,28 +1584,30 @@ export default function LoginView({
                 </span>
               </div>
 
-              <div className="ace-form-group" style={{ marginBottom: '10px' }}>
-                <label className="ace-label" style={{ fontSize: '11.5px' }}>Account Name</label>
-                <input
-                  type="text"
-                  className="ace-input"
-                  value={socialName}
-                  onChange={(e) => setSocialName(e.target.value)}
-                  placeholder="e.g. Grace Sterling"
-                  style={{ fontSize: '13px', height: '38px' }}
-                />
+              <div className="wallet-field-group" style={{ marginBottom: '10px' }}>
+                <label className="wallet-field-label">Account Name</label>
+                <div className="wallet-input-container">
+                  <input
+                    type="text"
+                    className="wallet-input"
+                    value={socialName}
+                    onChange={(e) => setSocialName(e.target.value)}
+                    placeholder="e.g. Grace Sterling"
+                  />
+                </div>
               </div>
 
-              <div className="ace-form-group" style={{ marginBottom: 0 }}>
-                <label className="ace-label" style={{ fontSize: '11.5px' }}>{socialModal.provider} Email</label>
-                <input
-                  type="email"
-                  className="ace-input"
-                  value={socialEmail}
-                  onChange={(e) => setSocialEmail(e.target.value)}
-                  placeholder={socialModal.provider === 'Google' ? 'name@gmail.com' : 'name@icloud.com'}
-                  style={{ fontSize: '13px', height: '38px' }}
-                />
+              <div className="wallet-field-group" style={{ marginBottom: 0 }}>
+                <label className="wallet-field-label">{socialModal.provider} Email</label>
+                <div className="wallet-input-container">
+                  <input
+                    type="email"
+                    className="wallet-input"
+                    value={socialEmail}
+                    onChange={(e) => setSocialEmail(e.target.value)}
+                    placeholder={socialModal.provider === 'Google' ? 'name@gmail.com' : 'name@icloud.com'}
+                  />
+                </div>
               </div>
             </div>
 
@@ -1639,7 +1615,7 @@ export default function LoginView({
               type="button"
               onClick={handleCompleteSocialAuth}
               disabled={socialLoading}
-              className="auth-primary-submit-btn"
+              className="wallet-primary-btn"
               style={{
                 width: '100%',
                 backgroundColor: socialModal.provider === 'Apple' ? '#0F172A' : '#4285F4',
@@ -1647,53 +1623,41 @@ export default function LoginView({
               }}
             >
               {socialLoading ? (
-                <span className="flex-center-gap">
-                  <Loader2 size={16} className="ace-spinner" />
-                  <span>Connecting & Syncing...</span>
+                <span className="btn-content">
+                  <Loader2 size={16} className="ace-spin" />
+                  <span>Authenticating...</span>
                 </span>
               ) : (
-                <span className="flex-center-gap">
-                  <span>Continue to Customer Portal</span>
-                  <ArrowRight size={16} />
-                </span>
+                <span>Continue with {socialModal.provider}</span>
               )}
-            </button>
-
-            <button
-              type="button"
-              onClick={() => !socialLoading && setSocialModal(null)}
-              disabled={socialLoading}
-              className="modal-cancel-btn"
-            >
-              Cancel
             </button>
           </div>
         </div>
       )}
 
       {/* ===================================================
-          EMBEDDED STYLES FOR THE AUTH LAYOUT
+          COMPONENT CSS: DRIBBLE WALLET MOBILE APP STYLES
           =================================================== */}
       <style>{`
         .ace-auth-page-root {
           min-height: 100vh;
           display: flex;
           flex-direction: column;
-          background: linear-gradient(145deg, #091E33 0%, #071524 50%, #040D17 100%);
-          color: #F8FAFC;
-          font-family: var(--font-family, 'Inter', -apple-system, sans-serif);
+          background: linear-gradient(135deg, #071524 0%, #0B253E 50%, #061625 100%);
+          color: #0F172A;
           position: relative;
+          overflow-x: hidden;
+          font-family: inherit;
         }
 
-        /* Ambient Glow Blobs */
         .ace-auth-page-root::before {
           content: '';
           position: absolute;
-          top: -120px;
-          left: 10%;
-          width: 520px;
-          height: 520px;
-          background: radial-gradient(circle, rgba(22, 131, 216, 0.16) 0%, rgba(22, 131, 216, 0) 70%);
+          top: -80px;
+          left: 5%;
+          width: 450px;
+          height: 450px;
+          background: radial-gradient(circle, rgba(22, 131, 216, 0.18) 0%, rgba(22, 131, 216, 0) 70%);
           pointer-events: none;
           z-index: 0;
         }
@@ -1716,7 +1680,7 @@ export default function LoginView({
           z-index: 10;
           width: 100%;
           border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-          background-color: rgba(7, 21, 36, 0.75);
+          background-color: rgba(7, 21, 36, 0.85);
           backdrop-filter: blur(16px);
           -webkit-backdrop-filter: blur(16px);
         }
@@ -1724,7 +1688,7 @@ export default function LoginView({
         .ace-auth-topbar-inner {
           max-width: 1200px;
           margin: 0 auto;
-          padding: 16px 24px;
+          padding: 14px 24px;
           display: flex;
           align-items: center;
           justify-content: space-between;
@@ -1741,8 +1705,8 @@ export default function LoginView({
         .ace-auth-logo-icon {
           width: 38px;
           height: 38px;
-          border-radius: 9px;
-          background: linear-gradient(135deg, #1683D8 0%, #0B4F7C 100%);
+          border-radius: 10px;
+          background: #FFFFFF;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -1760,7 +1724,7 @@ export default function LoginView({
         }
 
         .brand-main {
-          font-size: 19px;
+          font-size: 18px;
           font-weight: 800;
           letter-spacing: -0.02em;
           color: #FFFFFF;
@@ -1771,7 +1735,7 @@ export default function LoginView({
         }
 
         .brand-sub {
-          font-size: 10px;
+          font-size: 9.5px;
           font-weight: 700;
           letter-spacing: 0.12em;
           color: #94A3B8;
@@ -1787,8 +1751,8 @@ export default function LoginView({
           width: 38px;
           height: 38px;
           border-radius: 8px;
-          background: rgba(255, 255, 255, 0.06);
-          border: 1px solid rgba(255, 255, 255, 0.12);
+          background: rgba(255, 255, 255, 0.08);
+          border: 1px solid rgba(255, 255, 255, 0.14);
           color: #E2E8F0;
           display: flex;
           align-items: center;
@@ -1798,7 +1762,7 @@ export default function LoginView({
         }
 
         .ace-auth-theme-btn:hover {
-          background: rgba(255, 255, 255, 0.12);
+          background: rgba(255, 255, 255, 0.14);
           color: #FFFFFF;
         }
 
@@ -1808,18 +1772,17 @@ export default function LoginView({
           gap: 8px;
           padding: 8px 16px;
           border-radius: 8px;
-          background: rgba(255, 255, 255, 0.07);
-          border: 1px solid rgba(255, 255, 255, 0.14);
+          background: rgba(255, 255, 255, 0.08);
+          border: 1px solid rgba(255, 255, 255, 0.15);
           color: #F1F5F9;
-          font-size: 13.5px;
+          font-size: 13px;
           font-weight: 600;
           cursor: pointer;
-          transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+          transition: all 0.2s ease;
         }
 
         .ace-auth-back-btn:hover {
-          background: rgba(255, 255, 255, 0.14);
-          border-color: rgba(255, 255, 255, 0.25);
+          background: rgba(255, 255, 255, 0.16);
           color: #FFFFFF;
           transform: translateX(-2px);
         }
@@ -1830,7 +1793,7 @@ export default function LoginView({
           display: flex;
           align-items: center;
           justify-content: center;
-          padding: 40px 20px;
+          padding: 36px 20px;
           position: relative;
           z-index: 2;
         }
@@ -1840,38 +1803,35 @@ export default function LoginView({
           max-width: 1060px;
           display: grid;
           grid-template-columns: 1fr 1.15fr;
-          gap: 28px;
+          gap: 32px;
           align-items: stretch;
         }
 
         /* Card Styles */
         .ace-auth-card {
-          border-radius: 20px;
+          border-radius: 24px;
           overflow: hidden;
-          position: relative;
-          transition: transform 0.3s ease, box-shadow 0.3s ease;
+          background: #FFFFFF;
+          border: 1px solid rgba(255, 255, 255, 0.14);
+          box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
         }
 
-        /* ===============================================
-           LEFT CARD: ILLUSTRATION PANE
-           =============================================== */
+        /* Left Card (Desktop System View) */
         .ace-auth-left-card {
-          background: linear-gradient(180deg, rgba(15, 30, 48, 0.88) 0%, rgba(9, 21, 35, 0.95) 100%);
-          border: 1px solid rgba(255, 255, 255, 0.12);
-          box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
-          padding: 30px;
+          background: linear-gradient(180deg, #0A1C2E 0%, #061320 100%);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          color: #FFFFFF;
+          padding: 24px;
           display: flex;
           flex-direction: column;
           justify-content: space-between;
-          backdrop-filter: blur(12px);
-          -webkit-backdrop-filter: blur(12px);
         }
 
         .left-card-header {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          margin-bottom: 20px;
+          margin-bottom: 18px;
         }
 
         .left-card-badge {
@@ -1883,31 +1843,32 @@ export default function LoginView({
         .left-card-emblem {
           width: 28px;
           height: 28px;
-          border-radius: 6px;
-          background: #1683D8;
+          border-radius: 7px;
+          background: rgba(255, 255, 255, 0.1);
           display: flex;
           align-items: center;
           justify-content: center;
         }
 
         .left-card-badge-title {
-          font-size: 15px;
+          font-size: 13.5px;
           font-weight: 800;
-          letter-spacing: 0.04em;
           color: #FFFFFF;
+          letter-spacing: -0.01em;
         }
 
         .left-card-pill {
-          display: flex;
+          display: inline-flex;
           align-items: center;
           gap: 6px;
-          background: rgba(16, 185, 129, 0.15);
-          border: 1px solid rgba(16, 185, 129, 0.35);
           padding: 4px 10px;
           border-radius: 20px;
-          font-size: 11px;
-          font-weight: 600;
+          background: rgba(16, 185, 129, 0.15);
+          border: 1px solid rgba(16, 185, 129, 0.3);
           color: #34D399;
+          font-size: 11px;
+          font-weight: 700;
+          letter-spacing: 0.04em;
         }
 
         .pulse-dot {
@@ -1916,78 +1877,63 @@ export default function LoginView({
           border-radius: 50%;
           background: #10B981;
           box-shadow: 0 0 8px #10B981;
-          animation: pulseAnim 2s infinite;
         }
 
-        @keyframes pulseAnim {
-          0%, 100% { opacity: 1; transform: scale(1); }
-          50% { opacity: 0.4; transform: scale(1.3); }
-        }
-
-        /* Image Box */
         .left-card-image-box {
           position: relative;
-          width: 100%;
-          height: 310px;
-          border-radius: 14px;
+          border-radius: 16px;
           overflow: hidden;
-          border: 1px solid rgba(255, 255, 255, 0.14);
-          box-shadow: 0 16px 36px rgba(0, 0, 0, 0.3);
-          margin-bottom: 12px;
-          background-color: #0B1929;
+          height: 250px;
+          margin-bottom: 14px;
+          border: 1px solid rgba(255, 255, 255, 0.12);
         }
 
         .left-card-img {
           width: 100%;
           height: 100%;
           object-fit: cover;
-          object-position: center top;
-          transition: transform 0.5s ease;
-        }
-
-        .left-card-image-box:hover .left-card-img {
-          transform: scale(1.03);
+          display: block;
         }
 
         .left-card-img-overlay {
           position: absolute;
           inset: 0;
-          background: linear-gradient(180deg, rgba(7, 21, 36, 0.1) 0%, rgba(7, 21, 36, 0.7) 100%);
-          pointer-events: none;
+          background: linear-gradient(180deg, rgba(7, 21, 36, 0.1) 0%, rgba(7, 21, 36, 0.75) 100%);
         }
 
         .left-card-floating-badge {
           position: absolute;
           bottom: 12px;
           left: 12px;
-          right: 12px;
-          background: rgba(7, 21, 36, 0.85);
-          backdrop-filter: blur(8px);
-          -webkit-backdrop-filter: blur(8px);
-          border: 1px solid rgba(255, 255, 255, 0.15);
-          border-radius: 8px;
-          padding: 8px 12px;
           display: flex;
           align-items: center;
-          gap: 8px;
-          font-size: 12px;
+          gap: 6px;
+          padding: 5px 10px;
+          border-radius: 8px;
+          background: rgba(7, 21, 36, 0.85);
+          backdrop-filter: blur(8px);
+          border: 1px solid rgba(56, 189, 248, 0.3);
+          font-size: 11px;
+          color: #E0F2FE;
           font-weight: 600;
-          color: #E2E8F0;
         }
 
-        /* Switcher Strip */
         .illustration-switcher-strip {
           display: flex;
           gap: 6px;
-          margin-bottom: 18px;
+          margin-bottom: 16px;
+          background: rgba(255, 255, 255, 0.05);
+          padding: 4px;
+          border-radius: 10px;
+          border: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         .ill-btn {
           flex: 1;
-          padding: 5px 8px;
+          padding: 6px 8px;
           border-radius: 6px;
-          background: rgba(255, 255, 255, 0.05);
-          border: 1px solid rgba(255, 255, 255, 0.1);
+          border: none;
+          background: transparent;
           color: #94A3B8;
           font-size: 11px;
           font-weight: 600;
@@ -1995,18 +1941,12 @@ export default function LoginView({
           transition: all 0.2s ease;
         }
 
-        .ill-btn:hover {
-          background: rgba(255, 255, 255, 0.1);
-          color: #FFFFFF;
-        }
-
         .ill-btn.active {
-          background: rgba(22, 131, 216, 0.2);
-          border-color: #1683D8;
+          background: rgba(22, 131, 216, 0.25);
           color: #38BDF8;
+          border: 1px solid rgba(56, 189, 248, 0.35);
         }
 
-        /* Left Card Footer */
         .left-card-footer {
           display: flex;
           flex-direction: column;
@@ -2014,12 +1954,11 @@ export default function LoginView({
         }
 
         .left-card-tagline {
-          font-size: 24px;
+          font-size: 20px;
           font-weight: 800;
-          letter-spacing: -0.02em;
           color: #FFFFFF;
+          letter-spacing: -0.02em;
           margin: 0;
-          line-height: 1.25;
         }
 
         .deliver-highlight {
@@ -2027,187 +1966,296 @@ export default function LoginView({
         }
 
         .left-card-description {
-          font-size: 13px;
-          line-height: 1.55;
+          font-size: 12.5px;
           color: #94A3B8;
+          line-height: 1.5;
           margin: 0;
         }
 
         .left-card-features {
           display: flex;
-          flex-direction: column;
+          flex-wrap: wrap;
           gap: 8px;
           margin-top: 6px;
-          padding-top: 14px;
-          border-top: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         .feature-chip {
-          display: flex;
+          display: inline-flex;
           align-items: center;
-          gap: 8px;
-          font-size: 12px;
-          font-weight: 500;
+          gap: 6px;
+          padding: 4px 10px;
+          border-radius: 8px;
+          background: rgba(255, 255, 255, 0.05);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          font-size: 11.5px;
           color: #CBD5E1;
         }
 
         /* ===============================================
-           RIGHT CARD: AUTH FORM PANE
+           RIGHT CARD: WALLET MOBILE APP WORKFLOW
            =============================================== */
-        .ace-auth-right-card {
-          background-color: #FFFFFF;
-          border: 1px solid rgba(255, 255, 255, 0.2);
-          box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
-          padding: 38px 34px;
+        .wallet-screen-card {
+          padding: 36px 32px;
+          background: #FFFFFF;
           display: flex;
           flex-direction: column;
-          color: #0F172A;
         }
 
-        /* Dark mode for right card */
-        [data-theme="dark"] .ace-auth-right-card,
-        .dark-mode .ace-auth-right-card {
-          background-color: #0F1F30;
-          border-color: rgba(255, 255, 255, 0.12);
-          color: #F8FAFC;
+        .wallet-mobile-status-bar {
+          display: none;
+          align-items: center;
+          justify-content: space-between;
+          margin-bottom: 12px;
         }
 
-        /* Portal Tabs */
-        .portal-tabs-row {
-          display: flex;
-          background: #F1F5F9;
-          padding: 4px;
-          border-radius: 10px;
-          gap: 4px;
-          margin-bottom: 22px;
+        .wallet-mobile-back-icon-btn {
+          width: 34px;
+          height: 34px;
+          border-radius: 50%;
           border: 1px solid #E2E8F0;
-        }
-
-        [data-theme="dark"] .portal-tabs-row,
-        .dark-mode .portal-tabs-row {
-          background: rgba(255, 255, 255, 0.05);
-          border-color: rgba(255, 255, 255, 0.1);
-        }
-
-        .portal-tab {
-          flex: 1;
+          background: #F8FAFC;
+          color: #0F172A;
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: 6px;
-          padding: 8px 10px;
-          border-radius: 7px;
+          cursor: pointer;
+        }
+
+        .wallet-mobile-title {
+          font-size: 15px;
+          font-weight: 700;
+          color: #0F172A;
+        }
+
+        /* 1. Official Company Logo inside */
+        .wallet-company-logo-section {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          text-align: center;
+          margin-bottom: 20px;
+        }
+
+        .wallet-logo-lockup {
+          margin-bottom: 6px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .wallet-company-logo-img {
+          height: 48px;
+          max-width: 220px;
+          object-fit: contain;
+          display: block;
+        }
+
+        .wallet-brand-meta {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .wallet-brand-title {
+          font-size: 15px;
+          font-weight: 800;
+          color: #0B4F7C;
+          letter-spacing: -0.01em;
+        }
+
+        .wallet-brand-badge {
+          font-size: 9.5px;
+          font-weight: 700;
+          color: #64748B;
+          letter-spacing: 0.1em;
+          text-transform: uppercase;
+        }
+
+        /* 2. Signature Dribbble Segmented Tab Switcher */
+        .wallet-segmented-toggle {
+          position: relative;
+          display: flex;
+          background: #F1F5F9;
+          border-radius: 30px;
+          padding: 4px;
+          margin-bottom: 16px;
+          border: 1px solid #E2E8F0;
+        }
+
+        .wallet-segment-btn {
+          flex: 1;
+          padding: 10px 16px;
+          border-radius: 24px;
           border: none;
           background: transparent;
           color: #64748B;
-          font-size: 12.5px;
+          font-size: 13.5px;
+          font-weight: 700;
+          cursor: pointer;
+          transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+          text-align: center;
+        }
+
+        .wallet-segment-btn.active {
+          background: #0B4F7C;
+          color: #FFFFFF;
+          box-shadow: 0 4px 12px rgba(11, 79, 124, 0.25);
+        }
+
+        /* 3. Secondary Role Selector Pills */
+        .wallet-portal-pills {
+          display: flex;
+          justify-content: center;
+          gap: 6px;
+          margin-bottom: 18px;
+        }
+
+        .wallet-portal-pill {
+          display: inline-flex;
+          align-items: center;
+          gap: 5px;
+          padding: 4px 10px;
+          border-radius: 16px;
+          border: 1px solid #E2E8F0;
+          background: #F8FAFC;
+          color: #64748B;
+          font-size: 11px;
           font-weight: 600;
           cursor: pointer;
           transition: all 0.2s ease;
         }
 
-        [data-theme="dark"] .portal-tab,
-        .dark-mode .portal-tab {
-          color: #94A3B8;
-        }
-
-        .portal-tab:hover {
-          color: #0F172A;
-        }
-
-        [data-theme="dark"] .portal-tab:hover,
-        .dark-mode .portal-tab:hover {
-          color: #FFFFFF;
-        }
-
-        .portal-tab.active {
-          background: #FFFFFF;
+        .wallet-portal-pill.active {
+          background: rgba(22, 131, 216, 0.12);
+          border-color: rgba(22, 131, 216, 0.35);
           color: #0B4F7C;
-          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+          font-weight: 700;
         }
 
-        [data-theme="dark"] .portal-tab.active,
-        .dark-mode .portal-tab.active {
-          background: #1683D8;
-          color: #FFFFFF;
-          box-shadow: 0 2px 10px rgba(22, 131, 216, 0.4);
+        /* 4. Greeting Headline */
+        .wallet-heading-area {
+          margin-bottom: 18px;
         }
 
-        /* Heading */
-        .auth-form-heading {
-          margin-bottom: 20px;
-        }
-
-        .auth-main-title {
-          font-size: 26px;
+        .wallet-main-title {
+          font-size: 22px;
           font-weight: 800;
-          color: #0B4F7C;
+          color: #0F172A;
           letter-spacing: -0.02em;
           margin: 0 0 6px 0;
-          line-height: 1.2;
         }
 
-        [data-theme="dark"] .auth-main-title,
-        .dark-mode .auth-main-title {
-          color: #38BDF8;
-        }
-
-        .auth-main-subtitle {
-          font-size: 13.5px;
+        .wallet-main-subtitle {
+          font-size: 13px;
           color: #64748B;
           margin: 0;
-          line-height: 1.5;
+          line-height: 1.45;
         }
 
-        [data-theme="dark"] .auth-main-subtitle,
-        .dark-mode .auth-main-subtitle {
-          color: #94A3B8;
-        }
-
-        /* Alerts */
+        /* Alert notices */
         .auth-alert-notice {
           display: flex;
           align-items: center;
           gap: 10px;
-          background: rgba(2, 132, 199, 0.08);
-          border: 1px solid rgba(2, 132, 199, 0.3);
-          border-radius: 8px;
-          padding: 10px 12px;
-          font-size: 12.5px;
-          color: #0B4F7C;
+          padding: 10px 14px;
+          border-radius: 12px;
+          background: rgba(22, 131, 216, 0.08);
+          border: 1px solid rgba(22, 131, 216, 0.25);
+          color: #0369A1;
+          font-size: 12px;
+          margin-bottom: 14px;
           font-weight: 600;
-          margin-bottom: 16px;
-        }
-
-        [data-theme="dark"] .auth-alert-notice,
-        .dark-mode .auth-alert-notice {
-          color: #BAE6FD;
         }
 
         .auth-alert-error {
           display: flex;
           align-items: center;
-          gap: 8px;
+          gap: 10px;
+          padding: 10px 14px;
+          border-radius: 12px;
           background: #FEF2F2;
           border: 1px solid #FECACA;
-          border-radius: 8px;
-          padding: 10px 12px;
+          color: #DC2626;
           font-size: 12.5px;
-          color: #991B1B;
+          margin-bottom: 14px;
+          font-weight: 600;
+        }
+
+        /* Demo credentials banner */
+        .demo-credentials-banner {
           margin-bottom: 16px;
+          padding: 10px 12px;
+          border-radius: 12px;
+          background: #F8FAFC;
+          border: 1px solid #E2E8F0;
         }
 
-        [data-theme="dark"] .auth-alert-error,
-        .dark-mode .auth-alert-error {
-          background: rgba(239, 68, 68, 0.15);
-          border-color: rgba(239, 68, 68, 0.35);
-          color: #FCA5A5;
+        .demo-banner-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          margin-bottom: 8px;
         }
 
-        /* Forms */
-        .auth-form {
+        .demo-banner-title {
+          display: flex;
+          align-items: center;
+          gap: 5px;
+          font-size: 11px;
+          font-weight: 700;
+          color: #0B4F7C;
+          text-transform: uppercase;
+          letter-spacing: 0.04em;
+        }
+
+        .demo-banner-hint {
+          font-size: 10.5px;
+          color: #94A3B8;
+        }
+
+        .demo-chips-grid {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 6px;
+        }
+
+        .demo-chip-btn {
+          background: #FFFFFF;
+          border: 1px solid #CBD5E1;
+          border-radius: 8px;
+          padding: 5px 9px;
+          font-size: 11.5px;
+          font-weight: 600;
+          color: #0F172A;
+          cursor: pointer;
+          display: inline-flex;
+          align-items: center;
+          gap: 5px;
+          transition: all 0.15s ease;
+        }
+
+        .demo-chip-btn:hover {
+          border-color: #0B4F7C;
+          color: #0B4F7C;
+          background: #F0F9FF;
+        }
+
+        .demo-chip-btn.staff {
+          color: #0F766E;
+          border-color: #99F6E4;
+        }
+
+        .demo-chip-btn.admin {
+          color: #B45309;
+          border-color: #FDE68A;
+        }
+
+        /* Forms & Inputs */
+        .wallet-form {
           display: flex;
           flex-direction: column;
+          gap: 14px;
         }
 
         .form-grid-2 {
@@ -2216,547 +2264,482 @@ export default function LoginView({
           gap: 12px;
         }
 
-        .pwd-toggle {
+        .wallet-field-group {
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+        }
+
+        .wallet-field-label {
+          font-size: 12px;
+          font-weight: 700;
+          color: #334155;
+        }
+
+        .wallet-input-container {
+          position: relative;
+          display: flex;
+          align-items: center;
+          border-radius: 14px;
+          background: #F8FAFC;
+          border: 1.5px solid #E2E8F0;
+          transition: all 0.2s ease;
+        }
+
+        .wallet-input-container:focus-within {
+          border-color: #0B4F7C;
+          background: #FFFFFF;
+          box-shadow: 0 0 0 3px rgba(11, 79, 124, 0.1);
+        }
+
+        .wallet-input-icon {
+          position: absolute;
+          left: 14px;
+          color: #94A3B8;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          pointer-events: none;
+        }
+
+        .wallet-input {
+          width: 100%;
+          height: 46px;
+          padding: 0 14px 0 42px;
+          border: none;
+          background: transparent;
+          border-radius: 14px;
+          font-size: 13.5px;
+          color: #0F172A;
+          outline: none;
+          box-sizing: border-box;
+        }
+
+        .wallet-input::placeholder {
+          color: #94A3B8;
+        }
+
+        .wallet-select {
+          width: 100%;
+          height: 46px;
+          padding: 0 14px 0 42px;
+          border: none;
+          background: transparent;
+          border-radius: 14px;
+          font-size: 13.5px;
+          color: #0F172A;
+          outline: none;
+          cursor: pointer;
+          appearance: auto;
+          box-sizing: border-box;
+        }
+
+        .wallet-pwd-toggle {
           position: absolute;
           right: 12px;
           background: none;
           border: none;
           color: #94A3B8;
           cursor: pointer;
+          padding: 4px;
           display: flex;
           align-items: center;
-          padding: 0;
-          transition: color 0.15s ease;
+          justify-content: center;
         }
 
-        .pwd-toggle:hover {
-          color: #475569;
+        .wallet-pwd-toggle:hover {
+          color: #0F172A;
         }
 
-        [data-theme="dark"] .pwd-toggle:hover,
-        .dark-mode .pwd-toggle:hover {
-          color: #FFFFFF;
-        }
-
-        /* Options Row: Remember me & Forgot Password */
-        .auth-options-row {
+        /* Checkbox & Options */
+        .wallet-options-row {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          margin-top: 4px;
-          margin-bottom: 18px;
+          font-size: 12.5px;
         }
 
-        .remember-me-checkbox-label {
+        .wallet-checkbox-label {
           display: flex;
           align-items: center;
           gap: 8px;
-          font-size: 13px;
+          font-size: 12.5px;
           color: #475569;
           cursor: pointer;
           user-select: none;
         }
 
-        [data-theme="dark"] .remember-me-checkbox-label,
-        .dark-mode .remember-me-checkbox-label {
-          color: #CBD5E1;
-        }
-
-        .remember-me-checkbox {
+        .wallet-checkbox {
           width: 16px;
           height: 16px;
-          accent-color: #1683D8;
+          border-radius: 4px;
+          accent-color: #0B4F7C;
           cursor: pointer;
         }
 
-        .forgot-password-link-btn {
+        .wallet-forgot-btn {
           background: none;
           border: none;
-          color: #1683D8;
-          font-size: 13px;
-          font-weight: 600;
+          color: #0B4F7C;
+          font-size: 12.5px;
+          font-weight: 700;
           cursor: pointer;
           padding: 0;
-          transition: color 0.15s ease;
         }
 
-        .forgot-password-link-btn:hover {
-          color: #0B4F7C;
+        .wallet-forgot-btn:hover {
           text-decoration: underline;
         }
 
-        [data-theme="dark"] .forgot-password-link-btn:hover,
-        .dark-mode .forgot-password-link-btn:hover {
-          color: #38BDF8;
-        }
-
-        /* Submit Button */
-        .auth-primary-submit-btn {
+        /* Primary Action Button */
+        .wallet-primary-btn {
           width: 100%;
-          height: 48px;
-          border-radius: 9px;
-          background: linear-gradient(135deg, #1683D8 0%, #0B4F7C 100%);
-          border: 1px solid #1683D8;
+          height: 50px;
+          border-radius: 28px;
+          border: none;
+          background: linear-gradient(135deg, #0B4F7C 0%, #1683D8 100%);
           color: #FFFFFF;
-          font-size: 15px;
+          font-size: 14.5px;
           font-weight: 700;
           cursor: pointer;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          box-shadow: 0 4px 14px rgba(22, 131, 216, 0.35);
+          box-shadow: 0 6px 18px rgba(11, 79, 124, 0.28);
           transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+          margin-top: 4px;
         }
 
-        .auth-primary-submit-btn:hover {
-          background: linear-gradient(135deg, #1E90E6 0%, #0D5D91 100%);
-          box-shadow: 0 6px 20px rgba(22, 131, 216, 0.45);
+        .wallet-primary-btn:hover {
           transform: translateY(-1px);
+          box-shadow: 0 8px 22px rgba(11, 79, 124, 0.35);
         }
 
-        .auth-primary-submit-btn:active {
+        .wallet-primary-btn:active {
           transform: translateY(0);
         }
 
-        .staff-theme-btn {
+        .wallet-primary-btn:disabled {
+          opacity: 0.75;
+          cursor: not-allowed;
+        }
+
+        .wallet-primary-btn.staff-theme {
           background: linear-gradient(135deg, #0D9488 0%, #0F766E 100%);
-          border-color: #0D9488;
-          box-shadow: 0 4px 14px rgba(13, 148, 136, 0.35);
+          box-shadow: 0 6px 18px rgba(13, 148, 136, 0.3);
         }
 
-        .staff-theme-btn:hover {
-          background: linear-gradient(135deg, #14B8A6 0%, #115E59 100%);
-        }
-
-        .admin-theme-btn {
+        .wallet-primary-btn.admin-theme {
           background: linear-gradient(135deg, #D97706 0%, #B45309 100%);
-          border-color: #D97706;
-          box-shadow: 0 4px 14px rgba(217, 119, 6, 0.35);
+          box-shadow: 0 6px 18px rgba(217, 119, 6, 0.3);
         }
 
-        .admin-theme-btn:hover {
-          background: linear-gradient(135deg, #F59E0B 0%, #92400E 100%);
-        }
-
-        .flex-center-gap {
+        .btn-content {
           display: flex;
           align-items: center;
           justify-content: center;
           gap: 8px;
         }
 
-        /* Social Auth Divider */
-        .social-auth-divider {
+        /* Divider */
+        .wallet-divider {
           display: flex;
           align-items: center;
+          margin: 6px 0;
           text-align: center;
-          margin: 20px 0 16px 0;
-          font-size: 11.5px;
-          font-weight: 700;
           color: #94A3B8;
-          text-transform: uppercase;
-          letter-spacing: 0.6px;
+          font-size: 11.5px;
+          font-weight: 600;
         }
 
-        .social-auth-divider::before,
-        .social-auth-divider::after {
+        .wallet-divider::before,
+        .wallet-divider::after {
           content: '';
           flex: 1;
           border-bottom: 1px solid #E2E8F0;
         }
 
-        [data-theme="dark"] .social-auth-divider::before,
-        [data-theme="dark"] .social-auth-divider::after,
-        .dark-mode .social-auth-divider::before,
-        .dark-mode .social-auth-divider::after {
-          border-color: rgba(255, 255, 255, 0.12);
+        .wallet-divider span {
+          padding: 0 12px;
         }
 
-        .social-auth-divider::before {
-          margin-right: 12px;
-        }
-
-        .social-auth-divider::after {
-          margin-left: 12px;
-        }
-
-        /* Social Auth Grid */
-        .social-auth-grid {
+        /* Social Auth Grids */
+        .wallet-social-grid {
           display: grid;
           grid-template-columns: 1fr 1fr;
           gap: 12px;
-          margin-bottom: 20px;
         }
 
-        .social-btn {
+        .wallet-social-btn {
+          height: 44px;
+          border-radius: 24px;
+          border: 1px solid #E2E8F0;
+          background: #FFFFFF;
+          color: #334155;
+          font-size: 13px;
+          font-weight: 600;
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: 10px;
-          height: 44px;
-          border-radius: 9px;
-          font-size: 14px;
-          font-weight: 600;
+          gap: 8px;
           cursor: pointer;
-          transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-          outline: none;
+          transition: all 0.2s ease;
         }
 
-        .social-btn-google {
-          background-color: #FFFFFF;
-          border: 1px solid #CBD5E1;
-          color: #1E293B;
-          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        .wallet-social-btn:hover {
+          background: #F8FAFC;
+          border-color: #CBD5E1;
         }
 
-        .social-btn-google:hover {
-          background-color: #F8FAFC;
-          border-color: #94A3B8;
-          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-          transform: translateY(-1px);
+        .wallet-social-grid-three {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 16px;
         }
 
-        .social-btn-apple {
-          background-color: #0F172A;
-          border: 1px solid #0F172A;
-          color: #FFFFFF;
-          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
-        }
-
-        .social-btn-apple:hover {
-          background-color: #000000;
-          border-color: #000000;
-          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.16);
-          transform: translateY(-1px);
-        }
-
-        [data-theme="dark"] .social-btn-google,
-        .dark-mode .social-btn-google {
-          background-color: #1E293B;
-          border-color: rgba(255, 255, 255, 0.15);
-          color: #F8FAFC;
-        }
-
-        [data-theme="dark"] .social-btn-google:hover,
-        .dark-mode .social-btn-google:hover {
-          background-color: #334155;
-        }
-
-        [data-theme="dark"] .social-btn-apple,
-        .dark-mode .social-btn-apple {
-          background-color: #FFFFFF;
-          border-color: #FFFFFF;
+        .wallet-social-circle-btn {
+          width: 48px;
+          height: 48px;
+          border-radius: 50%;
+          border: 1px solid #E2E8F0;
+          background: #FFFFFF;
           color: #0F172A;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+          transition: all 0.2s ease;
         }
 
-        [data-theme="dark"] .social-btn-apple:hover,
-        .dark-mode .social-btn-apple:hover {
-          background-color: #E2E8F0;
+        .wallet-social-circle-btn:hover {
+          background: #F1F5F9;
+          transform: translateY(-2px);
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
         }
 
-        /* Toggle Links */
-        .auth-toggle-link-row {
+        .wallet-social-circle-btn.biometric {
+          background: #F0F9FF;
+          border-color: #BAE6FD;
+        }
+
+        .wallet-social-circle-btn.biometric:hover {
+          background: #E0F2FE;
+        }
+
+        /* Bottom Switch Link */
+        .wallet-bottom-switch {
           text-align: center;
-          font-size: 13.5px;
+          font-size: 13px;
           color: #64748B;
+          margin-top: 6px;
         }
 
-        [data-theme="dark"] .auth-toggle-link-row,
-        .dark-mode .auth-toggle-link-row {
-          color: #94A3B8;
-        }
-
-        .auth-link-btn {
+        .wallet-switch-btn {
           background: none;
           border: none;
-          color: #1683D8;
+          color: #0B4F7C;
+          font-size: 13px;
           font-weight: 700;
           cursor: pointer;
           padding: 0;
-          transition: color 0.15s ease;
         }
 
-        .auth-link-btn:hover {
-          color: #0B4F7C;
+        .wallet-switch-btn:hover {
           text-decoration: underline;
-        }
-
-        [data-theme="dark"] .auth-link-btn:hover,
-        .dark-mode .auth-link-btn:hover {
-          color: #38BDF8;
-        }
-
-        .supabase-sync-tag {
-          display: flex;
-          align-items: center;
-          gap: 6px;
-          background: #F0FDF4;
-          border: 1px solid #BBF7D0;
-          border-radius: 6px;
-          padding: 6px 10px;
-          font-size: 11.5px;
-          color: #166534;
-          margin-bottom: 14px;
-        }
-
-        [data-theme="dark"] .supabase-sync-tag,
-        .dark-mode .supabase-sync-tag {
-          background: rgba(16, 185, 129, 0.15);
-          border-color: rgba(16, 185, 129, 0.35);
-          color: #A7F3D0;
         }
 
         /* Modal Styles */
         .auth-modal-overlay {
           position: fixed;
           inset: 0;
-          background-color: rgba(15, 23, 42, 0.75);
+          background: rgba(15, 23, 42, 0.7);
           backdrop-filter: blur(8px);
-          -webkit-backdrop-filter: blur(8px);
-          z-index: 9999;
           display: flex;
           align-items: center;
           justify-content: center;
-          padding: 20px;
-          animation: modalFadeIn 0.2s ease-out;
+          z-index: 1000;
+          padding: 16px;
         }
 
         .auth-modal-box {
-          background-color: #FFFFFF;
-          border-radius: 18px;
-          border: 1px solid rgba(255, 255, 255, 0.2);
-          box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
-          width: 100%;
-          max-width: 440px;
-          padding: 30px 26px;
           position: relative;
-          color: #0F172A;
-          animation: modalScaleUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        [data-theme="dark"] .auth-modal-box,
-        .dark-mode .auth-modal-box {
-          background-color: #1E293B;
-          border-color: rgba(255, 255, 255, 0.12);
-          color: #F8FAFC;
+          width: 100%;
+          max-width: 420px;
+          background: #FFFFFF;
+          border-radius: 20px;
+          padding: 28px 24px;
+          box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+          animation: aceSlideUp 0.2s ease;
         }
 
         .auth-modal-close {
           position: absolute;
-          top: 18px;
-          right: 18px;
-          background: none;
+          top: 16px;
+          right: 16px;
+          background: #F1F5F9;
           border: none;
-          color: #94A3B8;
-          cursor: pointer;
-          padding: 4px;
-          border-radius: 6px;
+          border-radius: 50%;
+          width: 32px;
+          height: 32px;
           display: flex;
           align-items: center;
           justify-content: center;
-          transition: all 0.15s ease;
-        }
-
-        .auth-modal-close:hover {
-          background-color: rgba(0, 0, 0, 0.06);
-          color: #0F172A;
-        }
-
-        [data-theme="dark"] .auth-modal-close:hover,
-        .dark-mode .auth-modal-close:hover {
-          background-color: rgba(255, 255, 255, 0.1);
-          color: #FFFFFF;
+          cursor: pointer;
+          color: #64748B;
         }
 
         .modal-icon-wrap {
-          width: 54px;
-          height: 54px;
-          border-radius: 50%;
-          background: #EAF5FC;
+          width: 52px;
+          height: 52px;
+          border-radius: 14px;
+          background: #F0F9FF;
           display: flex;
           align-items: center;
           justify-content: center;
-          margin: 0 auto 16px auto;
-        }
-
-        [data-theme="dark"] .modal-icon-wrap,
-        .dark-mode .modal-icon-wrap {
-          background: rgba(22, 131, 216, 0.2);
+          margin-bottom: 16px;
         }
 
         .modal-title {
           font-size: 20px;
           font-weight: 800;
-          color: #0B4F7C;
-          text-align: center;
+          color: #0F172A;
           margin: 0 0 6px 0;
-        }
-
-        [data-theme="dark"] .modal-title,
-        .dark-mode .modal-title {
-          color: #38BDF8;
         }
 
         .modal-desc {
           font-size: 13px;
           color: #64748B;
-          text-align: center;
+          margin: 0 0 16px 0;
           line-height: 1.5;
-          margin: 0;
-        }
-
-        [data-theme="dark"] .modal-desc,
-        .dark-mode .modal-desc {
-          color: #94A3B8;
         }
 
         .modal-cancel-btn {
           width: 100%;
-          height: 38px;
+          padding: 10px;
           background: none;
           border: none;
           color: #64748B;
           font-size: 13px;
           font-weight: 600;
           cursor: pointer;
-          margin-top: 10px;
-          transition: color 0.15s ease;
-        }
-
-        .modal-cancel-btn:hover {
-          color: #0F172A;
-        }
-
-        [data-theme="dark"] .modal-cancel-btn:hover,
-        .dark-mode .modal-cancel-btn:hover {
-          color: #FFFFFF;
+          margin-top: 6px;
         }
 
         .modal-profile-box {
-          padding: 14px;
-          border-radius: 10px;
-          background-color: #F8FAFC;
+          background: #F8FAFC;
           border: 1px solid #E2E8F0;
-          margin: 16px 0;
-        }
-
-        [data-theme="dark"] .modal-profile-box,
-        .dark-mode .modal-profile-box {
-          background-color: rgba(255, 255, 255, 0.04);
-          border-color: rgba(255, 255, 255, 0.1);
+          border-radius: 12px;
+          padding: 12px;
+          margin-bottom: 16px;
         }
 
         .profile-box-header {
           display: flex;
-          align-items: center;
           justify-content: space-between;
-          margin-bottom: 12px;
+          align-items: center;
+          margin-bottom: 10px;
         }
 
         .profile-tag {
           font-size: 11px;
           font-weight: 700;
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
           color: #64748B;
+          text-transform: uppercase;
         }
 
         .verified-tag {
-          font-size: 11px;
-          font-weight: 700;
-          color: #16A34A;
-          display: flex;
+          display: inline-flex;
           align-items: center;
           gap: 4px;
+          font-size: 11px;
+          color: #16A34A;
+          font-weight: 700;
         }
 
         .modal-success-state {
+          background: #F0FDF4;
+          border: 1px solid #BBF7D0;
+          border-radius: 14px;
+          padding: 18px 16px;
           text-align: center;
-          padding: 12px 0;
         }
 
         .success-badge {
           display: inline-flex;
           align-items: center;
           gap: 6px;
-          background: #ECFDF5;
-          border: 1px solid #A7F3D0;
-          color: #065F46;
+          color: #16A34A;
           font-weight: 700;
-          font-size: 13px;
-          padding: 6px 14px;
-          border-radius: 20px;
-          margin-bottom: 12px;
+          font-size: 14px;
+          margin-bottom: 8px;
         }
 
         .success-text {
-          font-size: 13px;
-          color: #475569;
+          font-size: 12.5px;
+          color: #166534;
           line-height: 1.5;
+          margin: 0;
         }
 
-        [data-theme="dark"] .success-text,
-        .dark-mode .success-text {
-          color: #CBD5E1;
+        .ace-spin {
+          animation: spin 1s linear infinite;
         }
 
-        @keyframes modalFadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-
-        @keyframes modalScaleUp {
-          from { opacity: 0; transform: scale(0.95); }
-          to { opacity: 1; transform: scale(1); }
-        }
-
-        .ace-spinner {
-          animation: aceSpin 1s linear infinite;
-        }
-
-        @keyframes aceSpin {
+        @keyframes spin {
           from { transform: rotate(0deg); }
           to { transform: rotate(360deg); }
         }
 
-        /* Responsive Breakpoints */
-        @media (max-width: 960px) {
-          .ace-auth-cards-container {
-            grid-template-columns: 1fr;
-            max-width: 520px;
-          }
-          .ace-auth-left-card {
-            padding: 24px;
-          }
-          .left-card-image-box {
-            height: 240px;
-          }
-          .ace-auth-right-card {
-            padding: 28px 22px;
-          }
+        @keyframes aceSlideUp {
+          from { opacity: 0; transform: translateY(12px); }
+          to { opacity: 1; transform: translateY(0); }
         }
 
-        @media (max-width: 480px) {
-          .ace-auth-topbar-inner {
-            padding: 12px 16px;
+        /* ===================================================
+            MOBILE VIEW RESPONSIVE OVERRIDES (EXACT DRIBBLE MATCH)
+            =================================================== */
+        @media (max-width: 768px) {
+          .ace-auth-topbar {
+            display: none !important;
           }
-          .brand-main {
-            font-size: 16px;
+
+          .ace-auth-page-root {
+            background: #FFFFFF !important;
           }
-          .brand-sub {
-            font-size: 9px;
-          }
-          .ace-auth-back-btn span {
-            display: none;
-          }
+
           .ace-auth-main {
-            padding: 20px 12px;
+            padding: 0 !important;
+            align-items: flex-start !important;
           }
+
+          .ace-auth-cards-container {
+            grid-template-columns: 1fr !important;
+            max-width: 100% !important;
+            gap: 0 !important;
+          }
+
+          .ace-auth-left-card {
+            display: none !important;
+          }
+
+          .wallet-screen-card {
+            border-radius: 0 !important;
+            border: none !important;
+            box-shadow: none !important;
+            padding: 20px 20px 36px 20px !important;
+            min-height: 100vh !important;
+          }
+
+          .wallet-mobile-status-bar {
+            display: flex !important;
+          }
+
+          .wallet-company-logo-img {
+            height: 42px !important;
+          }
+
           .form-grid-2 {
-            grid-template-columns: 1fr;
-          }
-          .social-auth-grid {
-            grid-template-columns: 1fr;
+            grid-template-columns: 1fr !important;
+            gap: 12px !important;
           }
         }
       `}</style>
