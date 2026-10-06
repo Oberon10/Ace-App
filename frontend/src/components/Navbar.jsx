@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { 
   Menu, 
   X, 
@@ -87,18 +89,22 @@ export default function Navbar({
     };
   }, [roleDropdownOpen]);
 
+  const pathname = usePathname();
+
   const navLinks = [
-    { id: 'home', label: 'Home' },
-    { id: 'services', label: 'Services' },
-    { id: 'track', label: 'Track' },
-    { id: 'about', label: 'About' },
-    { id: 'contact', label: 'Contact' }
+    { id: 'home', label: 'Home', href: '/' },
+    { id: 'services', label: 'Services', href: '/services' },
+    { id: 'track', label: 'Track', href: '/tracking' },
+    { id: 'about', label: 'About', href: '/about' },
+    { id: 'contact', label: 'Contact', href: '/contact' }
   ];
 
   const handleNavClick = (viewId) => {
-    setView(viewId);
+    if (setView) setView(viewId);
     setMobileMenuOpen(false);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   const handleLogout = () => {
@@ -437,9 +443,10 @@ export default function Navbar({
       {/* Main Navigation Bar */}
       <div className="ace-container navbar-main-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '72px' }}>
         {/* ACE Logistics Logo */}
-        <div
+        <Link
+          href="/"
           onClick={() => handleNavClick('home')}
-          style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer', minWidth: 0 }}
+          style={{ display: 'flex', alignItems: 'center', gap: '12px', textDecoration: 'none', minWidth: 0 }}
           title="ACE Logistics - Fast / Reliable / Secure"
         >
           <img
@@ -470,15 +477,16 @@ export default function Navbar({
               <span>SECURE</span>
             </div>
           </div>
-        </div>
+        </Link>
 
         {/* Desktop Nav Links */}
         <nav style={{ display: 'none', alignItems: 'center', gap: '32px' }} className="desktop-nav">
           {navLinks.map(link => {
-            const isActive = currentView === link.id;
+            const isActive = currentView === link.id || currentView === link.href || pathname === link.href || (link.id === 'track' && pathname === '/tracking');
             return (
-              <button
+              <Link
                 key={link.id}
+                href={link.href}
                 onClick={() => handleNavClick(link.id)}
                 style={{
                   background: 'none',
@@ -486,9 +494,9 @@ export default function Navbar({
                   fontSize: '14.5px',
                   fontWeight: isActive ? 700 : 500,
                   color: isActive ? 'var(--color-primary-blue)' : 'var(--text-primary)',
-                  cursor: 'pointer',
                   position: 'relative',
                   padding: '6px 0',
+                  textDecoration: 'none',
                   transition: 'color var(--transition-fast)'
                 }}
               >
@@ -504,7 +512,7 @@ export default function Navbar({
                     borderRadius: '2px'
                   }} />
                 )}
-              </button>
+              </Link>
             );
           })}
         </nav>
@@ -545,13 +553,15 @@ export default function Navbar({
             />
           </button>
 
-          <button
+          <Link
+            href="/quote"
             onClick={() => handleNavClick('quote')}
             className="ace-btn ace-btn-action"
+            style={{ textDecoration: 'none' }}
           >
             <span>Get a Quote</span>
             <ArrowRight size={15} />
-          </button>
+          </Link>
         </div>
 
         {/* Mobile Right Controls: Bulb Switch + Hamburger */}

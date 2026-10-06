@@ -1,4 +1,7 @@
+'use client';
+
 import React from 'react';
+import Link from 'next/link';
 import { 
   ShieldCheck, 
   Clock, 
@@ -14,11 +17,6 @@ import {
 } from 'lucide-react';
 
 export default function Footer({ setView }) {
-  const handleNav = (v) => {
-    setView(v);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
   return (
     <footer style={{
       backgroundColor: 'var(--color-dark-navy)',
@@ -41,7 +39,7 @@ export default function Footer({ setView }) {
         }}>
           {/* Col 1: ACE Logistics */}
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
+            <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px', textDecoration: 'none' }}>
               <div style={{
                 width: '36px',
                 height: '36px',
@@ -59,7 +57,7 @@ export default function Footer({ setView }) {
               <span style={{ fontSize: '18px', fontWeight: 800, color: '#FFFFFF', letterSpacing: '-0.02em' }}>
                 ACE LOGISTICS
               </span>
-            </div>
+            </Link>
 
             <p style={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '13.5px', lineHeight: 1.6, marginBottom: '20px' }}>
               Connecting businesses and global supply chains with end-to-end multi-modal freight services.
@@ -86,26 +84,26 @@ export default function Footer({ setView }) {
             <h4 style={{ color: '#FFFFFF', fontSize: '15px', fontWeight: 700, marginBottom: '18px', letterSpacing: '0.02em' }}>
               Company
             </h4>
-            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '14px' }}>
+            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '14px', padding: 0 }}>
               <li>
-                <button onClick={() => handleNav('about')} style={{ background: 'none', border: 'none', color: 'rgba(255, 255, 255, 0.75)', cursor: 'pointer', padding: 0 }}>
+                <Link href="/about" style={{ textDecoration: 'none', color: 'rgba(255, 255, 255, 0.75)' }}>
                   About ACE Logistics
-                </button>
+                </Link>
               </li>
               <li>
-                <button onClick={() => handleNav('services')} style={{ background: 'none', border: 'none', color: 'rgba(255, 255, 255, 0.75)', cursor: 'pointer', padding: 0 }}>
+                <Link href="/services" style={{ textDecoration: 'none', color: 'rgba(255, 255, 255, 0.75)' }}>
                   Freight Services & Fleet
-                </button>
+                </Link>
               </li>
               <li>
-                <button onClick={() => handleNav('contact')} style={{ background: 'none', border: 'none', color: 'rgba(255, 255, 255, 0.75)', cursor: 'pointer', padding: 0 }}>
+                <Link href="/contact" style={{ textDecoration: 'none', color: 'rgba(255, 255, 255, 0.75)' }}>
                   Contact Global Hubs
-                </button>
+                </Link>
               </li>
               <li>
-                <button onClick={() => handleNav('analytics')} style={{ background: 'none', border: 'none', color: 'rgba(255, 255, 255, 0.75)', cursor: 'pointer', padding: 0 }}>
+                <Link href="/admin/analytics" style={{ textDecoration: 'none', color: 'rgba(255, 255, 255, 0.75)' }}>
                   Global Network Analytics
-                </button>
+                </Link>
               </li>
             </ul>
           </div>
@@ -115,26 +113,26 @@ export default function Footer({ setView }) {
             <h4 style={{ color: '#FFFFFF', fontSize: '15px', fontWeight: 700, marginBottom: '18px', letterSpacing: '0.02em' }}>
               Support
             </h4>
-            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '14px' }}>
+            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '14px', padding: 0 }}>
               <li>
-                <button onClick={() => handleNav('track')} style={{ background: 'none', border: 'none', color: 'rgba(255, 255, 255, 0.75)', cursor: 'pointer', padding: 0 }}>
+                <Link href="/tracking" style={{ textDecoration: 'none', color: 'rgba(255, 255, 255, 0.75)' }}>
                   Track Shipment
-                </button>
+                </Link>
               </li>
               <li>
-                <button onClick={() => handleNav('quote')} style={{ background: 'none', border: 'none', color: 'rgba(255, 255, 255, 0.75)', cursor: 'pointer', padding: 0 }}>
+                <Link href="/quote" style={{ textDecoration: 'none', color: 'rgba(255, 255, 255, 0.75)' }}>
                   Get a Rate Quote
-                </button>
+                </Link>
               </li>
               <li>
-                <button onClick={() => handleNav('new-shipment')} style={{ background: 'none', border: 'none', color: 'rgba(255, 255, 255, 0.75)', cursor: 'pointer', padding: 0 }}>
+                <Link href="/new-shipment" style={{ textDecoration: 'none', color: 'rgba(255, 255, 255, 0.75)' }}>
                   Send a Package
-                </button>
+                </Link>
               </li>
               <li>
-                <button onClick={() => handleNav('contact')} style={{ background: 'none', border: 'none', color: 'rgba(255, 255, 255, 0.75)', cursor: 'pointer', padding: 0 }}>
+                <Link href="/contact" style={{ textDecoration: 'none', color: 'rgba(255, 255, 255, 0.75)' }}>
                   24/7 Cargo Help Center
-                </button>
+                </Link>
               </li>
             </ul>
           </div>
@@ -169,7 +167,7 @@ export default function Footer({ setView }) {
           
           {/* 1. Mobile Brand Header */}
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
+            <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px', textDecoration: 'none' }}>
               <div style={{
                 width: '34px',
                 height: '34px',
@@ -193,7 +191,7 @@ export default function Footer({ setView }) {
                   Global Multi-Modal Freight
                 </div>
               </div>
-            </div>
+            </Link>
 
             <p style={{ color: 'rgba(255, 255, 255, 0.72)', fontSize: '13px', lineHeight: 1.55, marginBottom: '14px' }}>
               Connecting businesses and global supply chains with real-time satellite tracking and customs certainty.
@@ -252,8 +250,8 @@ export default function Footer({ setView }) {
             gridTemplateColumns: '1fr 1fr',
             gap: '10px'
           }}>
-            <button
-              onClick={() => handleNav('track')}
+            <Link
+              href="/tracking"
               className="ace-btn ace-btn-action"
               style={{
                 width: '100%',
@@ -263,15 +261,16 @@ export default function Footer({ setView }) {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                gap: '6px'
+                gap: '6px',
+                textDecoration: 'none'
               }}
             >
               <Search size={14} />
               <span>Track Cargo</span>
-            </button>
+            </Link>
 
-            <button
-              onClick={() => handleNav('quote')}
+            <Link
+              href="/quote"
               className="ace-btn ace-btn-secondary"
               style={{
                 width: '100%',
@@ -284,12 +283,13 @@ export default function Footer({ setView }) {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                gap: '6px'
+                gap: '6px',
+                textDecoration: 'none'
               }}
             >
               <FileText size={14} />
               <span>Rate Quote</span>
-            </button>
+            </Link>
           </div>
 
           {/* 3. Organized 2-Column Links Navigation */}
@@ -314,30 +314,30 @@ export default function Footer({ setView }) {
               }}>
                 Company
               </div>
-              <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '10px', padding: 0 }}>
                 <li>
-                  <button 
-                    onClick={() => handleNav('about')} 
-                    style={{ background: 'none', border: 'none', color: 'rgba(255, 255, 255, 0.8)', cursor: 'pointer', padding: 0, fontSize: '13px', textAlign: 'left' }}
+                  <Link 
+                    href="/about" 
+                    style={{ color: 'rgba(255, 255, 255, 0.8)', textDecoration: 'none', fontSize: '13px', display: 'block' }}
                   >
                     About ACE Logistics
-                  </button>
+                  </Link>
                 </li>
                 <li>
-                  <button 
-                    onClick={() => handleNav('services')} 
-                    style={{ background: 'none', border: 'none', color: 'rgba(255, 255, 255, 0.8)', cursor: 'pointer', padding: 0, fontSize: '13px', textAlign: 'left' }}
+                  <Link 
+                    href="/services" 
+                    style={{ color: 'rgba(255, 255, 255, 0.8)', textDecoration: 'none', fontSize: '13px', display: 'block' }}
                   >
                     Freight & Fleet
-                  </button>
+                  </Link>
                 </li>
                 <li>
-                  <button 
-                    onClick={() => handleNav('analytics')} 
-                    style={{ background: 'none', border: 'none', color: 'rgba(255, 255, 255, 0.8)', cursor: 'pointer', padding: 0, fontSize: '13px', textAlign: 'left' }}
+                  <Link 
+                    href="/admin/analytics" 
+                    style={{ color: 'rgba(255, 255, 255, 0.8)', textDecoration: 'none', fontSize: '13px', display: 'block' }}
                   >
                     Global Analytics
-                  </button>
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -354,30 +354,30 @@ export default function Footer({ setView }) {
               }}>
                 Support
               </div>
-              <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '10px', padding: 0 }}>
                 <li>
-                  <button 
-                    onClick={() => handleNav('track')} 
-                    style={{ background: 'none', border: 'none', color: 'rgba(255, 255, 255, 0.8)', cursor: 'pointer', padding: 0, fontSize: '13px', textAlign: 'left' }}
+                  <Link 
+                    href="/tracking" 
+                    style={{ color: 'rgba(255, 255, 255, 0.8)', textDecoration: 'none', fontSize: '13px', display: 'block' }}
                   >
                     Track Shipment
-                  </button>
+                  </Link>
                 </li>
                 <li>
-                  <button 
-                    onClick={() => handleNav('new-shipment')} 
-                    style={{ background: 'none', border: 'none', color: 'rgba(255, 255, 255, 0.8)', cursor: 'pointer', padding: 0, fontSize: '13px', textAlign: 'left' }}
+                  <Link 
+                    href="/new-shipment" 
+                    style={{ color: 'rgba(255, 255, 255, 0.8)', textDecoration: 'none', fontSize: '13px', display: 'block' }}
                   >
                     Send a Package
-                  </button>
+                  </Link>
                 </li>
                 <li>
-                  <button 
-                    onClick={() => handleNav('contact')} 
-                    style={{ background: 'none', border: 'none', color: 'rgba(255, 255, 255, 0.8)', cursor: 'pointer', padding: 0, fontSize: '13px', textAlign: 'left' }}
+                  <Link 
+                    href="/contact" 
+                    style={{ color: 'rgba(255, 255, 255, 0.8)', textDecoration: 'none', fontSize: '13px', display: 'block' }}
                   >
                     24/7 Cargo Help
-                  </button>
+                  </Link>
                 </li>
               </ul>
             </div>

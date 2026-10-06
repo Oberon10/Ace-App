@@ -1,4 +1,8 @@
+'use client';
+
 import React, { useState } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { 
   LayoutDashboard, 
   Package, 
@@ -16,7 +20,8 @@ import {
   ExternalLink,
   Menu,
   ChevronDown,
-  X
+  X,
+  Home
 } from 'lucide-react';
 
 export default function Sidebar({ 
@@ -26,32 +31,33 @@ export default function Sidebar({
   setActiveRole 
 }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
 
-  // Admin menu: Full enterprise access
+  // Admin menu: Full enterprise access with real route hrefs
   const adminMenuItems = [
-    { id: 'admin-dashboard', label: 'Admin Dashboard', icon: LayoutDashboard },
-    { id: 'admin-shipments', label: 'All Shipments', icon: Package },
-    { id: 'admin-customers', label: 'Customers Directory', icon: Users },
-    { id: 'track', label: 'Live Tracking', icon: Search },
-    { id: 'analytics', label: 'Analytics & SLA', icon: BarChart3 },
-    { id: 'users', label: 'User Management', icon: ShieldCheck },
-    { id: 'admin-settings', label: 'System Settings', icon: Settings },
+    { id: 'admin-dashboard', label: 'Admin Dashboard', icon: LayoutDashboard, href: '/admin/dashboard' },
+    { id: 'admin-shipments', label: 'All Shipments', icon: Package, href: '/admin/shipments' },
+    { id: 'admin-customers', label: 'Customers Directory', icon: Users, href: '/admin/customers' },
+    { id: 'track', label: 'Live Tracking', icon: Search, href: '/tracking' },
+    { id: 'analytics', label: 'Analytics & SLA', icon: BarChart3, href: '/admin/analytics' },
+    { id: 'users', label: 'User Management', icon: ShieldCheck, href: '/admin/users' },
+    { id: 'admin-settings', label: 'System Settings', icon: Settings, href: '/admin/settings' },
   ];
 
   // Staff menu: Strictly Staff Dispatcher console operations
   const staffMenuItems = [
-    { id: 'staff-dashboard', label: 'Staff Dispatcher', icon: Truck },
-    { id: 'admin-shipments', label: 'Consignment Queue', icon: Package },
-    { id: 'track', label: 'Terminal Tracker', icon: Search },
-    { id: 'new-shipment', label: 'Package Intake', icon: PlusCircle }
+    { id: 'staff-dashboard', label: 'Staff Dispatcher', icon: Truck, href: '/staff/dashboard' },
+    { id: 'admin-shipments', label: 'Consignment Queue', icon: Package, href: '/admin/shipments' },
+    { id: 'track', label: 'Terminal Tracker', icon: Search, href: '/tracking' },
+    { id: 'new-shipment', label: 'Package Intake', icon: PlusCircle, href: '/new-shipment' }
   ];
 
   // Customer menu: Customer Portal only
   const customerMenuItems = [
-    { id: 'customer-dashboard', label: 'My Shipments', icon: LayoutDashboard },
-    { id: 'new-shipment', label: 'Book Shipment', icon: PlusCircle },
-    { id: 'track', label: 'Live Tracking', icon: Search },
-    { id: 'quote', label: 'Get a Quote', icon: FileText }
+    { id: 'customer-dashboard', label: 'My Shipments', icon: LayoutDashboard, href: '/customer/dashboard' },
+    { id: 'new-shipment', label: 'Book Shipment', icon: PlusCircle, href: '/new-shipment' },
+    { id: 'track', label: 'Live Tracking', icon: Search, href: '/tracking' },
+    { id: 'quote', label: 'Get a Quote', icon: FileText, href: '/quote' }
   ];
 
   let menuItems = customerMenuItems;
@@ -69,16 +75,22 @@ export default function Sidebar({
   }
 
   const handleLogout = () => {
-    setActiveRole('guest');
-    setView('home');
+    if (setActiveRole) setActiveRole('guest');
+    try {
+      localStorage.removeItem('ace_auth_role');
+      localStorage.removeItem('ace_current_user');
+    } catch {
+      // ignore
+    }
+    if (setView) setView('home');
   };
 
-  const handleMobileNav = (viewId) => {
-    setView(viewId);
+  const handleMobileNav = (item) => {
+    if (setView) setView(item.href || item.id);
     setMobileMenuOpen(false);
   };
 
-  const activeItemLabel = menuItems.find(m => m.id === currentView)?.label || roleTitle;
+  const activeItemLabel = menuItems.find(m => m.id === currentView || m.href === pathname)?.label || roleTitle;
 
   return (
     <>
@@ -157,13 +169,14 @@ export default function Sidebar({
             </div>
 
             {menuItems.map(item => {
-              const isActive = currentView === item.id;
+              const isActive = currentView === item.id || pathname === item.href;
               const Icon = item.icon;
 
               return (
-                <button
+                <Link
                   key={item.id}
-                  onClick={() => handleMobileNav(item.id)}
+                  href={item.href || '#'}
+                  onClick={() => handleMobileNav(item)}
                   style={{
                     width: '100%',
                     display: 'flex',
@@ -171,74 +184,25 @@ export default function Sidebar({
                     gap: '12px',
                     padding: '10px 14px',
                     borderRadius: '8px',
-                    border: 'none',
                     backgroundColor: isActive ? 'var(--color-light-blue)' : 'transparent',
                     color: isActive ? 'var(--color-primary-blue)' : 'var(--text-primary)',
                     fontWeight: isActive ? 700 : 500,
                     fontSize: '13.5px',
-                    cursor: 'pointer',
+                    textDecoration: 'none',
                     textAlign: 'left'
                   }}
                 >
                   <Icon size={16} color={isActive ? 'var(--color-primary-blue)' : 'var(--text-muted)'} />
                   <span>{item.label}</span>
-                </button>
+                </Link>
               );
             })}
 
-            {/* Admin Multi-Console Switcher on Mobile */}
-            {role === 'admin' && (
-              <div style={{ marginTop: '8px', borderTop: '1px solid var(--color-border-subtle)', paddingTop: '8px' }}>
-                <div style={{ fontSize: '10.5px', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', padding: '4px 8px' }}>
-                  Multi-Console Switcher
-                </div>
-                <button
-                  onClick={() => handleMobileNav('staff-dashboard')}
-                  style={{
-                    width: '100%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '10px',
-                    padding: '9px 12px',
-                    borderRadius: '6px',
-                    border: 'none',
-                    background: 'transparent',
-                    color: 'var(--text-secondary)',
-                    fontSize: '13px',
-                    fontWeight: 600,
-                    cursor: 'pointer'
-                  }}
-                >
-                  <Truck size={15} color="#0D9488" />
-                  <span>Staff Dispatcher Console</span>
-                </button>
-                <button
-                  onClick={() => handleMobileNav('customer-dashboard')}
-                  style={{
-                    width: '100%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '10px',
-                    padding: '9px 12px',
-                    borderRadius: '6px',
-                    border: 'none',
-                    background: 'transparent',
-                    color: 'var(--text-secondary)',
-                    fontSize: '13px',
-                    fontWeight: 600,
-                    cursor: 'pointer'
-                  }}
-                >
-                  <LayoutDashboard size={15} color="#1683D8" />
-                  <span>Customer Portal View</span>
-                </button>
-              </div>
-            )}
-
             {/* Quick Exit Links */}
-            <div style={{ marginTop: '8px', borderTop: '1px solid var(--color-border-subtle)', paddingTop: '8px', display: 'flex', gap: '8px' }}>
-              <button
-                onClick={() => handleMobileNav('home')}
+            <div style={{ marginTop: '10px', borderTop: '1px solid var(--color-border-subtle)', paddingTop: '10px', display: 'flex', gap: '8px' }}>
+              <Link
+                href="/"
+                onClick={() => setMobileMenuOpen(false)}
                 style={{
                   flex: 1,
                   display: 'flex',
@@ -248,18 +212,19 @@ export default function Sidebar({
                   padding: '9px 10px',
                   borderRadius: '6px',
                   border: '1px solid var(--color-border)',
-                  background: 'var(--color-white)',
-                  color: 'var(--text-secondary)',
-                  fontSize: '12px',
-                  cursor: 'pointer',
-                  fontWeight: 600
+                  background: 'var(--color-light-blue)',
+                  color: 'var(--color-primary-blue)',
+                  fontSize: '12.5px',
+                  textDecoration: 'none',
+                  fontWeight: 700
                 }}
               >
                 <ArrowLeft size={14} />
-                <span>Public Site</span>
-              </button>
+                <span>Back to Website</span>
+              </Link>
 
               <button
+                type="button"
                 onClick={handleLogout}
                 style={{
                   flex: 1,
@@ -294,15 +259,15 @@ export default function Sidebar({
         borderRight: '1px solid var(--color-border)',
         flexDirection: 'column',
         height: '100%',
-        minHeight: 'calc(100vh - 110px)',
+        minHeight: 'calc(100vh - 60px)',
         boxShadow: '1px 0 3px rgba(11, 79, 124, 0.03)',
         flexShrink: 0
       }}>
         {/* Brand & Workspace indicator */}
         <div style={{ padding: '24px 20px 16px', borderBottom: '1px solid var(--color-border-subtle)' }}>
-          <div 
-            onClick={() => setView('home')} 
-            style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', marginBottom: '12px' }}
+          <Link 
+            href={role === 'admin' ? '/admin/dashboard' : '/'} 
+            style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none', marginBottom: '12px' }}
           >
             <div style={{
               width: '34px',
@@ -319,46 +284,46 @@ export default function Sidebar({
               </svg>
             </div>
             <div>
-              <div style={{ fontSize: '16px', fontWeight: 800, color: 'var(--color-primary-blue)', lineHeight: 1.1 }}>
+              <span style={{ fontSize: '15px', fontWeight: 800, color: 'var(--color-primary-blue)', letterSpacing: '-0.01em', display: 'block', lineHeight: 1.2 }}>
                 ACE LOGISTICS
-              </div>
-              <div style={{ fontSize: '10.5px', color: 'var(--text-muted)', fontWeight: 600 }}>
-                Enterprise Platform
-              </div>
+              </span>
+              <span style={{ fontSize: '10.5px', color: 'var(--text-muted)', fontWeight: 600, letterSpacing: '0.04em' }}>
+                {roleTitle}
+              </span>
             </div>
-          </div>
+          </Link>
 
+          {/* Role Pill */}
           <div style={{
-            backgroundColor: 'var(--color-light-blue)',
-            borderRadius: '6px',
-            padding: '6px 10px',
-            display: 'flex',
+            display: 'inline-flex',
             alignItems: 'center',
-            justifyContent: 'space-between',
-            fontSize: '11.5px',
-            fontWeight: 600,
+            gap: '6px',
+            padding: '3px 9px',
+            borderRadius: '12px',
+            backgroundColor: 'var(--color-light-blue)',
+            border: '1px solid var(--color-border)',
+            fontSize: '11px',
+            fontWeight: 700,
             color: 'var(--color-primary-blue)'
           }}>
-            <span>{roleTitle}</span>
-            <span style={{
-              width: '7px',
-              height: '7px',
-              borderRadius: '50%',
-              backgroundColor: '#10B981'
-            }} />
+            <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#10B981' }} />
+            <span>Authenticated: {role.toUpperCase()}</span>
           </div>
         </div>
 
         {/* Navigation List */}
         <nav style={{ flex: 1, padding: '16px 12px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
           {menuItems.map(item => {
-            const isActive = currentView === item.id;
+            const isActive = currentView === item.id || pathname === item.href;
             const Icon = item.icon;
 
             return (
-              <button
+              <Link
                 key={item.id}
-                onClick={() => setView(item.id)}
+                href={item.href || '#'}
+                onClick={() => {
+                  if (setView) setView(item.href || item.id);
+                }}
                 style={{
                   width: '100%',
                   display: 'flex',
@@ -366,30 +331,29 @@ export default function Sidebar({
                   gap: '12px',
                   padding: '11px 14px',
                   borderRadius: '8px',
-                  border: 'none',
                   backgroundColor: isActive ? 'var(--color-light-blue)' : 'transparent',
                   color: isActive ? 'var(--color-primary-blue)' : 'var(--text-secondary)',
                   fontWeight: isActive ? 700 : 500,
                   fontSize: '13.5px',
-                  cursor: 'pointer',
+                  textDecoration: 'none',
                   textAlign: 'left',
                   transition: 'all var(--transition-fast)'
                 }}
               >
                 <Icon size={17} strokeWidth={isActive ? 2.3 : 1.8} color={isActive ? 'var(--color-primary-blue)' : 'var(--text-muted)'} />
                 <span>{item.label}</span>
-              </button>
+              </Link>
             );
           })}
 
-          {/* Admin Quick Switcher section */}
+          {/* Admin Multi-Console Switcher section */}
           {role === 'admin' && (
             <div style={{ marginTop: '16px', borderTop: '1px solid var(--color-border-subtle)', paddingTop: '12px' }}>
               <div style={{ fontSize: '10.5px', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', padding: '4px 12px 6px' }}>
                 Multi-Console Access
               </div>
-              <button
-                onClick={() => setView('staff-dashboard')}
+              <Link
+                href="/staff/dashboard"
                 style={{
                   width: '100%',
                   display: 'flex',
@@ -397,19 +361,17 @@ export default function Sidebar({
                   gap: '10px',
                   padding: '9px 14px',
                   borderRadius: '6px',
-                  border: 'none',
-                  backgroundColor: currentView === 'staff-dashboard' ? 'var(--color-light-blue)' : 'transparent',
-                  color: currentView === 'staff-dashboard' ? 'var(--color-primary-blue)' : 'var(--text-secondary)',
+                  color: 'var(--text-secondary)',
                   fontSize: '12.5px',
                   fontWeight: 600,
-                  cursor: 'pointer'
+                  textDecoration: 'none'
                 }}
               >
                 <Truck size={15} color="#0D9488" />
                 <span>Open Staff Dispatcher</span>
-              </button>
-              <button
-                onClick={() => setView('customer-dashboard')}
+              </Link>
+              <Link
+                href="/customer/dashboard"
                 style={{
                   width: '100%',
                   display: 'flex',
@@ -417,44 +379,49 @@ export default function Sidebar({
                   gap: '10px',
                   padding: '9px 14px',
                   borderRadius: '6px',
-                  border: 'none',
-                  backgroundColor: currentView === 'customer-dashboard' ? 'var(--color-light-blue)' : 'transparent',
-                  color: currentView === 'customer-dashboard' ? 'var(--color-primary-blue)' : 'var(--text-secondary)',
+                  color: 'var(--text-secondary)',
                   fontSize: '12.5px',
                   fontWeight: 600,
-                  cursor: 'pointer'
+                  textDecoration: 'none'
                 }}
               >
                 <LayoutDashboard size={15} color="#1683D8" />
                 <span>Open Customer View</span>
-              </button>
+              </Link>
             </div>
           )}
         </nav>
 
-        {/* Sidebar Footer */}
+        {/* ===================================================
+            SIDEBAR FOOTER: CLEAR "BACK TO WEBSITE" & LOGOUT
+            =================================================== */}
         <div style={{ padding: '16px 14px', borderTop: '1px solid var(--color-border)', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          <button
-            onClick={() => setView('home')}
+          {/* CLEAR PROMINENT "BACK TO WEBSITE" LINK */}
+          <Link
+            href="/"
+            className="sidebar-back-website-link"
+            id="sidebar-back-to-website-link"
             style={{
               display: 'flex',
               alignItems: 'center',
               gap: '10px',
-              padding: '9px 12px',
-              borderRadius: '6px',
+              padding: '10px 14px',
+              borderRadius: '8px',
               border: '1px solid var(--color-border)',
-              background: 'var(--color-white)',
-              color: 'var(--text-secondary)',
-              fontSize: '12.5px',
-              cursor: 'pointer',
-              fontWeight: 500
+              backgroundColor: 'var(--color-very-light-blue)',
+              color: 'var(--color-primary-blue)',
+              fontSize: '13px',
+              fontWeight: 700,
+              textDecoration: 'none',
+              transition: 'all 0.2s ease'
             }}
           >
-            <ArrowLeft size={15} />
-            <span>Public Website</span>
-          </button>
+            <ArrowLeft size={16} />
+            <span>← Back to Website</span>
+          </Link>
 
           <button
+            type="button"
             onClick={handleLogout}
             style={{
               display: 'flex',
@@ -484,6 +451,10 @@ export default function Sidebar({
         @media (max-width: 860px) {
           .ace-sidebar-desktop { display: none !important; }
           .ace-sidebar-mobile { display: block !important; width: 100% !important; }
+        }
+        .sidebar-back-website-link:hover {
+          background-color: var(--color-light-blue) !important;
+          transform: translateX(-2px);
         }
       `}</style>
     </>

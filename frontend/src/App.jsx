@@ -297,20 +297,24 @@ export default function App() {
     'admin-settings'
   ].includes(currentView);
 
+  const isAuthView = currentView === 'login';
+
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       {/* Sticky Global Navigation with Role Permissions */}
-      <Navbar 
-        currentView={currentView} 
-        setView={handleNavigate} 
-        activeRole={activeRole} 
-        setActiveRole={setActiveRole} 
-        currentUser={currentUser}
-        onLogout={handleLogout}
-        theme={theme}
-        toggleTheme={toggleTheme}
-        setLoginPortal={setLoginPortal}
-      />
+      {!isAuthView && (
+        <Navbar 
+          currentView={currentView} 
+          setView={handleNavigate} 
+          activeRole={activeRole} 
+          setActiveRole={setActiveRole} 
+          currentUser={currentUser}
+          onLogout={handleLogout}
+          theme={theme}
+          toggleTheme={toggleTheme}
+          setLoginPortal={setLoginPortal}
+        />
+      )}
 
       {/* Main View Router */}
       <div style={{ flex: 1 }}>
@@ -366,9 +370,11 @@ export default function App() {
           activeRole === 'guest' ? (
             <LoginView 
               onLoginSuccess={(role, userObj) => handleLoginSuccess(role, userObj, 'new-shipment')} 
-              setView={setCurrentView}
+              setView={handleNavigate}
               initialPortal="customer"
               authNotice="Please sign in or create an account to book and send a package."
+              theme={theme}
+              toggleTheme={toggleTheme}
             />
           ) : (
             <ShipmentCreationView 
@@ -383,9 +389,11 @@ export default function App() {
         {currentView === 'login' && (
           <LoginView 
             onLoginSuccess={handleLoginSuccess} 
-            setView={setCurrentView}
+            setView={handleNavigate}
             initialPortal={loginPortal}
             authNotice={authNotice}
+            theme={theme}
+            toggleTheme={toggleTheme}
           />
         )}
 
@@ -518,7 +526,7 @@ export default function App() {
       />
 
       {/* Global Footer */}
-      {!isDashboardView && (
+      {!isDashboardView && !isAuthView && (
         <Footer setView={handleNavigate} />
       )}
 
