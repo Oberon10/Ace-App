@@ -26,7 +26,8 @@ export default function AdminDashboardView({
   onSelectShipment, 
   onViewReceipt, 
   setView, 
-  setActiveRole 
+  setActiveRole,
+  currentView = 'admin-dashboard'
 }) {
   const [activeTab, setActiveTab] = useState('overview');
   const [filterMode, setFilterMode] = useState('ALL');
@@ -41,7 +42,7 @@ export default function AdminDashboardView({
       {/* Sidebar */}
       <Sidebar 
         role="admin" 
-        currentView="admin-dashboard" 
+        currentView={currentView} 
         setView={setView} 
         setActiveRole={setActiveRole} 
       />
