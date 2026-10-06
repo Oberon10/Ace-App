@@ -1,34 +1,14 @@
 {
-  "name": "ace-backend-logistics",
+  "name": "ace-app-monorepo",
   "version": "1.0.0",
-  "description": "Backend API for ACE Logistics Application",
-  "type": "commonjs",
-  "homepage": "https://github.com/Oberon10/intro-backend#readme",
-  "bugs": {
-    "url": "https://github.com/Oberon10/intro-backend/issues"
-  },
-  "script": {
-    "start": "node index.js",
-    "dev": "nodemon index.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Oberon10/intro-backend.git"
-  },
-  "license": "ISC",
-  "author": "Prosper",
-  "main": "index.js",
+  "description": "ACE Logistics Enterprise Platform",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "dependencies": {
-    "dotenv": "^18.0.5",
-    "express": "^5.2.1",
-    "mongoose": "^9.10.3",
-    "nodemon": "^3.1.14",
-    "bcryptjs": "^2.4.3",
-    "helmet": "^7.1.0",
-    "jsonwebtoken": "^9.0.2",
-    "cors": "^2.8.5"
+    "build": "npm --prefix frontend run build",
+    "start": "npm --prefix frontend start",
+    "dev": "npm --prefix frontend run dev",
+    "install:all": "npm --prefix frontend install && npm --prefix backend install",
+    "start:backend": "npm --prefix backend start",
+    "dev:backend": "npm --prefix backend run dev"
   }
 }
