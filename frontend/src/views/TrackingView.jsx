@@ -496,7 +496,7 @@ export default function TrackingView({
 
                 <div className="tracking-milestones-grid" style={{ 
                   display: 'grid', 
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', 
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 130px), 1fr))', 
                   gap: '10px',
                   position: 'relative' 
                 }}>
@@ -565,7 +565,7 @@ export default function TrackingView({
               {/* 4 Core Corridor Metric Cards */}
               <div className="tracking-corridor-grid" style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))',
                 gap: '16px'
               }}>
                 {/* Current Location */}
@@ -664,7 +664,7 @@ export default function TrackingView({
                     </h3>
                   </div>
 
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', fontSize: '13px' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))', gap: '16px', fontSize: '13px' }}>
                     <div style={{ backgroundColor: 'var(--color-very-light-blue)', padding: '12px', borderRadius: '8px', border: '1px solid var(--color-border)' }}>
                       <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase' }}>
                         Carrier Transport ID
@@ -1111,6 +1111,29 @@ export default function TrackingView({
             grid-template-columns: 1fr !important;
           }
         }
+        @media (max-width: 768px) {
+          .tracking-milestones-grid {
+            display: flex !important;
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch !important;
+            padding-bottom: 8px !important;
+            gap: 8px !important;
+            width: 100% !important;
+          }
+          .tracking-milestones-grid > div {
+            min-width: 130px !important;
+            flex-shrink: 0 !important;
+          }
+          .tracking-status-badge-wrap {
+            text-align: left !important;
+            min-width: auto !important;
+            width: 100% !important;
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            margin-top: 10px !important;
+          }
+        }
         @media (max-width: 640px) {
           .tracking-card-visual-banner {
             margin-bottom: 14px !important;
@@ -1145,27 +1168,6 @@ export default function TrackingView({
             padding-top: 12px !important;
             margin-top: 12px !important;
             font-size: 11px !important;
-          }
-          .tracking-milestones-grid {
-            display: flex !important;
-            overflow-x: auto !important;
-            -webkit-overflow-scrolling: touch !important;
-            padding-bottom: 8px !important;
-            gap: 8px !important;
-            width: 100% !important;
-          }
-          .tracking-milestones-grid > div {
-            min-width: 140px !important;
-            flex-shrink: 0 !important;
-          }
-          .tracking-status-badge-wrap {
-            text-align: left !important;
-            min-width: auto !important;
-            width: 100% !important;
-            display: flex !important;
-            justifyContent: space-between !important;
-            align-items: center !important;
-            margin-top: 10px !important;
           }
           .tracking-corridor-grid {
             grid-template-columns: repeat(2, 1fr) !important;

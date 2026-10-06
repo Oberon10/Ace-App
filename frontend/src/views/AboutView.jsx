@@ -110,7 +110,7 @@ export default function AboutView({ setView }) {
               {/* Key Capabilities / Metric Cards */}
               <div style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 160px), 1fr))',
                 gap: '12px',
                 marginBottom: '32px'
               }}>
@@ -306,7 +306,7 @@ export default function AboutView({ setView }) {
               <p style={{ fontSize: '14.5px', color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: '16px' }}>
                 ACE Logistics was established to solve cross-border supply chain friction through technology, certified carrier infrastructure, and unyielding adherence to delivery SLAs. Operating across four continents, our bonded terminals and proprietary satellite tracking ensure every container, pallet, and priority parcel arrives intact and on schedule.
               </p>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 200px), 1fr))', gap: '12px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', fontWeight: 600 }}>
                   <CheckCircle2 size={16} color="#10B981" />
                   <span>IATA Cargo Agent Accredited</span>

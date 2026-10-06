@@ -89,7 +89,7 @@ export default function AdminDashboardView({
             =================================================== */}
         <div className="ace-metrics-grid-2x2" style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 220px), 1fr))',
           gap: '20px',
           marginBottom: '28px'
         }}>

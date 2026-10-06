@@ -413,7 +413,7 @@ export default function ShipmentCreationView({
         {/* ===================================================
             PROGRESS STEPPER (Section 16)
             =================================================== */}
-        <div style={{
+        <div className="ace-wizard-stepper-card" style={{
           backgroundColor: 'var(--color-white)',
           borderRadius: 'var(--radius-card)',
           border: '1px solid var(--color-border)',
@@ -479,7 +479,7 @@ export default function ShipmentCreationView({
         {/* ===================================================
             MULTI-STEP FORM CARDS
             =================================================== */}
-        <div className="ace-card ace-wizard-card" style={{ padding: '32px' }}>
+        <div className="ace-card ace-wizard-card" style={{ padding: 'clamp(16px, 3.5vw, 32px)' }}>
           {/* STEP 1: SENDER */}
           {currentStep === 1 && (
             <div>
@@ -488,7 +488,7 @@ export default function ShipmentCreationView({
                 <h3 style={{ fontSize: '18px', color: 'var(--color-primary-blue)' }}>Step 1: Shipper Information (Sender)</h3>
               </div>
 
-              <div className="shipment-form-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px' }}>
+              <div className="shipment-form-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 220px), 1fr))', gap: '16px' }}>
                 <div className="ace-form-group">
                   <label className="ace-label ace-label-required">Full Contact Name</label>
                   <input
@@ -617,7 +617,7 @@ export default function ShipmentCreationView({
                 <h3 style={{ fontSize: '18px', color: 'var(--color-primary-blue)' }}>Step 2: Consignee Information (Receiver)</h3>
               </div>
 
-              <div className="shipment-form-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px' }}>
+              <div className="shipment-form-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 220px), 1fr))', gap: '16px' }}>
                 <div className="ace-form-group">
                   <label className="ace-label ace-label-required">Recipient Name</label>
                   <input
@@ -745,7 +745,7 @@ export default function ShipmentCreationView({
                 <h3 style={{ fontSize: '18px', color: 'var(--color-primary-blue)' }}>Step 3: Package & Cargo Specifications</h3>
               </div>
 
-              <div className="package-specs-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
+              <div className="package-specs-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 180px), 1fr))', gap: '16px' }}>
                 <div className="ace-form-group" style={{ gridColumn: '1 / -1' }}>
                   <label className="ace-label ace-label-required">Cargo Description</label>
                   <input
@@ -882,6 +882,7 @@ export default function ShipmentCreationView({
                   return (
                     <div
                       key={idx}
+                      className="freight-tier-card"
                       onClick={() => updateField('shippingMethod', tier.title)}
                       style={{
                         display: 'flex',
@@ -895,7 +896,7 @@ export default function ShipmentCreationView({
                         transition: 'all var(--transition-fast)'
                       }}
                     >
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '14px', minWidth: 0 }}>
                         <div style={{
                           width: '40px',
                           height: '40px',
@@ -904,17 +905,18 @@ export default function ShipmentCreationView({
                           color: isSelected ? '#FFFFFF' : 'var(--color-primary-blue)',
                           display: 'flex',
                           alignItems: 'center',
-                          justifyContent: 'center'
+                          justifyContent: 'center',
+                          flexShrink: 0
                         }}>
                           <Icon size={20} />
                         </div>
-                        <div>
+                        <div style={{ minWidth: 0 }}>
                           <div style={{ fontWeight: 700, fontSize: '15px', color: 'var(--color-primary-blue)' }}>{tier.title}</div>
                           <div style={{ fontSize: '12.5px', color: 'var(--text-secondary)' }}>{tier.desc}</div>
                         </div>
                       </div>
 
-                      <div style={{ textAlign: 'right' }}>
+                      <div className="freight-tier-rate" style={{ textAlign: 'right', flexShrink: 0 }}>
                         <div style={{ fontWeight: 700, color: 'var(--color-primary-blue)', fontSize: '15px' }}>{tier.rate}</div>
                         <div style={{ fontSize: '11px', color: '#10B981', fontWeight: 600 }}>Space Reserved</div>
                       </div>
@@ -945,7 +947,7 @@ export default function ShipmentCreationView({
               </div>
 
               {/* Review Summary Grid */}
-              <div className="shipment-form-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '20px', marginBottom: '24px' }}>
+              <div className="shipment-form-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 220px), 1fr))', gap: '20px', marginBottom: '24px' }}>
                 {/* Shipper */}
                 <div style={{ backgroundColor: 'var(--color-very-light-blue)', padding: '16px', borderRadius: '8px', border: '1px solid var(--color-border)' }}>
                   <div style={{ fontSize: '11.5px', fontWeight: 700, color: 'var(--color-primary-blue)', textTransform: 'uppercase', marginBottom: '4px' }}>
@@ -1052,6 +1054,12 @@ export default function ShipmentCreationView({
 
       <style>{`
         @media (max-width: 640px) {
+          .ace-wizard-card {
+            padding: 16px 14px !important;
+          }
+          .ace-wizard-stepper-card {
+            padding: 12px 8px !important;
+          }
           .shipment-form-grid {
             grid-template-columns: 1fr !important;
           }
@@ -1065,6 +1073,25 @@ export default function ShipmentCreationView({
           .wizard-nav-actions button {
             flex: 1 1 auto !important;
             justify-content: center !important;
+          }
+        }
+        @media (max-width: 540px) {
+          .ace-wizard-stepper-label {
+            font-size: 10.5px !important;
+          }
+          .freight-tier-card {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 12px !important;
+          }
+          .freight-tier-rate {
+            text-align: left !important;
+            align-self: flex-start !important;
+          }
+        }
+        @media (max-width: 440px) {
+          .ace-wizard-stepper-label {
+            display: none !important;
           }
         }
         @media (max-width: 420px) {

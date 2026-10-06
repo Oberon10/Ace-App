@@ -1647,6 +1647,8 @@ export default function LoginView({
           color: #0F172A;
           position: relative;
           overflow-x: hidden;
+          max-width: 100%;
+          width: 100%;
           font-family: inherit;
         }
 
@@ -2697,6 +2699,19 @@ export default function LoginView({
         /* ===================================================
             MOBILE VIEW RESPONSIVE OVERRIDES (EXACT DRIBBLE MATCH)
             =================================================== */
+        @media (min-width: 769px) and (max-width: 960px) {
+          .ace-auth-cards-container {
+            gap: 16px !important;
+            padding: 0 12px !important;
+          }
+          .ace-auth-left-card {
+            padding: 18px !important;
+          }
+          .wallet-screen-card {
+            padding: 24px 20px !important;
+          }
+        }
+
         @media (max-width: 768px) {
           .ace-auth-topbar {
             display: none !important;
@@ -2704,6 +2719,11 @@ export default function LoginView({
 
           .ace-auth-page-root {
             background: #FFFFFF !important;
+          }
+
+          .ace-auth-page-root::before,
+          .ace-auth-page-root::after {
+            display: none !important;
           }
 
           .ace-auth-main {

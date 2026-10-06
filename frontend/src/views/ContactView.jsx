@@ -445,7 +445,7 @@ export default function ContactView({ setView, currentUser, activeRole }) {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
             
             {/* CARD 1: REAL-TIME HUB TELEMETRY & LIVE DISPATCH COMMAND CONSOLE */}
-            <div className="ace-card" style={{
+            <div className="ace-card contact-station-card" style={{
               background: 'linear-gradient(145deg, #072A42 0%, #061D2D 100%)',
               color: '#FFFFFF',
               border: '1px solid rgba(56, 189, 248, 0.25)',
@@ -582,7 +582,7 @@ export default function ContactView({ setView, currentUser, activeRole }) {
                 )}
 
                 {/* Quick Interactive Station Action Buttons */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginTop: '14px' }}>
+                <div className="contact-station-actions" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 140px), 1fr))', gap: '8px', marginTop: '14px' }}>
                   <a
                     href={`tel:${currentHub.phone}`}
                     className="ace-btn"
@@ -1304,6 +1304,14 @@ export default function ContactView({ setView, currentUser, activeRole }) {
       <style>{`
         @media (max-width: 860px) {
           .contact-grid {
+            grid-template-columns: 1fr !important;
+          }
+        }
+        @media (max-width: 640px) {
+          .contact-station-card {
+            padding: 18px 14px !important;
+          }
+          .contact-station-actions {
             grid-template-columns: 1fr !important;
           }
         }

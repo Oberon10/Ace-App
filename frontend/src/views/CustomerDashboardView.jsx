@@ -229,7 +229,7 @@ export default function CustomerDashboardView({
             =================================================== */}
         <div className="ace-metrics-grid-2x2" style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 210px), 1fr))',
           gap: '20px',
           marginBottom: '28px'
         }}>
@@ -454,7 +454,7 @@ export default function CustomerDashboardView({
               </button>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '12px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '12px' }}>
               {appointments.map((appt) => (
                 <div key={appt.id} style={{
                   backgroundColor: 'var(--color-white)',
@@ -605,14 +605,15 @@ export default function CustomerDashboardView({
             padding: '16px'
           }}>
             <div className="ace-card" style={{
-              maxWidth: '540px',
+              maxWidth: 'min(540px, calc(100vw - 24px))',
               width: '100%',
               backgroundColor: 'var(--color-surface)',
               borderRadius: '16px',
-              padding: '28px',
+              padding: 'clamp(16px, 4vw, 28px)',
               boxShadow: 'var(--shadow-dropdown)',
               maxHeight: '90vh',
-              overflowY: 'auto'
+              overflowY: 'auto',
+              boxSizing: 'border-box'
             }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -672,7 +673,7 @@ export default function CustomerDashboardView({
                     </select>
                   </div>
 
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 180px), 1fr))', gap: '12px' }}>
                     <div className="ace-form-group">
                       <label className="ace-label ace-label-required">Appointment Date</label>
                       <input

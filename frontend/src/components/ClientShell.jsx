@@ -34,7 +34,7 @@ export default function ClientShell({ children }) {
     pathname.startsWith('/staff/dashboard');
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div className="ace-app-root" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', width: '100%', maxWidth: '100%', overflowX: 'hidden' }}>
       {/* Sticky Global Navigation - hidden on /login and /admin views */}
       {!isAuthView && !isAdminView && (
         <Navbar 
@@ -51,7 +51,7 @@ export default function ClientShell({ children }) {
       )}
 
       {/* Main Page Area */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', width: '100%', maxWidth: '100%', minWidth: 0, overflowX: 'hidden' }}>
         {children}
       </div>
 

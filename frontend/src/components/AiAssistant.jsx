@@ -590,8 +590,8 @@ export default function AiAssistant({
       {!isOpen && (
         <div style={{
           position: 'fixed',
-          bottom: '24px',
-          right: '24px',
+          bottom: 'clamp(14px, 3vw, 24px)',
+          right: 'clamp(12px, 3vw, 24px)',
           zIndex: 9999,
           display: 'flex',
           flexDirection: 'column',
@@ -670,12 +670,13 @@ export default function AiAssistant({
           className="ace-ai-panel"
           style={{
             position: 'fixed',
-            bottom: '24px',
-            right: '24px',
+            bottom: 'clamp(12px, 2.5vw, 24px)',
+            right: 'clamp(10px, 2.5vw, 24px)',
             zIndex: 99999,
-            width: 'clamp(320px, 92vw, 400px)',
-            height: isMinimized ? '56px' : 'clamp(500px, 78vh, 640px)',
-            maxHeight: 'calc(100vh - 36px)',
+            width: 'min(400px, calc(100vw - 20px))',
+            maxWidth: 'calc(100vw - 20px)',
+            height: isMinimized ? '56px' : 'clamp(480px, 78vh, 640px)',
+            maxHeight: 'calc(100vh - 24px)',
             backgroundColor: isDark ? '#0F172A' : '#FFFFFF',
             borderRadius: '18px',
             boxShadow: '0 16px 48px rgba(7, 42, 66, 0.25)',
@@ -683,6 +684,7 @@ export default function AiAssistant({
             display: 'flex',
             flexDirection: 'column',
             overflow: 'hidden',
+            boxSizing: 'border-box',
             fontFamily: 'var(--font-family, system-ui, -apple-system, sans-serif)'
           }}
         >

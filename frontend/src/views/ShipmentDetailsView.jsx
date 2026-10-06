@@ -138,7 +138,7 @@ export default function ShipmentDetailsView({
           {/* 3 Metric Pills: Location, ETA, Origin/Destination */}
           <div style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 220px), 1fr))',
             gap: '20px'
           }}>
             {/* Current Location */}
@@ -225,27 +225,27 @@ export default function ShipmentDetailsView({
               </div>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '13.5px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '4px' }}>
                   <span style={{ color: 'var(--text-secondary)' }}>Cargo Type:</span>
                   <span style={{ fontWeight: 600 }}>{shipment.package?.type || 'Standard Freight'}</span>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '4px' }}>
                   <span style={{ color: 'var(--text-secondary)' }}>Total Weight:</span>
                   <span style={{ fontWeight: 600 }}>{shipment.package?.weightKg} kg</span>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '4px' }}>
                   <span style={{ color: 'var(--text-secondary)' }}>Dimensions:</span>
                   <span style={{ fontWeight: 600 }}>{shipment.package?.dimensions}</span>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '4px' }}>
                   <span style={{ color: 'var(--text-secondary)' }}>Package Count:</span>
                   <span style={{ fontWeight: 600 }}>{shipment.package?.pieces || 1} piece(s)</span>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '4px' }}>
                   <span style={{ color: 'var(--text-secondary)' }}>Declared Value:</span>
                   <span style={{ fontWeight: 600 }}>{shipment.package?.declaredValue}</span>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid var(--color-border-subtle)', paddingTop: '10px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '4px', borderTop: '1px solid var(--color-border-subtle)', paddingTop: '10px' }}>
                   <span style={{ color: 'var(--text-secondary)' }}>Transit Insurance:</span>
                   <span style={{ fontWeight: 600, color: '#059669' }}>{shipment.package?.insurance}</span>
                 </div>

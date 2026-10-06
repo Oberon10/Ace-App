@@ -242,23 +242,23 @@ export default function StaffDashboardView({
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '13px', backgroundColor: 'var(--color-very-light-blue)', padding: '14px', borderRadius: '8px', border: '1px solid var(--color-border)' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '6px' }}>
                     <span style={{ color: 'var(--text-secondary)' }}>Origin:</span>
-                    <strong>{activeShipment.origin}</strong>
+                    <strong style={{ wordBreak: 'break-word', textAlign: 'right' }}>{activeShipment.origin}</strong>
                   </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '6px' }}>
                     <span style={{ color: 'var(--text-secondary)' }}>Destination:</span>
-                    <strong>{activeShipment.destination}</strong>
+                    <strong style={{ wordBreak: 'break-word', textAlign: 'right' }}>{activeShipment.destination}</strong>
                   </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '6px' }}>
                     <span style={{ color: 'var(--text-secondary)' }}>Current Location:</span>
-                    <strong style={{ color: 'var(--color-bright-action)' }}>{activeShipment.currentLocation}</strong>
+                    <strong style={{ color: 'var(--color-bright-action)', wordBreak: 'break-word', textAlign: 'right' }}>{activeShipment.currentLocation}</strong>
                   </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '6px' }}>
                     <span style={{ color: 'var(--text-secondary)' }}>Total Cargo Weight:</span>
                     <strong>{activeShipment.package?.weightKg} kg</strong>
                   </div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '6px' }}>
                     <span style={{ color: 'var(--text-secondary)' }}>Security Seal:</span>
                     <strong style={{ fontFamily: 'monospace' }}>{activeShipment.package?.sealNumber}</strong>
                   </div>

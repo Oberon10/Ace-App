@@ -557,7 +557,7 @@ export default function TestimonialsSection() {
           paddingTop: '28px',
           borderTop: '1px solid rgba(255, 255, 255, 0.12)',
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 180px), 1fr))',
           gap: '20px',
           textAlign: 'center'
         }}>
@@ -677,11 +677,11 @@ export default function TestimonialsSection() {
         }
 
         .carousel-nav-prev {
-          left: -20px;
+          left: 6px;
         }
 
         .carousel-nav-next {
-          right: -20px;
+          right: 6px;
         }
 
         /* Testimonial Card Light Mode Base */
@@ -800,10 +800,10 @@ export default function TestimonialsSection() {
 
         @media (max-width: 1100px) {
           .carousel-nav-prev {
-            left: -10px;
+            left: 4px;
           }
           .carousel-nav-next {
-            right: -10px;
+            right: 4px;
           }
         }
 

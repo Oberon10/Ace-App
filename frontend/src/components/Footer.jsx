@@ -32,7 +32,7 @@ export default function Footer({ setView }) {
             =================================================== */}
         <div className="footer-desktop-grid" style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 220px), 1fr))',
           gap: '40px',
           paddingBottom: '48px',
           borderBottom: '1px solid rgba(255, 255, 255, 0.12)'
@@ -422,11 +422,12 @@ export default function Footer({ setView }) {
                   alignItems: 'center',
                   gap: '8px',
                   color: '#F0F9FF',
-                  textDecoration: 'none'
+                  textDecoration: 'none',
+                  flexWrap: 'wrap'
                 }}
               >
                 <Phone size={13} color="#38BDF8" style={{ flexShrink: 0 }} />
-                <span>+233 (0) 302 770 990 • +44 20 7946 0912</span>
+                <span style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}>+233 (0) 302 770 990 • +44 20 7946 0912</span>
               </a>
 
               <a 
@@ -436,11 +437,12 @@ export default function Footer({ setView }) {
                   alignItems: 'center',
                   gap: '8px',
                   color: '#F0F9FF',
-                  textDecoration: 'none'
+                  textDecoration: 'none',
+                  flexWrap: 'wrap'
                 }}
               >
                 <Mail size={13} color="#38BDF8" style={{ flexShrink: 0 }} />
-                <span>dispatch@acelogistics.com</span>
+                <span style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}>dispatch@acelogistics.com</span>
               </a>
             </div>
           </div>

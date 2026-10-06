@@ -160,7 +160,7 @@ export default function Navbar({
         <div className="ace-container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0, overflow: 'hidden' }}>
             <span style={{ display: 'inline-block', width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#10B981', flexShrink: 0 }} />
-            <span className="desktop-nav" style={{ whiteSpace: 'nowrap' }}>
+            <span className="desktop-nav" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '620px' }}>
               ACE Global Freight Network Operational • Real-time IATA / IMO Tracking Live
             </span>
             <span className="mobile-only" style={{ fontSize: '11px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
@@ -206,7 +206,7 @@ export default function Navbar({
                       top: '100%',
                       marginTop: '6px',
                       width: '260px',
-                      maxWidth: 'calc(100vw - 24px)',
+                      maxWidth: 'min(260px, calc(100vw - 24px))',
                       boxSizing: 'border-box',
                       backgroundColor: 'var(--color-white)',
                       borderRadius: '10px',
@@ -361,7 +361,7 @@ export default function Navbar({
                       top: '100%',
                       marginTop: '6px',
                       width: '240px',
-                      maxWidth: 'calc(100vw - 24px)',
+                      maxWidth: 'min(240px, calc(100vw - 24px))',
                       boxSizing: 'border-box',
                       backgroundColor: 'var(--color-white)',
                       borderRadius: '10px',
@@ -480,7 +480,7 @@ export default function Navbar({
         </Link>
 
         {/* Desktop Nav Links */}
-        <nav style={{ display: 'none', alignItems: 'center', gap: '32px' }} className="desktop-nav">
+        <nav style={{ display: 'none', alignItems: 'center', gap: 'clamp(12px, 1.8vw, 30px)' }} className="desktop-nav">
           {navLinks.map(link => {
             const isActive = currentView === link.id || currentView === link.href || pathname === link.href || (link.id === 'track' && pathname === '/tracking');
             return (
@@ -518,7 +518,7 @@ export default function Navbar({
         </nav>
 
         {/* Right CTA Actions: Bulb Mode Switch in between Contact & Get a Quote */}
-        <div style={{ display: 'none', alignItems: 'center', gap: '14px' }} className="desktop-nav">
+        <div style={{ display: 'none', alignItems: 'center', gap: 'clamp(8px, 1.2vw, 14px)' }} className="desktop-nav">
           {/* Bulb Icon to switch from light to dark mode (current mode is light which is default) */}
           <button
             type="button"
@@ -760,12 +760,23 @@ export default function Navbar({
             transform: translateY(0);
           }
         }
-        @media (min-width: 860px) {
+        @media (min-width: 960px) {
           .desktop-nav { display: flex !important; }
           .mobile-hamburger { display: none !important; }
           .mobile-only { display: none !important; }
         }
-        @media (max-width: 859px) {
+        @media (min-width: 960px) and (max-width: 1120px) {
+          .desktop-nav {
+            gap: 12px !important;
+          }
+          .desktop-nav a {
+            font-size: 13.5px !important;
+          }
+          .navbar-logo-text {
+            font-size: 18px !important;
+          }
+        }
+        @media (max-width: 959px) {
           .mobile-only { display: flex !important; }
           .navbar-main-container {
             height: 64px !important;
@@ -789,11 +800,11 @@ export default function Navbar({
             height: 36px !important;
           }
           .navbar-logo-text {
-            font-size: 16px !important;
+            font-size: 15px !important;
           }
           .navbar-logo-subtitle {
-            font-size: 7.5px !important;
-            letter-spacing: 0.05em !important;
+            font-size: 7px !important;
+            letter-spacing: 0.04em !important;
           }
         }
       `}</style>

@@ -146,13 +146,15 @@ export default function ReceiptModal({ shipment, isOpen, onClose }) {
       <div 
         className="ace-modal" 
         style={{ 
-          maxWidth: '780px', 
+          width: '100%',
+          maxWidth: 'min(780px, calc(100vw - 24px))', 
           maxHeight: '94vh', 
           overflowY: 'auto',
           backgroundColor: '#FFFFFF',
           borderRadius: '12px',
           boxShadow: '0 25px 60px -15px rgba(0, 0, 0, 0.45)',
-          border: '1px solid rgba(0, 0, 0, 0.15)'
+          border: '1px solid rgba(0, 0, 0, 0.15)',
+          boxSizing: 'border-box'
         }}
         onClick={(e) => e.stopPropagation()}
       >
@@ -235,7 +237,7 @@ export default function ReceiptModal({ shipment, isOpen, onClose }) {
           fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif"
         }}>
           {/* SECTION 1: HEADER & CARRIER INFORMATION */}
-          <div style={{
+          <div className="receipt-header-strip" style={{
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'flex-start',
@@ -703,6 +705,41 @@ export default function ReceiptModal({ shipment, isOpen, onClose }) {
           /* 5. Explicitly hide all screen-only action bars */
           .no-print {
             display: none !important;
+          }
+        }
+
+        @media screen and (max-width: 680px) {
+          .receipt-barcode-wrap {
+            grid-template-columns: 1fr !important;
+            gap: 12px !important;
+          }
+          .receipt-barcode-wrap > div:first-child {
+            border-right: none !important;
+            border-bottom: 1px solid #E2E8F0 !important;
+            padding-right: 0 !important;
+            padding-bottom: 12px !important;
+            display: flex !important;
+            justify-content: center !important;
+          }
+          .receipt-routing-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 8px !important;
+          }
+        }
+
+        @media screen and (max-width: 520px) {
+          .receipt-header-strip {
+            flex-direction: column !important;
+            gap: 10px !important;
+          }
+          .receipt-header-strip > div:last-child {
+            text-align: left !important;
+          }
+          .receipt-header-strip > div:last-child > div {
+            justify-content: flex-start !important;
+          }
+          .receipt-routing-grid {
+            grid-template-columns: 1fr !important;
           }
         }
       `}</style>

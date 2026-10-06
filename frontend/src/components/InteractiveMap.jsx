@@ -149,7 +149,7 @@ export default function InteractiveMap({ shipment }) {
       <div className="ace-map-summary-grid" style={{
         marginTop: '16px',
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 130px), 1fr))',
         gap: '10px',
         backgroundColor: '#093655',
         borderRadius: '8px',

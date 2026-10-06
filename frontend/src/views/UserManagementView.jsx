@@ -418,7 +418,7 @@ export default function UserManagementView({
           </div>
 
           {/* Search Input */}
-          <div style={{ position: 'relative', minWidth: '240px', flex: '1 1 240px', maxWidth: '100%' }}>
+          <div style={{ position: 'relative', minWidth: 'min(100%, 240px)', flex: '1 1 240px', maxWidth: '100%' }}>
             <Search size={15} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
             <input
               type="text"
@@ -667,7 +667,7 @@ export default function UserManagementView({
             =================================================== */}
         {inspectUser && (
           <div className="ace-modal-backdrop" onClick={() => setInspectUser(null)}>
-            <div className="ace-modal" onClick={e => e.stopPropagation()} style={{ padding: '30px', maxWidth: '560px', width: '100%' }}>
+            <div className="ace-modal" onClick={e => e.stopPropagation()} style={{ padding: 'clamp(18px, 4vw, 30px)', maxWidth: 'min(560px, calc(100vw - 24px))', width: '100%', boxSizing: 'border-box' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '18px', borderBottom: '1px solid var(--color-border)', paddingBottom: '14px' }}>
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
@@ -764,7 +764,7 @@ export default function UserManagementView({
                 </div>
 
                 {/* Phone & Department */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '14px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 160px), 1fr))', gap: '14px' }}>
                   <div style={{ backgroundColor: 'var(--color-surface)', padding: '12px', borderRadius: '8px', border: '1px solid var(--color-border)' }}>
                     <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase' }}>Phone Number</div>
                     <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-primary)', marginTop: '4px' }}>
@@ -838,7 +838,7 @@ export default function UserManagementView({
             =================================================== */}
         {addModalOpen && (
           <div className="ace-modal-backdrop" onClick={() => setAddModalOpen(false)}>
-            <div className="ace-modal" onClick={e => e.stopPropagation()} style={{ padding: '28px', maxWidth: '500px', width: '100%' }}>
+            <div className="ace-modal" onClick={e => e.stopPropagation()} style={{ padding: 'clamp(16px, 4vw, 28px)', maxWidth: 'min(500px, calc(100vw - 24px))', width: '100%', boxSizing: 'border-box' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
                 <div>
                   <h3 style={{ fontSize: '18px', color: 'var(--color-primary-blue)', fontWeight: 800, margin: 0 }}>
@@ -893,7 +893,7 @@ export default function UserManagementView({
                   </div>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '14px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 180px), 1fr))', gap: '14px' }}>
                   <div className="ace-form-group">
                     <label className="ace-label ace-label-required">Role Permission</label>
                     <select

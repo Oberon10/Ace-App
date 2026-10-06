@@ -350,7 +350,7 @@ export default function HomeView({
         <div className="ace-container">
           <div className="home-metrics-grid" style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 180px), 1fr))',
             gap: '24px',
             textAlign: 'center'
           }}>
@@ -866,6 +866,7 @@ export default function HomeView({
             flex-direction: column;
             align-items: stretch;
             gap: 12px;
+            width: 100%;
             max-width: 360px;
           }
           .daylight-quote-btn,

@@ -51,18 +51,18 @@ export default function AboutContactView({ tab = 'about', setView }) {
         {activeTab === 'about' ? (
           <div>
             {/* Mission Section */}
-            <div className="ace-card" style={{ padding: '40px', marginBottom: '32px' }}>
+            <div className="ace-card" style={{ padding: 'clamp(20px, 4vw, 40px)', marginBottom: '32px' }}>
               <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--color-bright-action)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
                 Corporate Overview
               </span>
-              <h1 style={{ fontSize: '32px', color: 'var(--color-primary-blue)', fontWeight: 800, marginTop: '4px', marginBottom: '16px' }}>
+              <h1 style={{ fontSize: 'clamp(24px, 4vw, 32px)', color: 'var(--color-primary-blue)', fontWeight: 800, marginTop: '4px', marginBottom: '16px' }}>
                 Moving the World, One Shipment at a Time
               </h1>
               <p style={{ fontSize: '15px', color: 'var(--text-secondary)', lineHeight: 1.8, marginBottom: '24px' }}>
                 Founded with a mission to deliver world-class freight reliability across African, European, Asian, and American trade corridors, ACE Logistics has grown into a premier international logistics carrier. We unify multimodal air, sea, road, and rail transport with real-time satellite telemetry, automated customs brokerage, and bonded warehousing.
               </p>
 
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '20px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 240px), 1fr))', gap: '20px' }}>
                 <div style={{ backgroundColor: 'var(--color-light-blue)', padding: '20px', borderRadius: '10px' }}>
                   <ShieldCheck size={24} color="var(--color-primary-blue)" style={{ marginBottom: '8px' }} />
                   <h3 style={{ fontSize: '16px', color: 'var(--color-primary-blue)', fontWeight: 700 }}>Strict Regulatory Compliance</h3>
@@ -90,7 +90,7 @@ export default function AboutContactView({ tab = 'about', setView }) {
             </div>
 
             {/* Logistics Infrastructure Showcase */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '24px' }}>
               <div className="ace-card" style={{ padding: 0, overflow: 'hidden' }}>
                 <img src="/images/container-port.jpg" alt="Port" style={{ width: '100%', height: '180px', objectFit: 'cover' }} />
                 <div style={{ padding: '20px' }}>
@@ -146,7 +146,7 @@ export default function AboutContactView({ tab = 'about', setView }) {
                         <MapPin size={14} color="var(--color-primary-blue)" />
                         <span>{hub.address}</span>
                       </div>
-                      <div style={{ display: 'flex', gap: '16px', fontSize: '12px', color: 'var(--text-muted)' }}>
+                      <div style={{ display: 'flex', gap: '12px', fontSize: '12px', color: 'var(--text-muted)', flexWrap: 'wrap' }}>
                         <span>Tel: {hub.phone}</span>
                         <span>•</span>
                         <span>{hub.email}</span>
@@ -157,7 +157,7 @@ export default function AboutContactView({ tab = 'about', setView }) {
               </div>
 
               {/* Inquiry Form */}
-              <div className="ace-card" style={{ padding: '32px' }}>
+              <div className="ace-card" style={{ padding: 'clamp(18px, 4vw, 32px)' }}>
                 <h3 style={{ fontSize: '18px', color: 'var(--color-primary-blue)', fontWeight: 700, marginBottom: '8px' }}>
                   Submit Operational Inquiry
                 </h3>
@@ -209,6 +209,11 @@ export default function AboutContactView({ tab = 'about', setView }) {
         @media (max-width: 820px) {
           .contact-grid {
             grid-template-columns: 1fr !important;
+          }
+        }
+        @media (max-width: 640px) {
+          .ace-card {
+            padding: 16px 14px !important;
           }
         }
       `}</style>

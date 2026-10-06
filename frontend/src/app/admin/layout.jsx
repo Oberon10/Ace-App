@@ -38,7 +38,10 @@ export default function AdminLayout({ children }) {
         padding: '32px 16px',
         background: 'linear-gradient(135deg, #071524 0%, #0B253E 50%, #061625 100%)',
         color: '#FFFFFF',
-        position: 'relative'
+        position: 'relative',
+        overflow: 'hidden',
+        width: '100%',
+        maxWidth: '100%'
       }}>
         {/* Ambient background glows */}
         <div style={{
@@ -194,7 +197,10 @@ export default function AdminLayout({ children }) {
       minHeight: '100vh',
       display: 'flex',
       flexDirection: 'column',
-      backgroundColor: 'var(--color-very-light-blue)'
+      backgroundColor: 'var(--color-very-light-blue)',
+      width: '100%',
+      maxWidth: '100%',
+      overflowX: 'hidden'
     }}>
       {/* ===================================================
           ADMIN TOP NAVIGATION BAR
@@ -202,13 +208,17 @@ export default function AdminLayout({ children }) {
       <header className="ace-admin-topbar" style={{
         backgroundColor: '#071F32',
         borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
-        padding: '12px 24px',
+        padding: '12px clamp(12px, 2vw, 24px)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: '10px',
         position: 'sticky',
         top: 0,
-        zIndex: 40
+        zIndex: 40,
+        width: '100%',
+        boxSizing: 'border-box'
       }}>
         {/* Left: Brand & Admin Console Indicator */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
@@ -326,7 +336,7 @@ export default function AdminLayout({ children }) {
       {/* ===================================================
           ADMIN BODY WITH ROUTE CONTENT
           =================================================== */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', width: '100%', maxWidth: '100%', minWidth: 0, overflowX: 'hidden' }}>
         {children}
       </div>
     </div>

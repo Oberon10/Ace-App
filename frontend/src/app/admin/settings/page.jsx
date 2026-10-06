@@ -85,7 +85,7 @@ export default function AdminSettingsPage() {
         )}
 
         <form onSubmit={handleSave}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '24px', marginBottom: '24px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))', gap: '24px', marginBottom: '24px' }}>
             
             {/* Card 1: API & Server Infrastructure */}
             <div className="ace-card">
