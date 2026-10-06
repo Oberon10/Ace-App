@@ -2762,6 +2762,75 @@ export default function LoginView({
             gap: 12px !important;
           }
         }
+
+        @media (max-width: 768px) {
+          [data-theme="dark"] .ace-auth-page-root,
+          body.dark-mode .ace-auth-page-root {
+            background: #0B1727 !important;
+            color: #F8FAFC !important;
+          }
+
+          [data-theme="dark"] .wallet-screen-card,
+          body.dark-mode .wallet-screen-card {
+            background: #0F1F33 !important;
+            color: #F8FAFC !important;
+          }
+
+          [data-theme="dark"] .wallet-mobile-title,
+          body.dark-mode .wallet-mobile-title {
+            color: #FFFFFF !important;
+          }
+
+          [data-theme="dark"] .wallet-mobile-back-icon-btn,
+          body.dark-mode .wallet-mobile-back-icon-btn {
+            background: #1E293B !important;
+            color: #E2E8F0 !important;
+          }
+
+          [data-theme="dark"] .wallet-brand-title,
+          body.dark-mode .wallet-brand-title {
+            color: #FFFFFF !important;
+          }
+
+          [data-theme="dark"] .wallet-input-control,
+          body.dark-mode .wallet-input-control {
+            background-color: #16263B !important;
+            border-color: #2D4059 !important;
+            color: #FFFFFF !important;
+          }
+
+          [data-theme="dark"] .wallet-input-control::placeholder,
+          body.dark-mode .wallet-input-control::placeholder {
+            color: #94A3B8 !important;
+          }
+
+          [data-theme="dark"] .wallet-social-btn,
+          body.dark-mode .wallet-social-btn {
+            background: #16263B !important;
+            border-color: #2D4059 !important;
+            color: #E2E8F0 !important;
+          }
+        }
+
+        @media (max-width: 380px) {
+          .wallet-screen-card {
+            padding: 16px 12px 28px 12px !important;
+          }
+          .wallet-segmented-toggle {
+            padding: 3px !important;
+          }
+          .wallet-toggle-btn {
+            font-size: 13px !important;
+            padding: 8px 10px !important;
+          }
+          .wallet-social-grid {
+            gap: 8px !important;
+          }
+          .wallet-social-btn {
+            padding: 10px 8px !important;
+            font-size: 12px !important;
+          }
+        }
       `}</style>
     </div>
   );
